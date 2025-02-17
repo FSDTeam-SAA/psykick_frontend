@@ -19,7 +19,7 @@ export default function RootLayout({
        
       >
         <Navbar/>
-        <div className="bg-[#371B77]">
+        <div className="bg-[#371B77] pt-[80px] lg:pt-[158px]">
         {children}
         </div>
         
