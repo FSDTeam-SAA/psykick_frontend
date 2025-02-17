@@ -76,3 +76,59 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .title {
+    @apply md:text-[48px] text-[30px] font-normal tracking-normal md:leading-[57.6px] leading-[37px] font-kdam text-white;
+  }
+  .subTitle {
+    @apply md:text-xl text-lg font-normal tracking-normal leading-[24px] font-kdam text-white;
+  }
+  .paragraph {
+    @apply text-[16px] font-normal tracking-normal leading-[24px] font-poppins text-[#C5C5C5];
+  }
+  .challange-title {
+    @apply text-[32px] font-inter font-semibold leading-[38.4px] text-[#ECECEC];
+  }
+  .challange-subTitle {
+    @apply text-[24px] font-inter font-semibold leading-[28.4px] text-[#ECECEC];
+  }
+}
+
+.text-shadow {
+  color: var(--Foundation-White-Normal, #fff);
+  -webkit-text-stroke-width: 7px;
+  -webkit-text-stroke-color: #000;
+  font-family: "Kdam Thmor Pro";
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 120%;
+}
+
+.btn {
+  cursor: pointer;
+  font-family: "system-ui";
+  font-size: 14px;
+  color: rgb(255, 255, 255);
+  padding: 16px 61px;
+  transition: 1262ms;
+  box-shadow: rgb(0, 0, 0) 0px 0px 0px 0px;
+  border-radius: 1px 24px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 19.2px;
+  background: linear-gradient(
+    90deg,
+    rgb(143, 55, 255) 20%,
+    rgb(45, 23, 255) 100%
+  );
+}
+.btn:hover {
+  background: linear-gradient(
+    180deg,
+    rgb(143, 55, 255) 20%,
+    rgb(45, 23, 255) 100%
+  );
+  scale: 1.1;
+}
