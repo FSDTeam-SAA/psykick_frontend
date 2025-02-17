@@ -11,7 +11,7 @@ const Faq = () => {
           Curious about Remote Viewing and how our challenges work?
         </h2>
         <p className="text-gray-300 leading-relaxed">
-          We've compiled answers to the most common questions to help you get started. Whether you're new to RV or
+          We&apos;ve compiled answers to the most common questions to help you get started. Whether you&apos;re new to RV or
           looking to refine your skills, this section will guide you through the basics, techniques, and how to
           participate in our interactive sessions. Explore the FAQ below and take your first step into the world of
           Remote Viewing!
