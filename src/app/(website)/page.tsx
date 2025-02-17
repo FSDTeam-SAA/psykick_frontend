@@ -1,9 +1,12 @@
+import AboutRemotView from "./_components/AboutRemotView/AboutRemotView";
+import Faq from "./_components/Faq/Faq";
 
 
 export default function Home() {
   return (
-    <div className="flex items-center justify-center h-screen">
-      <h1>Hello World! </h1>
+    <div className="">
+      <AboutRemotView/>
+      <Faq/>
     </div>
   );
 }
