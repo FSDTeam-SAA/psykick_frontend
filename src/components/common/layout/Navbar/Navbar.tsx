@@ -4,7 +4,8 @@ import Link from "next/link"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
-
+import Image from "next/image"
+import logo from "../../../../../public/assets/img/logo.svg"
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -22,7 +23,8 @@ export function Navbar() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="text-[#4ADE80] text-2xl font-bold">
-            Psykick.club
+            {/* Psykick.club */}
+            <Image src={logo}  width={194} height={38} alt="Psykick.club" />
           </Link>
 
           {/* Mobile menu button */}
