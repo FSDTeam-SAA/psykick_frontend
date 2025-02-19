@@ -125,7 +125,7 @@ body {
   );
 }
 
-.btn-outline {
+.btn {
   cursor: pointer;
   font-family: "system-ui";
   font-size: 14px;
@@ -137,7 +137,11 @@ body {
   font-weight: 600;
   font-size: 16px;
   line-height: 19.2px;
-  border: 1px solid #eee1ff;
+  background: linear-gradient(
+    90deg,
+    rgb(143, 55, 255) 20%,
+    rgb(45, 23, 255) 100%
+  );
 }
 .btn:hover {
   background: linear-gradient(
