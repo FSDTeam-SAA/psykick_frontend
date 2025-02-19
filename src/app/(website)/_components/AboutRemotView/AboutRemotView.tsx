@@ -1,7 +1,6 @@
 "use client"
 import Image from "next/image"
 import { ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
