@@ -124,21 +124,6 @@ body {
     rgb(45, 23, 255) 100%
   );
 }
-
-.btn-outline {
-  cursor: pointer;
-  font-family: "system-ui";
-  font-size: 14px;
-  color: rgb(255, 255, 255);
-  padding: 16px 61px;
-  transition: 1262ms;
-  box-shadow: rgb(0, 0, 0) 0px 0px 0px 0px;
-  border-radius: 1px 24px;
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 19.2px;
-  border: 1px solid #eee1ff;
-}
 .btn:hover {
   background: linear-gradient(
     180deg,

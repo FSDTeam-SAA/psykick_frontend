@@ -14,7 +14,7 @@ export default function HeroSection() {
           corrupti? Reiciendis incidunt minus explicabo, facere officia magni
           iusto totam aperiam?
         </p>
-        <button className="btn-outline text-base !px-5 !py-3">Sign Up</button>
+        <button>Click Here</button>
       </div>
     </div>
   );
