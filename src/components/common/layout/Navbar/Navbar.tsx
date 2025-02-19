@@ -51,14 +51,14 @@ export function Navbar() {
           {/* Auth Buttons - Desktop */}
           <div className="hidden lg:flex items-center space-x-4">
             <Button
-              variant="secondary"
-              className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white"
+              variant="ghost"
+              className=" btn hover:bg-[#6D28D9] !px-[29px]  !py-[12px] text-[16px] text-white"
             >
               log in
             </Button>
-            <Button variant="outline" className="text-white border-white">
+            <button  className="text-white text-[16px] font-medium  btn-outline !px-[20px]  !py-[12px] border-white">
               Sign Up
-            </Button>
+            </button>
           </div>
         </div>
 
@@ -83,12 +83,11 @@ export function Navbar() {
                 >
                   log in
                 </Button>
-                <Button
-                  variant="outline"
-                  className="text-white border-white w-full"
+                <button
+                  className="text-white btn-outline border-white w-full"
                 >
                   Sign Up
-                </Button>
+                </button>
               </div>
             </div>
           </div>

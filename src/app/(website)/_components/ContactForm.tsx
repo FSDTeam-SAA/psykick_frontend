@@ -7,7 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Facebook } from "lucide-react"
+import { Facebook,Linkedin, Instagram,Twitter } from "lucide-react"
+import Link from "next/link"
 
 interface FormData {
   fullName: string
@@ -26,7 +27,7 @@ export default function ContactForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Form Data:", formData)
+    console.log("Contact Form Data:", formData)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -38,40 +39,41 @@ export default function ContactForm() {
   }
 
   return (
-    <div className="min-h-screen  p-4 flex flex-col items-center">
+    <div className="min-h-screen pt-20 p-4 flex flex-col items-center">
      <div className="w-full max-w-4xl text-center mb-6">
-             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Contact Us</h1>
+             <h1 className=" mb-4 title  ">Contact Us</h1>
              <p className="text-gray-300 text-sm md:text-base">
                We&apos;d love to hear from you! Whether you&apos;re curious about the game, need assistance, or want to share
                your experience, reach out to us anytime.
              </p>
            </div>
- 
-      <Card className="w-full bg-transparent  max-w-4xl">
+  
+      <Card className="w-full bgBlure border-[2px] border-[#FDFDFD1A]/10 shadow-[#862A8533] shadow-xl bg-[#EEE1FF]/10 backdrop-blur-lg   max-w-4xl">
         <CardHeader>
-          <CardTitle className="text-2xl md:text-3xl text-purple-600">We&apos;re Here to Help!</CardTitle>
-          <p className="text-sm text-gray-500">
+          <CardTitle className=" challange-title">We&apos;re Here to Help!</CardTitle>
+          <p className="paragrap text-[#F4EBFF]">
             Together, we can build a more equitable and prosperous gaming community.
           </p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
-              <Input
-                name="fullName"
-                placeholder="Full Name"
-                value={formData.fullName}
-                onChange={handleChange}
-                className="w-full"
-                required
-              />
+            <Input
+  name="fullName"
+  placeholder="Full Name*"
+  value={formData.fullName}
+  onChange={handleChange}
+  className="w-full bg-[#F4EBFF]/10 !placeholder-[#F4EBFF] text-white focus:ring-0"
+  required
+/>
+
               <Input
                 name="email"
                 type="email"
-                placeholder="Email address"
+                placeholder="Email address*"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full"
+                 className="w-full bg-[#F4EBFF]/10 !placeholder-[#F4EBFF] text-white focus:ring-0"
                 required
               />
               <Input
@@ -79,7 +81,7 @@ export default function ContactForm() {
                 placeholder="Subject"
                 value={formData.subject}
                 onChange={handleChange}
-                className="w-full"
+                className="w-full bg-[#F4EBFF]/10 !placeholder-[#F4EBFF] text-white focus:ring-0"
                 required
               />
               <Textarea
@@ -87,7 +89,7 @@ export default function ContactForm() {
                 placeholder="Ask your Queries"
                 value={formData.message}
                 onChange={handleChange}
-                className="w-full min-h-[200px]"
+                className="w-full min-h-[200px]  bg-[#F4EBFF]/10 !placeholder-[#F4EBFF] text-white focus:ring-0"
                 required
               />
             </div>
@@ -97,14 +99,46 @@ export default function ContactForm() {
                 Submit
               </button>
 
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full bg-purple-600 hover:bg-purple-700 text-white"
-                onClick={() => window.open("https://facebook.com", "_blank")}
-              >
-                <Facebook className="h-5 w-5" />
-              </Button>
+
+{/* Social Icons  */}
+            <div className="flex gap-4">
+          
+
+              <Link href="#"><Button
+               
+               size="icon"
+               className="rounded-full p-0 iconGradient border hover:border-none text-white"
+               onClick={() => window.open("https://facebook.com", "_blank")}
+             >
+               <Facebook className="h-5 w-5" />
+             </Button></Link>
+              <Link href="#"><Button
+               
+               size="icon"
+               className="rounded-full p-0 iconGradient border hover:border-none text-white"
+               onClick={() => window.open("https://facebook.com", "_blank")}
+             >
+               < Instagram className="h-5 w-5" />
+             </Button></Link>
+
+
+              <Link href="#"><Button
+               
+               size="icon"
+               className="rounded-full p-0 iconGradient border hover:border-none text-white"
+               onClick={() => window.open("https://facebook.com", "_blank")}
+             >
+               <Linkedin className="h-5 w-5" />
+             </Button></Link>
+              <Link href="#"><Button
+               
+               size="icon"
+               className="rounded-full p-0 border iconGradient  border hover:border-none text-white"
+               onClick={() => window.open("https://facebook.com", "_blank")}
+             >
+               <Twitter className="h-5 w-5" />
+             </Button></Link>
+            </div>
             </div>
           </form>
         </CardContent>
