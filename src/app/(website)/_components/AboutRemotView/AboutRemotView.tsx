@@ -1,7 +1,6 @@
 "use client"
 import Image from "next/image"
 import { ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
@@ -44,10 +43,10 @@ export default function AboutRemotView() {
             </p>
 
            <Link href="/learn-more-about">
-           <Button className="bg-[#8B5CF6] hover:bg-[#7C3AED] text-white rounded-full px-6 py-2 flex items-center gap-2 text-sm md:text-base">
+           <button className=" btn rhover:bg-[#7C3AED] text-white rounded-full px-6 py-2 flex items-center gap-2 text-sm md:text-base">
               Click Here
               <ArrowRight className="w-4 h-4" />
-            </Button>
+            </button>
            </Link>
 
             <div className="grid grid-cols-3 gap-4 pt-6">
