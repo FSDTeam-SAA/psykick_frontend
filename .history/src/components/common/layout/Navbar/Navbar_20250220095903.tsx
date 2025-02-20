@@ -57,9 +57,10 @@ export function Navbar() {
               log in
             </Button>
 
-            <button className="text-white text-[16px] font-medium  btn-outline !px-[20px]  !py-[12px] border-white">
+            <button  className="text-white text-[16px] font-medium  btn-outline !px-[20px]  !py-[12px] border-white">
               Sign Up
             </button>
+>>>>>>> 8ee47d6d5bc2776013b5722c8a314c63cebc31f0
           </div>
         </div>
 
@@ -84,9 +85,16 @@ export function Navbar() {
                 >
                   log in
                 </Button>
-                <button className="text-white btn-outline border-white w-full">
+                <button
+                  className="text-white btn-outline border-white w-full"
+                >
+<<<<<<< HEAD
+                  Register now
+                </Button>
+=======
                   Sign Up
                 </button>
+>>>>>>> 8ee47d6d5bc2776013b5722c8a314c63cebc31f0
               </div>
             </div>
           </div>

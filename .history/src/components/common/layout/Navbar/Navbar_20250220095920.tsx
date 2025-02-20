@@ -57,7 +57,7 @@ export function Navbar() {
               log in
             </Button>
 
-            <button className="text-white text-[16px] font-medium  btn-outline !px-[20px]  !py-[12px] border-white">
+            <button  className="text-white text-[16px] font-medium  btn-outline !px-[20px]  !py-[12px] border-white">
               Sign Up
             </button>
           </div>
@@ -84,7 +84,9 @@ export function Navbar() {
                 >
                   log in
                 </Button>
-                <button className="text-white btn-outline border-white w-full">
+                <button
+                  className="text-white btn-outline border-white w-full"
+                >
                   Sign Up
                 </button>
               </div>
