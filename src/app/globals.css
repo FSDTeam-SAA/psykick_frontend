@@ -88,10 +88,10 @@ body {
     @apply text-[16px] font-normal tracking-normal leading-[24px] font-poppins text-[#C5C5C5];
   }
   .challange-title {
-    @apply text-[32px] font-inter font-semibold leading-[38.4px] text-[#ECECEC];
+    @apply !text-[32px]  font-semibold leading-[38.4px] text-[#ECECEC];
   }
   .challange-subTitle {
-    @apply text-[24px] font-inter font-semibold leading-[28.4px] text-[#ECECEC];
+    @apply text-[24px]  font-semibold leading-[28.4px] text-[#ECECEC];
   }
 }
 
@@ -124,7 +124,22 @@ body {
     rgb(45, 23, 255) 100%
   );
 }
-
+.iconGradient{
+  background-color: transparent;
+}
+.iconGradient:hover{
+  background: linear-gradient(
+    180deg,
+    rgb(143, 55, 255) 20%,
+    rgb(45, 23, 255) 100%
+  );
+  scale: 1.1;
+}
+.bgBlure{
+  -webkit-box-shadow: 0px 0px 52px 6px rgba(134,42,133,0.53);
+-moz-box-shadow: 0px 0px 52px 6px rgba(134,42,133,0.53);
+box-shadow: 0px 0px 52px 6px rgba(134,42,133,0.53);
+}
 .btn-outline {
   cursor: pointer;
   font-family: "system-ui";
@@ -146,4 +161,37 @@ body {
     rgb(45, 23, 255) 100%
   );
   scale: 1.1;
+}
+
+.gradient-border {
+  position: relative;
+  padding: 10px;
+  border-radius: 10px;
+  background: white;
+}
+
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: -5px; /* Controls border thickness */
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(45deg, #ff0000, #0000ff);
+}
+
+.element {
+  position: relative;
+  border-radius: 10px;
+  background: linear-gradient(45deg, #ff0000, #0000ff);
+  -webkit-mask:
+    linear-gradient(white 0 0) content-box,
+    linear-gradient(white 0 0);
+  -webkit-mask-composite: xor;
+  padding: 5px;
+}
+
+.textshadow {
+  -webkit-text-stroke: 2px black;
+  font-weight: 900!important;
+
 }
