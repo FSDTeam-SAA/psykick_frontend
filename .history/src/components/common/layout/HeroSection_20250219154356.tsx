@@ -1,0 +1,22 @@
+import React from "react";
+
+export default function HeroSection() {
+  return (
+    <div
+      className="h-[1920px] w-screen bg-cover bg-no-repeat flex  justify-center "
+      style={{ backgroundImage: "url('/assets/img/hero_img.png')" }}
+    >
+      <div className="container">
+        <h1 className="title pt-20">Discover the unseen...</h1>
+        <article className="w-[400]"> 
+          Beyond the ordinary lies a realm of hidden knowledge, waiting to be
+          explored. Psykick Club is more than just a gathering—it's a sanctuary
+          for seekers of the unknown, a place where intuition is sharpened, and
+          perception is tested. Engage in thrilling remote viewing challenges,
+          uncover the secrets of the mind, and connect with a community that
+          dares to see beyond.
+        </article>
+      </div>
+    </div>
+  );
+}
