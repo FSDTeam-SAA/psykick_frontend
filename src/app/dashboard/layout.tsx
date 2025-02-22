@@ -1,5 +1,8 @@
+import { Sidebar } from "@/components/common/layout/dashboard/SideBar";
 import "../globals.css";
 import type { Metadata } from "next";
+import { AdminDashboardTabsList } from "@/data/dashboard";
+import Header from "@/components/common/layout/dashboard/dashboard-header";
 
 export const metadata: Metadata = {
   title: "Psykick Club",
@@ -13,8 +16,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        {children}
+      <body className="bg-[#36007B] text-white  dashboard-body">
+        <Sidebar lists={AdminDashboardTabsList} />
+        <div className="px-4 md:ml-[272px] backdrop-blur-sm bg-[#371B77]/40 dashboard-shadow">
+          <Header />
+          {children}
+        </div>
       </body>
     </html>
   );
