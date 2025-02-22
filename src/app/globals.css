@@ -146,7 +146,7 @@ body {
       rgb(0, 0, 0) 9.96542px -0.830894px 0px;
   }
   .subTitle {
-    @apply md:text-xl text-lg font-normal tracking-normal leading-[24px] font-kdam text-white;
+    @apply md:text-xl text-lg font-normal tracking-normal leading-[24px] font-kdam text-white text-;
   }
   .paragraph {
     @apply text-[16px] font-normal tracking-normal leading-[24px] font-poppins text-[#C5C5C5];
@@ -159,11 +159,37 @@ body {
   }
 }
 
-
-
-
-
-
+.dashboard-body {
+  background-image: url("/assets/img/Dashboard.png");
+  background-size: cover;
+  height: min-content;
+  background-repeat: no-repeat;
+  width: 100%;
+}
+.dashboard-shadow {
+  -webkit-box-shadow: -43px 112px 73px 9px rgba(0, 0, 0, 0.31);
+  -moz-box-shadow: -43px 112px 73px 9px rgba(0, 0, 0, 0.31);
+  box-shadow: -43px 112px 73px 9px rgba(0, 0, 0, 0.31);
+}
+.bg-gradient {
+  background: rgb(143, 55, 255);
+  background: -moz-linear-gradient(
+    90deg,
+    rgba(143, 55, 255, 1) 0%,
+    rgba(45, 23, 255, 1) 100%
+  );
+  background: -webkit-linear-gradient(
+    90deg,
+    rgba(143, 55, 255, 1) 0%,
+    rgba(45, 23, 255, 1) 100%
+  );
+  background: linear-gradient(
+    90deg,
+    rgba(143, 55, 255, 1) 0%,
+    rgba(45, 23, 255, 1) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#8f37ff",endColorstr="#2d17ff",GradientType=1);
+}
 
 .text-shadow {
   color: var(--Foundation-White-Normal, #fff);
@@ -296,3 +322,12 @@ body {
     -1px 1px 0 #000,
     1px 1px 0 #000;
 } */
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
