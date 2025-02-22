@@ -39,7 +39,7 @@ export default function ContactForm() {
   }
 
   return (
-    <div className="min-h-screen pt-20 p-4 flex flex-col items-center">
+    <div className="min-h-screen pt-8 lg:pt-20 p-4 flex flex-col items-center">
      <div className="w-full max-w-4xl text-center mb-6">
              <h1 className=" mb-4 title  ">Contact Us</h1>
              <p className="text-gray-300 text-sm md:text-base">

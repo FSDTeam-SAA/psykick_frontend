@@ -10,7 +10,9 @@ export default function HeroSection() {
         <div className="h-[50%] container">
           <div className="flex justify-between items-end">
             <div>
-              <h1 className="title pt-20 mb-6 text-">Discover the unseen...</h1>
+              <h1 className="title pt-20 mb-6 text-">
+                Kick your Psy into Gear!
+              </h1>
               <article className="w-[400px] paragraph !font-inter p-5 bg-[#F8F8F8]/10 backdrop-blur-md rounded-2xl border-2 border-[#7c4bb8]">
                 Beyond the ordinary lies a realm of hidden knowledge, waiting to
                 be explored. Psykick Club is more than just a

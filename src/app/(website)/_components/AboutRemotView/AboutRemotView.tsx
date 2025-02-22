@@ -43,7 +43,7 @@ export default function AboutRemotView() {
             </p>
 
            <Link href="/learn-more-about">
-           <button className=" btn rhover:bg-[#7C3AED] text-white rounded-full px-6 py-2 flex items-center gap-2 text-sm md:text-base">
+           <button className=" mt-[18px] lg:mt-[32px] btn hover:bg-[#7C3AED] text-white rounded-full px-6 py-2 flex items-center gap-2 text-sm md:text-base">
               Click Here
               <ArrowRight className="w-4 h-4" />
             </button>
