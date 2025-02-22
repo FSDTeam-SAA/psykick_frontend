@@ -80,70 +80,7 @@ body {
 @layer components {
   .title {
     @apply md:text-[48px] text-[30px] font-normal tracking-normal md:leading-[57.6px] leading-[37px] font-kdam text-white;
-    text-shadow:
-      rgb(0, 0, 0) 10px 0px 0px,
-      rgb(0, 0, 0) 9.95004px 0.998334px 0px,
-      rgb(0, 0, 0) 9.80067px 1.98669px 0px,
-      rgb(0, 0, 0) 9.55336px 2.9552px 0px,
-      rgb(0, 0, 0) 9.21061px 3.89418px 0px,
-      rgb(0, 0, 0) 8.77583px 4.79426px 0px,
-      rgb(0, 0, 0) 8.25336px 5.64642px 0px,
-      rgb(0, 0, 0) 7.64842px 6.44218px 0px,
-      rgb(0, 0, 0) 6.96707px 7.17356px 0px,
-      rgb(0, 0, 0) 6.2161px 7.83327px 0px,
-      rgb(0, 0, 0) 5.40302px 8.41471px 0px,
-      rgb(0, 0, 0) 4.53596px 8.91207px 0px,
-      rgb(0, 0, 0) 3.62358px 9.32039px 0px,
-      rgb(0, 0, 0) 2.67499px 9.63558px 0px,
-      rgb(0, 0, 0) 1.69967px 9.8545px 0px,
-      rgb(0, 0, 0) 0.707372px 9.97495px 0px,
-      rgb(0, 0, 0) -0.291995px 9.99574px 0px,
-      rgb(0, 0, 0) -1.28844px 9.91665px 0px,
-      rgb(0, 0, 0) -2.27202px 9.73848px 0px,
-      rgb(0, 0, 0) -3.2329px 9.463px 0px,
-      rgb(0, 0, 0) -4.16147px 9.09297px 0px,
-      rgb(0, 0, 0) -5.04846px 8.63209px 0px,
-      rgb(0, 0, 0) -5.88501px 8.08496px 0px,
-      rgb(0, 0, 0) -6.66276px 7.45705px 0px,
-      rgb(0, 0, 0) -7.37394px 6.75463px 0px,
-      rgb(0, 0, 0) -8.01144px 5.98472px 0px,
-      rgb(0, 0, 0) -8.56889px 5.15501px 0px,
-      rgb(0, 0, 0) -9.04072px 4.2738px 0px,
-      rgb(0, 0, 0) -9.42222px 3.34988px 0px,
-      rgb(0, 0, 0) -9.70958px 2.39249px 0px,
-      rgb(0, 0, 0) -9.89993px 1.4112px 0px,
-      rgb(0, 0, 0) -9.99135px 0.415807px 0px,
-      rgb(0, 0, 0) -9.98295px -0.583741px 0px,
-      rgb(0, 0, 0) -9.8748px -1.57746px 0px,
-      rgb(0, 0, 0) -9.66798px -2.55541px 0px,
-      rgb(0, 0, 0) -9.36457px -3.50783px 0px,
-      rgb(0, 0, 0) -8.96758px -4.4252px 0px,
-      rgb(0, 0, 0) -8.481px -5.29836px 0px,
-      rgb(0, 0, 0) -7.90968px -6.11858px 0px,
-      rgb(0, 0, 0) -7.25932px -6.87766px 0px,
-      rgb(0, 0, 0) -6.53644px -7.56803px 0px,
-      rgb(0, 0, 0) -5.74824px -8.18277px 0px,
-      rgb(0, 0, 0) -4.90261px -8.71576px 0px,
-      rgb(0, 0, 0) -4.00799px -9.16166px 0px,
-      rgb(0, 0, 0) -3.07333px -9.51602px 0px,
-      rgb(0, 0, 0) -2.10796px -9.7753px 0px,
-      rgb(0, 0, 0) -1.12153px -9.93691px 0px,
-      rgb(0, 0, 0) -0.123887px -9.99923px 0px,
-      rgb(0, 0, 0) 0.87499px -9.96165px 0px,
-      rgb(0, 0, 0) 1.86512px -9.82453px 0px,
-      rgb(0, 0, 0) 2.83662px -9.58924px 0px,
-      rgb(0, 0, 0) 3.77978px -9.25815px 0px,
-      rgb(0, 0, 0) 4.68517px -8.83455px 0px,
-      rgb(0, 0, 0) 5.54374px -8.32267px 0px,
-      rgb(0, 0, 0) 6.34693px -7.72764px 0px,
-      rgb(0, 0, 0) 7.0867px -7.0554px 0px,
-      rgb(0, 0, 0) 7.75566px -6.31267px 0px,
-      rgb(0, 0, 0) 8.34713px -5.50686px 0px,
-      rgb(0, 0, 0) 8.8552px -4.64602px 0px,
-      rgb(0, 0, 0) 9.27478px -3.73877px 0px,
-      rgb(0, 0, 0) 9.6017px -2.79415px 0px,
-      rgb(0, 0, 0) 9.83268px -1.82162px 0px,
-      rgb(0, 0, 0) 9.96542px -0.830894px 0px;
+   
   }
   .subTitle {
     @apply md:text-xl text-lg font-normal tracking-normal leading-[24px] font-kdam text-white;
@@ -159,22 +96,83 @@ body {
   }
 }
 
-
-
-
-
-
-
-.text-shadow {
-  color: var(--Foundation-White-Normal, #fff);
-  -webkit-text-stroke-width: 7px;
-  -webkit-text-stroke-color: #000;
-  font-family: "Kdam Thmor Pro";
-  font-size: 48px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 120%;
+.textLargeShadow{
+  text-shadow:
+  rgb(0, 0, 0) 10px 0px 0px,
+  rgb(0, 0, 0) 9.95004px 0.998334px 0px,
+  rgb(0, 0, 0) 9.80067px 1.98669px 0px,
+  rgb(0, 0, 0) 9.55336px 2.9552px 0px,
+  rgb(0, 0, 0) 9.21061px 3.89418px 0px,
+  rgb(0, 0, 0) 8.77583px 4.79426px 0px,
+  rgb(0, 0, 0) 8.25336px 5.64642px 0px,
+  rgb(0, 0, 0) 7.64842px 6.44218px 0px,
+  rgb(0, 0, 0) 6.96707px 7.17356px 0px,
+  rgb(0, 0, 0) 6.2161px 7.83327px 0px,
+  rgb(0, 0, 0) 5.40302px 8.41471px 0px,
+  rgb(0, 0, 0) 4.53596px 8.91207px 0px,
+  rgb(0, 0, 0) 3.62358px 9.32039px 0px,
+  rgb(0, 0, 0) 2.67499px 9.63558px 0px,
+  rgb(0, 0, 0) 1.69967px 9.8545px 0px,
+  rgb(0, 0, 0) 0.707372px 9.97495px 0px,
+  rgb(0, 0, 0) -0.291995px 9.99574px 0px,
+  rgb(0, 0, 0) -1.28844px 9.91665px 0px,
+  rgb(0, 0, 0) -2.27202px 9.73848px 0px,
+  rgb(0, 0, 0) -3.2329px 9.463px 0px,
+  rgb(0, 0, 0) -4.16147px 9.09297px 0px,
+  rgb(0, 0, 0) -5.04846px 8.63209px 0px,
+  rgb(0, 0, 0) -5.88501px 8.08496px 0px,
+  rgb(0, 0, 0) -6.66276px 7.45705px 0px,
+  rgb(0, 0, 0) -7.37394px 6.75463px 0px,
+  rgb(0, 0, 0) -8.01144px 5.98472px 0px,
+  rgb(0, 0, 0) -8.56889px 5.15501px 0px,
+  rgb(0, 0, 0) -9.04072px 4.2738px 0px,
+  rgb(0, 0, 0) -9.42222px 3.34988px 0px,
+  rgb(0, 0, 0) -9.70958px 2.39249px 0px,
+  rgb(0, 0, 0) -9.89993px 1.4112px 0px,
+  rgb(0, 0, 0) -9.99135px 0.415807px 0px,
+  rgb(0, 0, 0) -9.98295px -0.583741px 0px,
+  rgb(0, 0, 0) -9.8748px -1.57746px 0px,
+  rgb(0, 0, 0) -9.66798px -2.55541px 0px,
+  rgb(0, 0, 0) -9.36457px -3.50783px 0px,
+  rgb(0, 0, 0) -8.96758px -4.4252px 0px,
+  rgb(0, 0, 0) -8.481px -5.29836px 0px,
+  rgb(0, 0, 0) -7.90968px -6.11858px 0px,
+  rgb(0, 0, 0) -7.25932px -6.87766px 0px,
+  rgb(0, 0, 0) -6.53644px -7.56803px 0px,
+  rgb(0, 0, 0) -5.74824px -8.18277px 0px,
+  rgb(0, 0, 0) -4.90261px -8.71576px 0px,
+  rgb(0, 0, 0) -4.00799px -9.16166px 0px,
+  rgb(0, 0, 0) -3.07333px -9.51602px 0px,
+  rgb(0, 0, 0) -2.10796px -9.7753px 0px,
+  rgb(0, 0, 0) -1.12153px -9.93691px 0px,
+  rgb(0, 0, 0) -0.123887px -9.99923px 0px,
+  rgb(0, 0, 0) 0.87499px -9.96165px 0px,
+  rgb(0, 0, 0) 1.86512px -9.82453px 0px,
+  rgb(0, 0, 0) 2.83662px -9.58924px 0px,
+  rgb(0, 0, 0) 3.77978px -9.25815px 0px,
+  rgb(0, 0, 0) 4.68517px -8.83455px 0px,
+  rgb(0, 0, 0) 5.54374px -8.32267px 0px,
+  rgb(0, 0, 0) 6.34693px -7.72764px 0px,
+  rgb(0, 0, 0) 7.0867px -7.0554px 0px,
+  rgb(0, 0, 0) 7.75566px -6.31267px 0px,
+  rgb(0, 0, 0) 8.34713px -5.50686px 0px,
+  rgb(0, 0, 0) 8.8552px -4.64602px 0px,
+  rgb(0, 0, 0) 9.27478px -3.73877px 0px,
+  rgb(0, 0, 0) 9.6017px -2.79415px 0px,
+  rgb(0, 0, 0) 9.83268px -1.82162px 0px,
+  rgb(0, 0, 0) 9.96542px -0.830894px 0px;
 }
+
+.smallTextShadow{
+  @apply text-[20px] font-normal text-white;
+  text-shadow: rgb(0, 0, 0) 3px 0px 0px, rgb(0, 0, 0) 2.83487px 0.981584px 0px, rgb(0, 0, 0) 2.35766px 1.85511px 0px, rgb(0, 0, 0) 1.62091px 2.52441px 0px, rgb(0, 0, 0) 0.705713px 2.91581px 0px, rgb(0, 0, 0) -0.287171px 2.98622px 0px, rgb(0, 0, 0) -1.24844px 2.72789px 0px, rgb(0, 0, 0) -2.07227px 2.16926px 0px, rgb(0, 0, 0) -2.66798px 1.37182px 0px, rgb(0, 0, 0) -2.96998px 0.42336px 0px, rgb(0, 0, 0) -2.94502px -0.571704px 0px, rgb(0, 0, 0) -2.59586px -1.50383px 0px, rgb(0, 0, 0) -1.96093px -2.27041px 0px, rgb(0, 0, 0) -1.11013px -2.78704px 0px, rgb(0, 0, 0) -0.137119px -2.99686px 0px, rgb(0, 0, 0) 0.850987px -2.87677px 0px, rgb(0, 0, 0) 1.74541px -2.43999px 0px, rgb(0, 0, 0) 2.44769px -1.73459px 0px, rgb(0, 0, 0) 2.88051px -0.838247px 0px;
+}
+
+
+
+
+
+
 
 .btn {
   cursor: pointer;

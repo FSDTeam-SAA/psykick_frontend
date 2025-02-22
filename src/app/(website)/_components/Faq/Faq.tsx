@@ -7,7 +7,7 @@ const Faq = () => {
     <section className=" text-white px-6 py-12 md:py-16">
     <div className="max-w-7xl mx-auto grid gap-8 lg:grid-cols-2 lg:gap-12">
       <div className="space-y-6">
-        <h2 className="text-3xl md:text-4xl font-bold leading-tight">
+        <h2 className="title textLargeShadow">
         Your Questions <br /> Answered
         </h2>
         <p className="text-[#C5C5C5] text-[16px] font-normal leading-relaxed">
