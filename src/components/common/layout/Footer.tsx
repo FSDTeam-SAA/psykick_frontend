@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react"
+import Hideon from "@/provider/Hideon"
 
 const navigation = {
   main: [
@@ -33,9 +34,16 @@ const navigation = {
   ],
 }
 
+// Define routes where the footer should be hidden
+const HIDE_ROUTES = [
+  "/signUp",
+ 
+];
+
 export function SiteFooter() {
   return (
-    <footer className="relative min-h-[300px] w-full rounded-xl">
+<Hideon routes={HIDE_ROUTES}>
+<footer className="relative min-h-[300px] w-full rounded-xl">
       {/* Background Image */}
       <div
         className="absolute inset-0 z-0"
@@ -95,6 +103,7 @@ export function SiteFooter() {
         </div>
       </div>
     </footer>
+</Hideon>
   )
 }
 

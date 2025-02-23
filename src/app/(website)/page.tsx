@@ -1,6 +1,6 @@
 import HeroSection from "@/components/common/layout/HeroSection";
 import AboutRemotView from "./_components/AboutRemotView/AboutRemotView";
-import Faq from "./_components/Faq/Faq";
+import Faq from "./_components/CuriousAboutRemoteViewing/Faq";
 
 export default function Home() {
   return (
