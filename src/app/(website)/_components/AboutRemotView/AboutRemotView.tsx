@@ -29,7 +29,7 @@ export default function AboutRemotView() {
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-8 items-center">
           <div className="space-y-6">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
+            <h1 className="title textLargeShadow">
               Learn more about Remote Viewing
             </h1>
 
