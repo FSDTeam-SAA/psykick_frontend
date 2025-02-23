@@ -42,8 +42,7 @@ const Faq = () => {
               2. Do I need special abilities to do Remote Viewing?
             </AccordionTrigger>
             <AccordionContent className="text-[#C5C5C5] text-[16px] font-normal">
-              Remote Viewing is a natural human ability that can be learned and developed through practice and proper
-              training.
+            No. Remote Viewing is a skill that anyone can learn with practice. While some individuals may naturally excel at it, most people improve over time by refining their intuition, focus, and ability to separate real impressions from distractions.
             </AccordionContent>
           </AccordionItem>
 
