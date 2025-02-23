@@ -8,7 +8,7 @@ const Faq = () => {
     <div className="max-w-7xl mx-auto grid gap-8 lg:grid-cols-2 lg:gap-12">
       <div className="space-y-6">
         <h2 className="title textLargeShadow">
-        Your Questions <br /> Answered
+        Curious about Remote Viewing and how our challenges work?
         </h2>
         <p className="text-[#C5C5C5] text-[16px] font-normal leading-relaxed">
           We&apos;ve compiled answers to the most common questions to help you get started. Whether you&apos;re new to RV or
@@ -16,7 +16,7 @@ const Faq = () => {
           participate in our interactive sessions. Explore the FAQ below and take your first step into the world of
           Remote Viewing!
         </p>
-        <Link  href="/learn-more-about">
+        <Link  href="/faq">
            <button className=" btn mt-[18px] lg:mt-[32px] hover:bg-[#7C3AED] text-white rounded-full px-6 py-2 flex items-center gap-2 text-sm md:text-base">
               Click Here
               <ArrowRight className="w-4 h-4" />
@@ -51,8 +51,7 @@ const Faq = () => {
               3. How do I start practicing Remote Viewing?
             </AccordionTrigger>
             <AccordionContent className="text-[#C5C5C5] text-[16px] font-normal">
-              You can begin by learning the basic protocols and practicing with simple targets under proper guidance.
-            </AccordionContent>
+            No. While there are structured methods, such as Coordinate Remote Viewing (CRV), there is no single “correct” technique. Some people prefer step-by-step protocols, while others take a more intuitive approach. The key is to find what works best for you through experimentation and practice.           </AccordionContent>
           </AccordionItem>
 
           <AccordionItem value="item-4" className="border-b-[#4C2A85]">
@@ -60,8 +59,7 @@ const Faq = () => {
               4. Is there a right or wrong way to do Remote Viewing?
             </AccordionTrigger>
             <AccordionContent className="text-[#C5C5C5] text-[16px] font-normal">
-              While there are established protocols, the most important aspect is maintaining a consistent practice
-              method.
+            No. While there are structured methods, such as Coordinate Remote Viewing (CRV), there is no single “correct” technique. Some people prefer step-by-step protocols, while others take a more intuitive approach. The key is to find what works best for you through experimentation and practice.
             </AccordionContent>
           </AccordionItem>
 
@@ -70,8 +68,7 @@ const Faq = () => {
               5. How does your Remote Viewing challenge work?
             </AccordionTrigger>
             <AccordionContent className="text-[#C5C5C5] text-[16px] font-normal">
-              Our challenges provide structured practice opportunities with feedback and community support.
-            </AccordionContent>
+            In our challenges, you will first receive a hidden target reference. Without knowing what the target is, you will record your impressions through sketches, words, or sensations. After submission, you will be presented with multiple images and must choose the one that best matches your impressions. Your results are then recorded, and if the target is later revealed, you will see how well you did.            </AccordionContent>
           </AccordionItem>
         </Accordion>
       </div>
