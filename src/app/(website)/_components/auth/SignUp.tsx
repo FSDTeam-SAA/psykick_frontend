@@ -161,11 +161,11 @@ export default function SignUpForm() {
             </p>
             <div className="grid grid-cols-2 gap-4 w-full">
               <Button variant="outline" className="bg-gray-800 hover:bg-gray-700">
-                <img src="/placeholder.svg?height=20&width=20" className="mr-2 h-5 w-5" alt="Google logo" />
+              
                 Continue With Google
               </Button>
               <Button variant="outline" className="bg-gray-800 hover:bg-gray-700">
-                <img src="/placeholder.svg?height=20&width=20" className="mr-2 h-5 w-5" alt="Facebook logo" />
+               
                 Continue With Facebook
               </Button>
             </div>

@@ -16,9 +16,9 @@ const page = () => {
             </h2>
             <p className="paragraph">
               At <span className="font-semibold">Psykick Club</span>, we believe that human perception extends beyond
-              the five senses. Our platform is more than just a place to test your Remote Viewing (RV) abilities—it's
+              the five senses. Our platform is more than just a place to test your Remote Viewing (RV) abilities—it`&lsquo;`s
               a <span className="font-semibold">community for like-minded individuals</span> who are curious about
-              intuition, perception, and the deeper mysteries of the mind. Whether you're a seasoned remote viewer or
+              intuition, perception, and the deeper mysteries of the mind. Whether you`&lsquo;`re a seasoned remote viewer or
               just beginning your journey, Psykick Club provides a welcoming space to explore, learn, and connect with
               others who share your interest in unlocking human potential.
             </p>
@@ -70,8 +70,8 @@ const page = () => {
             <p className="paragraph ">
               Our goal is to create a <span className="font-semibold">hub for remote viewing enthusiasts</span>—a
               place where anyone can experiment with RV, develop their skills, and engage in meaningful discussions
-              about perception and consciousness. We recognize that there is no single "correct" method for Remote
-              Viewing; every individual develops their own approach. That's why Psykick Club is designed to
+              about perception and consciousness. We recognize that there is no single `&lsquo;`correct`&lsquo;` method for Remote
+              Viewing; every individual develops their own approach. That`&lsquo;`s why Psykick Club is designed to
               accommodate both structured techniques and freeform intuition, allowing members to find what works best
               for them.
             </p>
@@ -80,8 +80,8 @@ const page = () => {
           <div className="space-y-4">
             <h2 className="text-[24px] smallShadow font-normal font-kdam">Join the Psykick Club</h2>
             <p className="paragraph">
-              Psykick Club is more than a platform—it's a{" "}
-              <span className="font-semibold">meeting place for explorers of the mind</span>. Whether you're here to
+              Psykick Club is more than a platform—it`&lsquo;`s a{" "}
+              <span className="font-semibold">meeting place for explorers of the mind</span>. Whether you`&lsquo;`re here to
               push the boundaries of perception, test your skills in our challenges, or connect with others on the
               same journey, this is the space for you.{" "}
               <span className="font-semibold">
