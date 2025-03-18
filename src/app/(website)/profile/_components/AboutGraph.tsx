@@ -47,9 +47,9 @@ export function AboutGraph() {
   }
 
   return (
-    <Card className="p-4 rounded-3xl overflow-hidden bg-gradient-to-br from-white to-blue-50/30">
+    <Card className="p-4 rounded-3xl max-w-[630px] overflow-hidden bg-transparent ">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-medium">Performance Metrics</h2>
+        <h2 className="text-lg font-medium text-white">About Graph</h2>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-blue-500"></div>
