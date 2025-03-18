@@ -13,6 +13,7 @@ export function Navbar() {
 // Define routes where the footer should be hidden
 const HIDE_ROUTES = [
   "/signUp",
+  "/login",
  
 ];
 
@@ -58,12 +59,14 @@ const HIDE_ROUTES = [
 
           {/* Auth Buttons - Desktop */}
           <div className="hidden lg:flex items-center space-x-4">
-            <Button
+          <Link href="/login">
+          <Button
               variant="ghost"
-              className=" btn hover:bg-[#6D28D9] !px-[29px]  !py-[12px] text-[16px] text-white"
+              className=" btn hover:bg-[#6D28D9]  !px-[29px]  !py-[22px] text-[16px] text-white"
             >
               log in
             </Button>
+          </Link>
 
            <Link href="/signUp"> 
            <button className="text-white text-[16px] font-medium  btn-outline !px-[20px]  !py-[12px] border-white">
@@ -88,15 +91,23 @@ const HIDE_ROUTES = [
                 </Link>
               ))}
               <div className="flex flex-col space-y-2 pt-4">
+              
+               
+
+                <Link href="/login">
                 <Button
                   variant="secondary"
-                  className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white w-full"
+                  className="btn w-full"
                 >
                   log in
                 </Button>
-                <button className="text-white btn-outline border-white w-full">
+          </Link>
+
+           <Link href="/signUp"> 
+           <button className="text-white btn-outline border-white w-full">
                   Sign Up
                 </button>
+            </Link>
               </div>
             </div>
           </div>
