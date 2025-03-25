@@ -3,14 +3,14 @@ import { ChallengeCard } from "../card/challange-card";
 export default function HeroSection() {
   return (
     <div
-      className="h-[1920px] w-screen bg-cover bg-no-repeat flex  justify-center "
+      className="h-[1920px] max-w-screen bg-cover bg-no-repeat flex justify-center "
       style={{ backgroundImage: "url('/assets/img/hero_img.png')" }}
     >
       <div className="">
         <div className="h-[50%] container">
           <div className="flex justify-between items-end">
             <div>
-              <h1 className="title pt-20 mb-6 text-">
+              <h1 className="textLargeShadow pt-20 mb-6 title">
                 Kick your Psy into Gear!
               </h1>
               <article className="w-[400px] paragraph !font-inter p-5 bg-[#F8F8F8]/10 backdrop-blur-md rounded-2xl border-2 border-[#7c4bb8]">
@@ -32,7 +32,7 @@ export default function HeroSection() {
         </div>
 
         <div className=" border border-[#F8F8F8] ">
-          <h2 className="title bg-[#D9D9D980] w-screen text-center text-[#CB9191] py-5 textshadow">
+          <h2 className="font-black title bg-[#D9D9D980] w-screen text-center textLargeShadow text-[#CB9191] py-5 ">
             Challanges
           </h2>
           <div className="flex justify-between container py-10">
