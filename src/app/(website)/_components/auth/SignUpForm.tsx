@@ -10,8 +10,30 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import Image from "next/image"
+import { useMutation } from "@tanstack/react-query"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
+
+export interface RegisterUserRequest {
+  email: string
+  screenName: string
+  fullName: string
+  country: string
+  dob: string
+  password: string
+}
+
+export interface RegisterUserResponse {
+  success: boolean
+  message: string
+  userId?: string
+  // Add any other fields your API returns
+}
+
+
 
 export default function SignUpForm() {
+  const router = useRouter()
   const [formData, setFormData] = useState({
     email: "",
     screenName: "",
@@ -31,10 +53,35 @@ export default function SignUpForm() {
 
   const [passwordsMatch, setPasswordsMatch] = useState(true)
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("Form Data:", formData)
+
+  const registerUser = async (userData: RegisterUserRequest): Promise<RegisterUserResponse> => {
+    // const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Registration failed")
+    }
+
+    return response.json()
   }
+
+  const mutation = useMutation({
+    mutationFn: registerUser,
+    onSuccess: () => {
+      toast.success("Login successful!")
+      router.push("/login")
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Login failed. Please try again.")
+    },
+  })
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData((prev) => {
@@ -60,9 +107,44 @@ export default function SignUpForm() {
     }))
   }
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    // Validate form data
+    if (
+      !formData.email ||
+      !formData.screenName ||
+      !formData.fullName ||
+      !formData.country ||
+      !formData.dateOfBirth ||
+      !formData.password
+    ) {
+      // toast({
+      //   title: "Missing Information",
+      //   description: "Please fill in all required fields",
+      //   variant: "destructive",
+      // })
+      toast.error("Missing Information")
+      return
+    }
+
+    // Format the data for the API
+    const userData: RegisterUserRequest = {
+      email: formData.email,
+      screenName: formData.screenName,
+      fullName: formData.fullName,
+      country: formData.country,
+      dob: formData.dateOfBirth,
+      password: formData.password,
+    }
+
+    // Call the mutation
+    mutation.mutate(userData)
+  }
+
   return (
-    <div className="min-h-screen   pt-[80px] p-4 lg:p-4 flex items-center justify-center">
-      <Card className="w-full  max-w-xl bg-[#FFFFFF33]/20% backdrop-blur-lg text-white">
+    <div className="min-h-screen pt-[80px] p-4 lg:p-4 flex items-center justify-center">
+      <Card className="w-full max-w-xl bg-[#FFFFFF33]/20% backdrop-blur-lg text-white">
         <form onSubmit={handleSubmit}>
           <CardHeader>
             <CardTitle className="text-center font-kdam smallShadow my-5">Sign Up</CardTitle>
@@ -71,7 +153,7 @@ export default function SignUpForm() {
             </p>
             <h1 className="text-[22px] lg:text-[28px] font-normal smallShadow pt-5">Enter your Personal Information</h1>
           </CardHeader>
-          <CardContent className="p-4 lg:px-6  space-y-4">
+          <CardContent className="p-4 lg:px-6 space-y-4">
             {/* Previous form fields remain unchanged */}
             <div className="space-y-2">
               <Label htmlFor="email">Email address</Label>
@@ -149,7 +231,9 @@ export default function SignUpForm() {
 
             {/* Updated Password Fields */}
             <div className="space-y-2">
-              <Label htmlFor="password">Password <span className="text-red-500">*</span></Label>
+              <Label htmlFor="password">
+                Password <span className="text-red-500">*</span>
+              </Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -174,7 +258,9 @@ export default function SignUpForm() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm password <span className="text-red-500">*</span></Label>
+              <Label htmlFor="confirmPassword">
+                Confirm password <span className="text-red-500">*</span>
+              </Label>
               <div className="relative">
                 <Input
                   id="confirmPassword"
@@ -204,12 +290,16 @@ export default function SignUpForm() {
             </div>
 
             <div className="flex items-center space-x-2">
-              <Checkbox className="border border-white" id="terms" onCheckedChange={(checked) => handleInputChange("termsAccepted", checked)} />
+              <Checkbox
+                className="border border-white"
+                id="terms"
+                onCheckedChange={(checked) => handleInputChange("termsAccepted", checked === true)}
+              />
               <label
                 htmlFor="terms"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                I agree with the term of service and privacy policy  <span className="text-red-500">*</span>
+                I agree with the term of service and privacy policy <span className="text-red-500">*</span>
               </label>
             </div>
           </CardContent>
@@ -217,9 +307,15 @@ export default function SignUpForm() {
             <Button
               type="submit"
               className="btn mt-3"
-              disabled={!passwordsMatch || !formData.password || !formData.confirmPassword || !formData.termsAccepted}
+              disabled={
+                !passwordsMatch ||
+                !formData.password ||
+                !formData.confirmPassword ||
+                !formData.termsAccepted ||
+                mutation.isPending
+              }
             >
-              Sign Up
+              {mutation.isPending ? "Signing Up..." : "Sign Up"}
             </Button>
             <p className="text-sm text-center text-gray-400">
               Do you have account?{" "}
@@ -229,11 +325,11 @@ export default function SignUpForm() {
             </p>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
               <Button variant="outline" className="btn-outline bg-transparent">
-              <Image src="/assets/img/google.png" alt="Google" width={24} height={24} />
+                <Image src="/assets/img/google.png" alt="Google" width={24} height={24} />
                 Continue With Google
               </Button>
               <Button variant="outline" className="btn-outline bg-transparent">
-              <Image src="/assets/img/facebook.png" alt="Google" width={24} height={24} />
+                <Image src="/assets/img/facebook.png" alt="Facebook" width={24} height={24} />
                 Continue With Facebook
               </Button>
             </div>
