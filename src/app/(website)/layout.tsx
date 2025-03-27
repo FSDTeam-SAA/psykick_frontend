@@ -2,6 +2,7 @@ import "../globals.css";
 import type { Metadata } from "next";
 import { Navbar } from "@/components/common/layout/Navbar/Navbar";
 import { SiteFooter } from "@/components/common/layout/Footer";
+import AppProvider from "@/provider/AppProvider";
 
 export const metadata: Metadata = {
   title: "psykick Club",
@@ -17,7 +18,10 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Navbar />
-        <div className="bg-[#371B77] pt-[61px]">{children}</div>
+        <div className="bg-[#371B77] pt-[61px]">
+          
+          <AppProvider>{children}</AppProvider>
+          </div>
         <SiteFooter />
       </body>
     </html>

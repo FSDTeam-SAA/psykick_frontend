@@ -37,6 +37,7 @@ const navigation = {
 // Define routes where the footer should be hidden
 const HIDE_ROUTES = [
   "/signUp",
+  "/login",
  
 ];
 
