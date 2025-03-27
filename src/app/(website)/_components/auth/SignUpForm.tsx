@@ -319,7 +319,7 @@ export default function SignUpForm() {
             </Button>
             <p className="text-sm text-center text-gray-400">
               Do you have account?{" "}
-              <a href="#" className="text-purple-400 hover:underline">
+              <a href="/login" className="text-purple-400 hover:underline">
                 Log in
               </a>
             </p>
