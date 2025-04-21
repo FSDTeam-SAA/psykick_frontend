@@ -19,9 +19,8 @@ export default function RootLayout({
       <body>
         <Navbar />
         <div className="bg-[#371B77] pt-[61px]">
-          
           <AppProvider>{children}</AppProvider>
-          </div>
+        </div>
         <SiteFooter />
       </body>
     </html>

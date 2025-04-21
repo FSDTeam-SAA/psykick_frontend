@@ -1,12 +1,22 @@
-import React from 'react'
-import LoginForm from '../_components/auth/LoginForm'
+"use client";
 
-const page = () => {
-  return (
-    <div className="mt-[-60px] w-full bg-[url('/assets/img/signupBg.png')] min-h-screen  bg-cover bg-center">
-  <LoginForm/>
-    </div>
-  )
+import { useSearchParams, useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
+import { useEffect } from "react";
+import LoginForm from "../_components/auth/LoginForm";
+
+export default function LoginPage() {
+  const { isLoggedIn } = useAuth();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnUrl = searchParams.get("returnUrl") || "/";
+
+  useEffect(() => {
+    // If already logged in, redirect to the return URL
+    if (isLoggedIn) {
+      router.push(returnUrl);
+    }
+  }, [isLoggedIn, router, returnUrl]);
+
+  return <LoginForm returnUrl={returnUrl} />;
 }
-
-export default page
