@@ -2,7 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactNode } from "react";
-import { Toaster } from "sonner"
+import { Toaster } from "sonner";
 interface Props {
   children: ReactNode;
 }
@@ -10,10 +10,10 @@ interface Props {
 const AppProvider = ({ children }: Props) => {
   const queryClient = new QueryClient();
   return (
-    <QueryClientProvider client={queryClient}>{children}
-    
-    <Toaster position="top-right" />
-    
+    <QueryClientProvider client={queryClient}>
+      {children}
+
+      <Toaster position="top-right" />
     </QueryClientProvider>
   );
 };
