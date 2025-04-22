@@ -412,6 +412,7 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
       currentTool,
       canvasScale,
       updateTextBoxes,
+      storeClearCanvas,
     ],
   );
 
