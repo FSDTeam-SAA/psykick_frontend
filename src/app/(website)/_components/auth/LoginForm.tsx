@@ -2,35 +2,22 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
-interface LoginFormProps {
-  returnUrl?: string;
-}
+
 interface LoginCredentials {
   email: string;
   password: string;
 }
 
-interface LoginResponse {
-  success: boolean;
-  token?: string;
-  message?: string;
-  data: {
-    _id: string;
-  };
-}
-
-const loginUser = async (
-  credentials: LoginCredentials,
-): Promise<LoginResponse> => {
+const loginUser = async (credentials: LoginCredentials) => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/login`,
     {
@@ -51,7 +38,7 @@ const loginUser = async (
   return response.json();
 };
 
-export default function LoginForm({ returnUrl = "/" }: LoginFormProps) {
+export default function LoginForm() {
   const { login } = useAuth();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
@@ -59,6 +46,17 @@ export default function LoginForm({ returnUrl = "/" }: LoginFormProps) {
     email: "",
     password: "",
   });
+
+  const { isLoggedIn } = useAuth();
+  const searchParams = useSearchParams();
+  const returnUrl = searchParams.get("returnUrl") || "/";
+
+  useEffect(() => {
+    // If already logged in, redirect to the return URL
+    if (isLoggedIn) {
+      router.push(returnUrl);
+    }
+  }, [isLoggedIn, router, returnUrl]);
 
   const loginMutation = useMutation({
     mutationFn: loginUser,
