@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
 import { MessageCircleQuestionIcon as QuestionMarkCircle } from "lucide-react"
+import { useAuth } from "@/hooks/useAuth"
 
 interface GameCardProps {
   avatarSrc?: string
@@ -14,8 +15,6 @@ interface GameCardProps {
 
 export default function ProfileCard({
   avatarSrc = "/assets/img/profile.png     ",
-  tier = "RV TIER",
-  seekerStatus = "NOVICE SEEKER",
   showQuestionMark = true,
 }: GameCardProps) {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -23,6 +22,9 @@ export default function ProfileCard({
   useEffect(() => {
     setIsLoaded(true)
   }, [isLoaded])
+
+const  {user} = useAuth()
+console.log("user", user)
 
   return (
     <Card className="w-full max-w-xs mx-auto bg-transparent  rounded-2xl shadow-md  border-2 border-white">
@@ -45,10 +47,10 @@ export default function ProfileCard({
         {/* Status Badge */}
         <div className="w-full bg-[#2d1e4f] border-2 border-white rounded-lg py-2 px-4 text-center">
           <div className="flex items-center justify-center gap-1">
-            <h3 className="text-white font-bold text-lg tracking-wide">{tier}</h3>
+            <h3 className="text-white font-bold text-lg tracking-wide">{user?.screenName}</h3>
             {showQuestionMark && <QuestionMarkCircle className="h-5 w-5 text-white" />}
           </div>
-          <p className="text-amber-400 font-bold text-xl tracking-wide">{seekerStatus}</p>
+          <p className="text-amber-400 font-bold text-xl tracking-wide">{user?.tierRank}</p>
         </div>
       </CardContent>
     </Card>
