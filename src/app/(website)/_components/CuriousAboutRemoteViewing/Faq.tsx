@@ -25,7 +25,7 @@ const Faq = () => {
       </div>
 
       <div>
-        <Accordion type="single" collapsible className="space-y-4">
+        <Accordion defaultValue="item-1" type="single" collapsible className="space-y-4">
           <AccordionItem value="item-1" className="border-b-[#4C2A85]">
             <AccordionTrigger className="text-left hover:no-underline  challange-subTitle">
               1. What is Remote Viewing?

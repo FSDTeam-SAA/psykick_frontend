@@ -1,9 +1,11 @@
 import { ChallengeCard } from "../card/challange-card";
+import { ChallengeCardThree } from "../card/Challange-card-three";
+import { ChallangeCardTwo } from "../card/challange-cart-two";
 
 export default function HeroSection() {
   return (
     <div
-      className="h-[1920px] max-w-screen bg-cover bg-no-repeat flex justify-center "
+      className="h-[1262px] max-w-screen bg-cover bg-no-repeat flex justify-center overflow-x-hidden rounded-b-[20px] mb-[120px]"
       style={{ backgroundImage: "url('/assets/img/hero_img.png')" }}
     >
       <div className="">
@@ -31,14 +33,22 @@ export default function HeroSection() {
           </div>
         </div>
 
-        <div className=" border border-[#F8F8F8] ">
-          <h2 className="font-black title bg-[#D9D9D980] w-screen text-center textLargeShadow text-[#CB9191] py-5 ">
+        <div className=" border-[#c3a1e9] border-[5px] rounded-[40px]">
+          <h2 className="font-black title rounded-t-[35px] bg-[#D9D9D980] w-screen text-center textLargeShadow text-[#CB9191] py-5 ">
             Challanges
           </h2>
           <div className="flex justify-between container py-10">
-            <ChallengeCard />
-            <ChallengeCard />
-            <ChallengeCard />
+            <div className="mr-[30px]">
+              {/* <ChallengeCard /> */}
+              <ChallangeCardTwo />
+            </div>
+            <div className="mr-[30px]">
+              <ChallengeCardThree />
+            </div>
+
+            <div>
+              <ChallengeCard />
+            </div>
           </div>
         </div>
       </div>

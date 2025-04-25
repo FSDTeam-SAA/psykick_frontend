@@ -87,9 +87,9 @@ export default function LoginForm() {
       console.log("Login successful");
       console.log("Token:", localStorage.getItem("authToken"));
       console.log("UserID:", localStorage.getItem("userId"));
-
+      window.location.href = "/";
       // Navigate to dashboard or home
-      router.push("/");
+      // router.push("/");
     } else {
       toast.error("Login failed");
     }

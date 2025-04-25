@@ -1,6 +1,6 @@
-import Link from "next/link"
-import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react"
-import Hideon from "@/provider/Hideon"
+import Link from "next/link";
+import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import Hideon from "@/provider/Hideon";
 
 const navigation = {
   main: [
@@ -32,79 +32,89 @@ const navigation = {
       icon: Twitter,
     },
   ],
-}
+};
 
 // Define routes where the footer should be hidden
-const HIDE_ROUTES = [
-  "/signUp",
-  "/login",
- 
-];
+const HIDE_ROUTES = ["/signUp", "/login"];
 
 export function SiteFooter() {
   return (
-<Hideon routes={HIDE_ROUTES}>
-<footer className="relative min-h-[300px] w-full rounded-xl">
-      {/* Background Image */}
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage:
-            "url('https://res.cloudinary.com/dw5wizivl/image/upload/v1739719209/image_7_uahyxu.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
+    <Hideon routes={HIDE_ROUTES}>
+      <footer className="relative min-h-[300px] w-full">
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage:
+              "url('https://res.cloudinary.com/dw5wizivl/image/upload/v1739719209/image_7_uahyxu.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
 
-      {/* Frosted Glass Container */}
-      <div className="relative z-10 mx-auto max-w-7xl px-6 py-12">
-        <div className="backdrop-blur-md bg-black/30 rounded-3xl p-8">
-          {/* Logo */}
-          <div className="mb-8 text-center">
-            <Link href="/" className="text-3xl font-bold">
-              <span className="text-[#4CAF50]">Psykick</span>
-              <span className="text-[#FFD700]">.club</span>
-            </Link>
-          </div>
-
-          {/* Navigation */}
-          <nav className="flex justify-center space-x-8 mb-8">
-            {navigation.main.map((item) => (
-              <Link key={item.name} href={item.href} className="text-white/90 hover:text-white transition-colors">
-                {item.name}
+        {/* Frosted Glass Container */}
+        <div className="relative z-10 mx-auto max-w-7xl px-6 py-12">
+          <div className="backdrop-blur-md bg-white/10 opacity-60 border rounded-3xl p-8">
+            {/* Logo */}
+            <div className="mb-8 text-center">
+              <Link href="/" className="text-3xl font-bold">
+                <span className="text-[#4CAF50]">Psykick</span>
+                <span className="text-[#FFD700]">.club</span>
               </Link>
-            ))}
-          </nav>
-
-          <div className="mt-8 border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            {/* Copyright */}
-            <p className="text-white/70 text-sm">© 2025 Psykick.com, All rights reserved.</p>
-
-            {/* Social Links */}
-            <div className="flex space-x-4">
-              {navigation.social.map((item) => (
-                <Link key={item.name} href={item.href} className="text-white/70 hover:text-white transition-colors">
-                  <span className="sr-only">{item.name}</span>
-                  <item.icon className="h-5 w-5" />
-                </Link>
-              ))}
             </div>
 
-            {/* Legal Links */}
-            <div className="flex space-x-4 text-sm text-white/70">
-              <Link href="/privacy" className="hover:text-white transition-colors">
-                Privacy Policy
-              </Link>
-              <span>•</span>
-              <Link href="/terms" className="hover:text-white transition-colors">
-                Terms of Service
-              </Link>
+            {/* Navigation */}
+            <nav className="flex flex-wrap justify-center lg:justify-center lg:items-center sm:justify-start gap-x-6 gap-y-4 mb-8">
+              {navigation.main.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className="text-white/90 hover:text-white transition-colors text-base sm:text-lg"
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="mt-8  border-t-[1px] border-white pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+              {/* Copyright */}
+              <p className="text-white/70 text-sm">
+                © 2025 Psykick.com, All rights reserved.
+              </p>
+
+              <div className="flex flex-wrap gap-3 sm:gap-4 justify-center sm:justify-start">
+                {navigation.social.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className="text-white/70 w-9 h-9 sm:w-[36px] sm:h-[36px] rounded-full flex items-center justify-center bg-[linear-gradient(90deg,_#8F37FF_0%,_#2D17FF_100%)] hover:scale-110 transition-transform"
+                  >
+                    <span className="sr-only">{item.name}</span>
+                    <item.icon className="h-5 w-5" />
+                  </Link>
+                ))}
+              </div>
+
+              {/* Legal Links */}
+              <div className="flex space-x-4 text-sm text-white/70">
+                <Link
+                  href="/privacy"
+                  className="hover:text-white transition-colors"
+                >
+                  Privacy Policy
+                </Link>
+                <span>•</span>
+                <Link
+                  href="/terms"
+                  className="hover:text-white transition-colors"
+                >
+                  Terms of Service
+                </Link>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </footer>
-</Hideon>
-  )
+      </footer>
+    </Hideon>
+  );
 }
-

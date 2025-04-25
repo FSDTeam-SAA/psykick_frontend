@@ -10,13 +10,13 @@ interface StatCardProps {
   className?: string
 }
 
-function StatCard({ title, value, icon, className = "" }: StatCardProps) {
+function StatCard({ title, value, icon, className }: StatCardProps) {
   return (
-    <div className={`rounded-lg p-4 bg-transparent w-[305px] border-2 border-white ${className}`}>
+    <div className={`rounded-2xl p-5 w-full border-2 border-white shadow-md ${className}`}>
       <div className="flex items-start justify-between">
         <div>
-          <h3 className="text-lg font-medium text-white">{title}</h3>
-          <p className="mt-2 text-4xl font-bold text-white">{value}</p>
+          <h3 className="text-base font-medium text-white">{title}</h3>
+          <p className="mt-1 text-4xl font-bold text-white">{value}</p>
         </div>
         <div className="text-white/80">{icon}</div>
       </div>
@@ -37,15 +37,9 @@ export default function ProfileGroth() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Simulate fetching data from an API
     const fetchData = async () => {
       setLoading(true)
       try {
-        // In a real app, replace this with your actual API call
-        // const response = await fetch('/api/stats')
-        // const data = await response.json()
-
-        // Simulating API response with setTimeout
         setTimeout(() => {
           setStats({
             completedTarget: 211,
@@ -63,24 +57,23 @@ export default function ProfileGroth() {
   }, [])
 
   return (
-    <main className=" w-full mx-auto py-4  ">
-      <div className="w-full p-4">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+    <main className="w-full py-6">
+      <div className="max-w-5xl mx-auto px-4">
+        <div className="flex gap-6">
           <StatCard
             title="Completed Target"
             value={loading ? "..." : stats.completedTarget}
             icon={<Target className="h-8 w-8" />}
-            className="bg-transparent"
+            className="bg-[linear-gradient(90deg,rgba(143,55,255,0.6)_0%,rgba(45,23,255,0.6)_100%)] w-full"
           />
           <StatCard
             title="Success Rate"
             value={loading ? "..." : `${stats.successRate}%`}
             icon={<Activity className="h-8 w-8" />}
-            className=""
+            className="bg-[linear-gradient(90deg,rgba(143,55,255,0.6)_0%,rgba(45,23,255,0.6)_100%)] w-full"
           />
         </div>
       </div>
     </main>
   )
 }
-
