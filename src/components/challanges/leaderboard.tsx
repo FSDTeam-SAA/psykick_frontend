@@ -74,8 +74,8 @@ export default function Leaderboard() {
       <div className="grid md:grid-cols-2 gap-8">
         {/* TMC Leaderboard */}
         <div>
-          <div className="bg-[#e0d0ff] rounded-t-lg p-4 flex items-center">
-            <div className="w-8 h-8 rounded-full bg-[#8a2be2] flex items-center justify-center text-white mr-3">
+          <div className="bg-[#B268FA] rounded-t-lg p-4 flex items-center">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white mr-3">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
@@ -92,13 +92,13 @@ export default function Leaderboard() {
                 <circle cx="12" cy="12" r="2" />
               </svg>
             </div>
-            <h2 className="text-xl font-semibold text-[#3a1c6e]">
+            <h2 className="text-xl font-semibold text-white">
               TMC Leaderboard
             </h2>
           </div>
 
-          <div className="bg-white rounded-b-lg overflow-hidden">
-            <div className="grid grid-cols-4 text-center py-2 border-b border-gray-200">
+          <div className=" rounded-b-lg  overflow-hidden">
+            <div className="grid bg-white my-4 grid-cols-4 text-center py-2 border-b border-gray-200">
               <div className="text-gray-600 font-medium">Rank</div>
               <div className="text-gray-600 font-medium text-left pl-4">
                 Profile
@@ -107,25 +107,22 @@ export default function Leaderboard() {
               <div className="text-gray-600 font-medium">Score</div>
             </div>
 
-            <div className="max-h-[500px] overflow-y-auto relative">
+            <div className="max-h-[500px] px-4 overflow-y-auto flex flex-col gap-4 relative">
               {tmcLeaderboard
                 .filter((entry) => !entry.isCurrentUser)
                 .map((entry) => (
                   <div
                     key={entry.id}
-                    className={`grid grid-cols-4 items-center text-center py-3 ${getRowColor(entry.rank, entry.isCurrentUser)}`}
+                    className={`grid rounded-lg grid-cols-4 items-center text-center py-3 ${getRowColor(entry.rank, entry.isCurrentUser)}`}
                   >
-                    <div className="font-bold text-white">{entry.rank}</div>
+                    <div className="font-medium text-[16px] text-white">{entry.rank}</div>
                     <div className="flex items-center text-left">
                       <div className="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-white font-bold mr-2">
                         {entry.name.charAt(0)}
                       </div>
                       <div>
-                        <div className="font-medium text-white">
+                        <div className="font-medium text-[16px] text-white">
                           {entry.name}
-                        </div>
-                        <div className="text-xs text-white/70">
-                          {entry.username}
                         </div>
                       </div>
                     </div>
@@ -161,8 +158,8 @@ export default function Leaderboard() {
 
         {/* ARV Leaderboard */}
         <div>
-          <div className="bg-[#e0d0ff] rounded-t-lg p-4 flex items-center">
-            <div className="w-8 h-8 rounded-full bg-[#8a2be2] flex items-center justify-center text-white mr-3">
+          <div className="bg-[#9186FF] rounded-t-lg p-4 flex items-center">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white mr-3">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
@@ -181,13 +178,13 @@ export default function Leaderboard() {
                 <path d="M12 22v-8" />
               </svg>
             </div>
-            <h2 className="text-xl font-semibold text-[#3a1c6e]">
+            <h2 className="text-xl font-semibold text-white">
               ARV Leaderboard
             </h2>
           </div>
 
-          <div className="bg-white rounded-b-lg overflow-hidden">
-            <div className="grid grid-cols-4 text-center py-2 border-b border-gray-200">
+          <div className=" rounded-b-lg overflow-hidden">
+            <div className="grid bg-white my-4 grid-cols-4 text-center py-2 border-b border-gray-200">
               <div className="text-gray-600 font-medium">Rank</div>
               <div className="text-gray-600 font-medium text-left pl-4">
                 Profile
@@ -196,13 +193,13 @@ export default function Leaderboard() {
               <div className="text-gray-600 font-medium">Score</div>
             </div>
 
-            <div className="max-h-[500px] overflow-y-auto relative">
+            <div className="max-h-[500px] px-4  flex flex-col gap-4 overflow-y-auto relative">
               {arvLeaderboard
                 .filter((entry) => !entry.isCurrentUser)
                 .map((entry) => (
                   <div
                     key={entry.id}
-                    className={`grid grid-cols-4 items-center text-center py-3 ${getRowColor(entry.rank, entry.isCurrentUser)}`}
+                    className={`grid rounded-lg grid-cols-4  items-center text-center py-3 ${getRowColor(entry.rank, entry.isCurrentUser)}`}
                   >
                     <div className="font-bold text-white">{entry.rank}</div>
                     <div className="flex items-center text-left">
@@ -213,9 +210,9 @@ export default function Leaderboard() {
                         <div className="font-medium text-white">
                           {entry.name}
                         </div>
-                        <div className="text-xs text-white/70">
+                        {/* <div className="text-xs text-white/70">
                           {entry.username}
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                     <div className="text-white">{entry.tier}</div>
@@ -252,8 +249,8 @@ export default function Leaderboard() {
       </div>
 
       {/* Combined Leaderboard */}
-      <div className="mt-8 col-span-2">
-        <div className="bg-[#8a2be2] rounded-t-lg p-4 flex items-center">
+      <div className="mt-8 col-span-2 bg-[#FFFFFF1A]">
+        <div className="bg-[linear-gradient(90deg,_#8F37FF_0%,_#2D17FF_100%)] mb-10 rounded-t-lg p-4 flex items-center">
           <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#8a2be2] mr-3">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -278,8 +275,8 @@ export default function Leaderboard() {
           </h2>
         </div>
 
-        <div className="bg-white rounded-b-lg overflow-hidden">
-          <div className="grid grid-cols-4 text-center py-2 border-b border-gray-200">
+        <div className="rounded-b-lg px-3 overflow-hidden">
+          <div className="grid  bg-[#F4EBFF] mb-4 grid-cols-4 text-center py-2 border-b border-gray-200">
             <div className="text-gray-600 font-medium">Rank</div>
             <div className="text-gray-600 font-medium text-left pl-4">
               Profile
@@ -288,13 +285,13 @@ export default function Leaderboard() {
             <div className="text-gray-600 font-medium">Score</div>
           </div>
 
-          <div className="max-h-[500px] overflow-y-auto relative">
+          <div className="max-h-[500px] pr-3 flex flex-col gap-4 overflow-y-auto relative">
             {combinedLeaderboard
               .filter((entry) => !entry.isCurrentUser)
               .map((entry) => (
                 <div
                   key={entry.id}
-                  className={`grid grid-cols-4 items-center text-center py-3 ${getRowColor(entry.rank, entry.isCurrentUser)}`}
+                  className={`grid grid-cols-4 border items-center rounded-lg text-center py-3 ${getRowColor(entry.rank, entry.isCurrentUser)}`}
                 >
                   <div className="font-bold text-white">{entry.rank}</div>
                   <div className="flex items-center text-left">
