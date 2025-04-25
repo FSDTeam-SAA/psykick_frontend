@@ -8,6 +8,6 @@ export default function Home() {
       <HeroSection />
       <AboutRemotView />
       <Faq />
-    </div>
+    </div> 
   );
 }

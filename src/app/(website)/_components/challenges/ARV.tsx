@@ -48,6 +48,11 @@ export default function ARVPredictionMode() {
       </Layout>
     );
   }
+ 
+  const clearCanva = () => {
+    clearCanvas();
+   localStorage.removeItem("psykick-challenge-storage");
+  }
 
   return (
     <Layout>
@@ -100,7 +105,7 @@ export default function ARVPredictionMode() {
 
           <div className="flex space-x-4 mt-4">
             <button
-              onClick={clearCanvas}
+              onClick={clearCanva}
               className="px-4 py-2 bg-[#3a1c6e] text-white rounded-lg hover:bg-[#4a2c7e]"
             >
               Clear Canvas
