@@ -1,7 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import target from "../../../../public/assets/img/image 4.png";
+import target1 from "../../../../public/assets/img/target-04.png";
 // import bgImg from "../../../../public/assets/img/challange_card-bg.png";
 interface ChallengeCardProps {
   className?: string;
@@ -10,7 +10,7 @@ interface ChallengeCardProps {
   buttonText?: string;
 }
 
-export function ChallengeCard({
+export function ChallangeCardTwo({
   className,
   title = "Target Match Challenge",
   description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at mi nec quam.",
@@ -32,7 +32,7 @@ export function ChallengeCard({
           <div className="w-[50px] h-[50px]">
             <Image
               className="w-full h-full"
-              src={target}
+              src={target1}
               width={100}
               height={100}
               alt="target image"
@@ -40,7 +40,7 @@ export function ChallengeCard({
           </div>
         </div>
 
-        <h3 className="text-xl font-semibold text-[#FFFFFF]">{title}</h3>
+        <h3 className="text-xl font-semibold text-amber-400">{title}</h3>
         <p className="text-sm text-gray-400">{description}</p>
 
         <button className="w-full group relative ">
@@ -54,21 +54,4 @@ export function ChallengeCard({
   );
 }
 
-// /** Reusable Corner Accent Component */
-// function CornerAccent({ position }: { position: string }) {
-//   const positions: Record<string, string> = {
-//     "top-left": "top-3 left-3",
-//     "top-right": "top-3 right-3",
-//     "bottom-left": "bottom-3 left-3",
-//     "bottom-right": "bottom-3 right-3",
-//   };
 
-//   return (
-//     <div
-//       className={cn(
-//         "absolute w-2 h-2 rounded-full bg-emerald-500/50",
-//         positions[position],
-//       )}
-//     />
-//   );
-// }
