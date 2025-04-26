@@ -171,7 +171,7 @@ export default function NotificationsPage() {
   return (
     <div className="min-h-screen bg-[#300070]">
       <main className="container mx-auto pt-24 pb-16 px-4">
-        <h1 className="text-4xl font-bold text-center text-[#78E76E] mb-4">
+        <h1 className="!text-4xl font-bold text-center text-white smallTextShadow mb-4">
           Notifications
         </h1>
         <p className="text-white text-center max-w-3xl mx-auto mb-12">

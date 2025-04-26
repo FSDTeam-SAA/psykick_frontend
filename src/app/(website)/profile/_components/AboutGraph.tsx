@@ -55,7 +55,7 @@ export function AboutGraph() {
   }
 
   return (
-    <Card className="p-4 rounded-3xl max-w-[630px] overflow-hidden bg-[#FFFFFF1A] ">
+    <Card className="p-4 rounded-3xl  overflow-hidden bg-[#FFFFFF1A] ">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-medium text-white">About Graph</h2>
         <div className="flex items-center gap-4">
