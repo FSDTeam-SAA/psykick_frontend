@@ -86,6 +86,7 @@ type ARVState = {
   addTextBox: (textBox: TextBox) => void;
   updateTextBox: (id: string, updates: Partial<TextBox>) => void;
   removeTextBox: (id: string) => void;
+  resetCanvasState: () => void;
 };
 
 export const useARVStore = create<ARVState>()(
@@ -286,6 +287,16 @@ export const useARVStore = create<ARVState>()(
         set((state) => ({
           textBoxes: state.textBoxes.filter((box) => box.id !== id),
         })),
+      resetCanvasState: () => {
+        set({
+          currentDrawing: null,
+          drawingHistory: [],
+          currentStep: -1,
+          textBoxes: [],
+        });
+        // Clear the persisted state
+        localStorage.removeItem("psykick-arv-storage");
+      },
     }),
     {
       name: "psykick-arv-storage",
