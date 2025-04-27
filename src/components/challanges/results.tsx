@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useChallengeStore } from "@/store/use-challenge-store";
-
+import { useEffect } from "react";
 export default function Results() {
   const {
     challengeCode,
@@ -11,11 +11,17 @@ export default function Results() {
     pointsEarned,
     targetImage,
     imageChoices,
+    resetCanvasState,
   } = useChallengeStore();
 
   // Get the selected images
   const firstChoice = imageChoices.find((img) => img.order === 1);
   const secondChoice = imageChoices.find((img) => img.order === 2);
+
+  // Clear canvas state when results are shown
+  useEffect(() => {
+    resetCanvasState();
+  }, [resetCanvasState]);
 
   return (
     <div className="max-w-4xl mx-auto p-4">

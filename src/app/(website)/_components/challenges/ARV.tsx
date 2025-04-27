@@ -21,6 +21,7 @@ export default function ARVPredictionMode() {
     clearCanvas,
     eventInfo,
     toggleARVInfo,
+    resetCanvasState,
   } = useARVStore();
 
   // Show ARV info modal on first visit
@@ -30,6 +31,9 @@ export default function ARVPredictionMode() {
     }
   }, [toggleARVInfo]);
 
+  useEffect(() => {
+    resetCanvasState();
+  }, [resetCanvasState]);
   // If waiting for results, show waiting screen
   if (stage === "waiting") {
     return (
@@ -48,11 +52,11 @@ export default function ARVPredictionMode() {
       </Layout>
     );
   }
- 
+
   const clearCanva = () => {
     clearCanvas();
-   localStorage.removeItem("psykick-challenge-storage");
-  }
+    resetCanvasState();
+  };
 
   return (
     <Layout>

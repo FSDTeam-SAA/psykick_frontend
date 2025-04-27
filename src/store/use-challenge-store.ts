@@ -77,6 +77,7 @@ type ChallengeState = {
   addTextBox: (textBox: any) => void;
   updateTextBox: (id: string, updates: Partial<any>) => void;
   removeTextBox: (id: string) => void;
+  resetCanvasState: () => void;
 };
 
 export const useChallengeStore = create<ChallengeState>()(
@@ -305,7 +306,18 @@ export const useChallengeStore = create<ChallengeState>()(
         set((state) => ({
           textBoxes: state.textBoxes.filter((box) => box.id !== id),
         })),
+      resetCanvasState: () => {
+        set({
+          currentDrawing: null,
+          drawingHistory: [],
+          currentStep: -1,
+          textBoxes: [],
+        });
+        // Clear the persisted state
+        localStorage.removeItem("psykick-challenge-storage");
+      },
     }),
+
     {
       name: "psykick-challenge-storage",
       partialize: (state) => ({
