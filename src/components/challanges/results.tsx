@@ -1,94 +1,81 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { useChallengeStore } from "@/store/use-challenge-store";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import moment from "moment";
+import { useChallengeStore } from "../../store/use-challenge-store";
+import { useTMCResult } from "../../hooks/use-tmc-queries";
+
 export default function Results() {
-  const {
-    challengeCode,
-    targetMatched,
-    pointsEarned,
-    targetImage,
-    imageChoices,
-    resetCanvasState,
-  } = useChallengeStore();
+  const router = useRouter();
+  const { targetId, revealTime } = useChallengeStore();
+  const { data: results } = useTMCResult(targetId || "");
 
-  // Get the selected images
-  const firstChoice = imageChoices.find((img) => img.order === 1);
-  const secondChoice = imageChoices.find((img) => img.order === 2);
-
-  // Clear canvas state when results are shown
+  // Check if reveal time has passed
   useEffect(() => {
-    resetCanvasState();
-  }, [resetCanvasState]);
+    const now = moment();
+    const reveal = moment(revealTime);
+
+    if (now.isBefore(reveal)) {
+      router.push(`/challenges/tmc/waiting`);
+    }
+  }, [revealTime, router]);
+
+  if (!results?.data) {
+    return (
+      <div className="max-w-2xl mx-auto p-4 text-center">
+        <h2 className="text-2xl font-bold text-white mb-4">
+          Loading results...
+        </h2>
+      </div>
+    );
+  }
+
+  const { firstChoiceImage, secondChoiceImage, points } = results.data;
 
   return (
     <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-3xl font-bold text-white mb-8">
-        Feedback for Target ID: {challengeCode}
-      </h1>
+      <h2 className="text-3xl font-bold text-white text-center mb-8">
+        Target Results
+      </h2>
 
-      <div className="grid md:grid-cols-2 gap-8 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div>
-          <h2 className="text-xl text-white mb-4">Your 1st choice was:</h2>
-          {firstChoice && (
-            <div className="rounded-lg overflow-hidden">
-              <Image
-                src={firstChoice.src || "/placeholder.svg"}
-                alt="First choice"
-                width={400}
-                height={300}
-                className="w-full h-64 object-cover"
-              />
-            </div>
-          )}
-        </div>
-
-        <div>
-          <h2 className="text-xl text-white mb-4">Your 2nd choice was:</h2>
-          {secondChoice && (
-            <div className="rounded-lg overflow-hidden">
-              <Image
-                src={secondChoice.src || "/placeholder.svg"}
-                alt="Second choice"
-                width={400}
-                height={300}
-                className="w-full h-64 object-cover"
-              />
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="mb-8">
-        <h2 className="text-xl text-white mb-4">Target Image</h2>
-        {targetImage && (
-          <div className="rounded-lg overflow-hidden">
+          <h3 className="text-xl font-bold text-white mb-4 text-center">
+            Your First Choice
+          </h3>
+          <div className="aspect-square relative rounded-lg overflow-hidden">
             <Image
-              src={targetImage || "/placeholder.svg"}
-              alt="Target image"
-              width={400}
-              height={300}
-              className="w-full h-64 object-cover"
+              src={firstChoiceImage}
+              alt="First choice"
+              fill
+              className="object-cover"
             />
           </div>
-        )}
-      </div>
+        </div>
 
-      <div className="bg-purple-900/50 p-6 rounded-lg">
-        <h2 className="text-2xl font-bold text-white mb-4">
-          {targetMatched
-            ? `Congratulations! You matched the Target on your 1st choice. You received ${pointsEarned} points!`
-            : "Sorry, your choices did not match the target."}
-        </h2>
+        <div>
+          <h3 className="text-xl font-bold text-white mb-4 text-center">
+            Your Second Choice
+          </h3>
+          <div className="aspect-square relative rounded-lg overflow-hidden">
+            <Image
+              src={secondChoiceImage}
+              alt="Second choice"
+              fill
+              className="object-cover"
+            />
+          </div>
+        </div>
 
-        <div className="flex justify-center mt-4">
-          <Link href="/challenges/leaderboard">
-            <button className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
-              See Leaderboard
-            </button>
-          </Link>
+        <div>
+          <h3 className="text-xl font-bold text-white mb-4 text-center">
+            Points Earned
+          </h3>
+          <div className="aspect-square bg-purple-600 rounded-lg flex items-center justify-center">
+            <span className="text-4xl font-bold text-white">{points}</span>
+          </div>
         </div>
       </div>
     </div>
