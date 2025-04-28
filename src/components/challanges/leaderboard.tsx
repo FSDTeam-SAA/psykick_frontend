@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -164,7 +165,7 @@ export default function Leaderboard() {
             </div>
 
             <div className="max-h-[500px] px-4 overflow-y-auto flex flex-col gap-4 relative">
-              {tmsleaderboardData?.data.filter((entry) => !entry.screenName).map((entry,i) => (
+              {tmsleaderboardData?.data.filter((entry:any) => !entry.screenName).map((entry:any,i) => (
                   <div
                     key={entry._id}
                     className={`grid rounded-lg grid-cols-4 items-center text-center py-3 ${getRowColor(i, entry.user.screenName)}`}
@@ -250,7 +251,7 @@ export default function Leaderboard() {
             </div>
 
             <div className="max-h-[500px] px-4  flex flex-col gap-4 overflow-y-auto relative">
-              {arvleaderboardData?.data.filter((entry) => !entry.user.screenName).map((entry,i) => (
+              {arvleaderboardData?.data.filter((entry:any) => !entry.user.screenName).map((entry:any,i) => (
                   <div
                     key={entry._id}
                     className={`grid rounded-lg grid-cols-4  items-center text-center py-3 ${getRowColor(i, entry.user.screenName)}`}
@@ -340,8 +341,8 @@ export default function Leaderboard() {
           </div>
 
           <div className="max-h-[500px] pr-3 flex flex-col gap-4 overflow-y-auto relative">
-            {totalLeaderboard?.data.filter((entry) => !entry.user.screenName)
-              .map((entry,i) => (
+            {totalLeaderboard?.data.filter((entry:any) => !entry.user.screenName)
+              .map((entry:any,i) => (
                 <div
                   key={entry._id}
                   className={`grid grid-cols-4 border items-center rounded-lg text-center py-3 ${getRowColor(i, entry.user.screenName)}`}
