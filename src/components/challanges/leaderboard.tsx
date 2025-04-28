@@ -165,10 +165,10 @@ export default function Leaderboard() {
             </div>
 
             <div className="max-h-[500px] px-4 overflow-y-auto flex flex-col gap-4 relative">
-              {tmsleaderboardData?.data.filter((entry:any) => !entry.screenName).map((entry:any,i) => (
+              {tmsleaderboardData?.data.filter((entry:any) => !entry.screenName).map((entry:any,i:number) => (
                   <div
                     key={entry._id}
-                    className={`grid rounded-lg grid-cols-4 items-center text-center py-3 ${getRowColor(i, entry.user.screenName)}`}
+                    className={`grid rounded-lg grid-cols-4 items-center text-center py-3 ${getRowColor(i.toString(), entry.user.screenName)}`}
                   >
                     <div className="font-medium text-[16px] text-white">
                       {i}
@@ -251,10 +251,10 @@ export default function Leaderboard() {
             </div>
 
             <div className="max-h-[500px] px-4  flex flex-col gap-4 overflow-y-auto relative">
-              {arvleaderboardData?.data.filter((entry:any) => !entry.user.screenName).map((entry:any,i) => (
+              {arvleaderboardData?.data.filter((entry:any) => !entry.user.screenName).map((entry:any,i:number) => (
                   <div
                     key={entry._id}
-                    className={`grid rounded-lg grid-cols-4  items-center text-center py-3 ${getRowColor(i, entry.user.screenName)}`}
+                    className={`grid rounded-lg grid-cols-4  items-center text-center py-3 ${getRowColor(i.toString(), entry.user.screenName)}`}
                   >
                     <div className="font-bold text-white">{i}</div>
                     <div className="flex items-center text-left">
@@ -342,10 +342,10 @@ export default function Leaderboard() {
 
           <div className="max-h-[500px] pr-3 flex flex-col gap-4 overflow-y-auto relative">
             {totalLeaderboard?.data.filter((entry:any) => !entry.user.screenName)
-              .map((entry:any,i) => (
+              .map((entry:any,i:number) => (
                 <div
                   key={entry._id}
-                  className={`grid grid-cols-4 border items-center rounded-lg text-center py-3 ${getRowColor(i, entry.user.screenName)}`}
+                  className={`grid grid-cols-4 border items-center rounded-lg text-center py-3 ${getRowColor(i.toString(), entry.user.screenName)}`}
                 >
                   <div className="font-bold text-white">{i}</div>
                   <div className="flex items-center text-left">
