@@ -16,7 +16,7 @@ export default function TMCInfoModal() {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="bg-purple-600 text-white p-4 flex items-center justify-between rounded-t-lg">
+        <div className="bg-gradient-to-r from-[#8F37FF] to-[#2D17FF] text-white p-4 flex items-center justify-between rounded-t-lg">
           <div className="flex items-center">
             <Target className="mr-2" />
             <h2 className="text-xl font-semibold">About TMC</h2>
@@ -78,3 +78,7 @@ export default function TMCInfoModal() {
     </div>
   );
 }
+
+
+
+

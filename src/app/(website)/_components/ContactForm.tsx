@@ -147,7 +147,7 @@ export default function ContactForm() {
                 <Link href="#">
                   <Button
                     size="icon"
-                    className="rounded-full p-0 border iconGradient  border hover:border-none text-white"
+                    className="rounded-full p-0 border iconGradient hover:border-none text-white"
                     onClick={() =>
                       window.open("https://facebook.com", "_blank")
                     }
