@@ -10,7 +10,7 @@ const ProfileRoutes = () => {
   const profileRoute = [
     { name: "Personal Information", path: "/profile/personal-information" },
     { name: "Notifications", path: "/notifications" },
-    { name: "Leaderboard", path: "/profile/leaderboard" },
+    { name: "Leaderboard", path: "/challenges" },
     { name: "Help", path: "/profile/help" },
     { name: "Change Password", path: "/profile/chnage-password" },
     { name: "Sing Out", path: "/Sing Out" },
