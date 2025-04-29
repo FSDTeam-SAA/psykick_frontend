@@ -27,6 +27,14 @@ type ChallengeState = {
   gameTime: string;
   bufferTime: string;
 
+  // Timer state
+  timer: {
+    hours: number;
+    minutes: number;
+    seconds: number;
+  };
+
+
   // Drawing state
   drawingHistory: string[];
   currentDrawing: string | null;
@@ -60,6 +68,7 @@ type ChallengeState = {
 
 type ChallengeActions = {
   setTargetData: (target: TMCTarget) => void;
+  setTimer: (hours: number, minutes: number, seconds: number) => void;
   setSelectedChoices: (choices: {
     firstChoice: string | null;
     secondChoice: string | null;
@@ -100,6 +109,11 @@ export const useChallengeStore = create<ChallengeState & ChallengeActions>()(
       revealTime: "",
       gameTime: "",
       bufferTime: "",
+      timer: {
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+      },
       drawingHistory: [],
       currentDrawing: null,
       currentStep: -1,
@@ -122,15 +136,36 @@ export const useChallengeStore = create<ChallengeState & ChallengeActions>()(
       targetImage: null,
 
       // Actions
-      setTargetData: (target: TMCTarget) => 
+      setTargetData: (target: TMCTarget) => {
+        // Calculate time remaining from gameTime
+        const gameTimeDate = new Date(target.gameTime);
+        const now = new Date();
+        const diffMs = gameTimeDate.getTime() - now.getTime();
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffMinutes = Math.floor(
+          (diffMs % (1000 * 60 * 60)) / (1000 * 60),
+        );
+        const diffSeconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+
         set({
           targetId: target._id,
           challengeCode: target.code,
           revealTime: target.revealTime,
           gameTime: target.gameTime,
           bufferTime: target.bufferTime,
+
+          timer: {
+            hours: Math.max(0, diffHours),
+            minutes: Math.max(0, diffMinutes),
+            seconds: Math.max(0, diffSeconds),
+          },
           imageChoices: [
-            { id: 'target', src: target.targetImage, selected: false, order: null },
+            {
+              id: "target",
+              src: target.targetImage,
+              selected: false,
+              order: null,
+            },
             ...target.controlImages.map((src, index) => ({
               id: `control-${index}`,
               src,
@@ -138,6 +173,16 @@ export const useChallengeStore = create<ChallengeState & ChallengeActions>()(
               order: null,
             })),
           ].sort(() => Math.random() - 0.5), // Shuffle images
+        });
+      },
+
+      setTimer: (hours, minutes, seconds) =>
+        set({
+          timer: {
+            hours: Math.max(0, hours),
+            minutes: Math.max(0, minutes),
+            seconds: Math.max(0, seconds),
+          },
         }),
 
       setSelectedChoices: (choices) => set({ selectedChoices: choices }),
