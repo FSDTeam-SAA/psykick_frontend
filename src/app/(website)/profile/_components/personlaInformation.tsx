@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 type EditProfileFormData = {
-  fullname: string;
+  fullName: string;
   phoneNumber?: string;
   screenName: string;
   dob: string;
@@ -18,30 +18,41 @@ export default function EditProfileForm() {
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    setToken(token);
+    const storedToken = localStorage.getItem("authToken");
+    if (storedToken) setToken(storedToken);
   }, []);
 
-  const { register, handleSubmit } = useForm<EditProfileFormData>();
+  const { register, handleSubmit, reset } = useForm<EditProfileFormData>();
 
-  const editerProfile = async (data: EditProfileFormData) => {
-    await axios
-      .put(
+  const editProfile = async (data: EditProfileFormData) => {
+    if (!token) {
+      toast.error("You are not authenticated.");
+      return;
+    }
+
+    try {
+      const response = await axios.put(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/profile/update-profile`,
         data,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
-      )
-      .then((res) => {
-        console.log(res);
-        toast.success(res.data.message);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+        }
+      );
+
+      toast.success(response.data.message || "Profile updated successfully");
+
+      // Optional: reset form with updated values
+      reset(response.data.data);
+    } catch (error) {
+      console.error(error);
+      if (axios.isAxiosError(error) && error.response) {
+        toast.error(error.response.data?.message || "Failed to update profile. Please try again.");
+      } else {
+        toast.error("An unexpected error occurred. Please try again.");
+      }
+    }
   };
 
   return (
@@ -64,7 +75,7 @@ export default function EditProfileForm() {
         </div>
 
         <form
-          onSubmit={handleSubmit(editerProfile)}
+          onSubmit={handleSubmit(editProfile)}
           className="flex flex-col gap-4 p-5"
         >
           <div className="bg-[#FFFFFF1A] rounded-lg p-5 flex flex-col gap-6">
@@ -75,11 +86,13 @@ export default function EditProfileForm() {
               </label>
               <input
                 type="text"
-                {...register("fullname")}
+                {...register("fullName")} // <-- correct field name
                 placeholder="Enter your full name"
                 className="w-full border mt-2 text-[#F4EBFF] border-[#C5C5C5] bg-transparent rounded-md p-2"
               />
             </div>
+
+            {/* Screen Name */}
             <div>
               <label className="text-white font-normal text-[16px]">
                 Screen Name
@@ -87,14 +100,14 @@ export default function EditProfileForm() {
               <input
                 type="text"
                 {...register("screenName")}
-                placeholder="Enter your full name"
+                placeholder="Enter your screen name"
                 className="w-full border mt-2 text-[#F4EBFF] border-[#C5C5C5] bg-transparent rounded-md p-2"
               />
             </div>
 
             {/* Grid Inputs */}
             <div className="grid grid-cols-2 gap-6">
-              {/* Phone */}
+              {/* Phone Number */}
               <div>
                 <label className="text-white font-normal text-[16px]">
                   Phone Number (Optional)
@@ -102,7 +115,7 @@ export default function EditProfileForm() {
                 <input
                   type="text"
                   {...register("phoneNumber")}
-                  placeholder="phoneNumber"
+                  placeholder="Phone number"
                   className="w-full border mt-2 text-[#F4EBFF] border-[#C5C5C5] bg-transparent rounded-md p-2"
                 />
               </div>
