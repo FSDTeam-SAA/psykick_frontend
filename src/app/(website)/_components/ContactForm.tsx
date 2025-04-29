@@ -250,10 +250,10 @@ export default function ContactForm() {
 
   return (
     <div className="min-h-screen pt-8 lg:pt-20 p-4 flex flex-col items-center relative">
-      <div className="absolute top-0 container">
+      <div className="absolute top-24 container">
         <Image src={starImage} width={400} height={300} alt="starImage" className="w-full" />
       </div>
-      <div className="w-full max-w-4xl text-center mb-6">
+      <div className="w-full max-w-4xl text-center mb-6 lg:mt-10">
         <h1 className="mb-4 title smallShadow">Contact Us</h1>
         <p className="text-gray-300 text-sm md:text-base">
           We&apos;d love to hear from you! Whether you&apos;re curious about the
