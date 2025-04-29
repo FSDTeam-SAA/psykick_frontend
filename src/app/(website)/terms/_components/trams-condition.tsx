@@ -3,8 +3,14 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 const TermsConditions = () => {
-  const token = localStorage.getItem('token');
+  // const token = localStorage.getItem('token');
   const [content, setContent] = useState<string>("");
+  const [token, setToken] = useState<string | null>(null);
+  // Load token on client side only
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    setToken(storedToken);
+  }, []);
 
   // Fetch data from the backend for the Terms and Conditions
   const { data, error, isLoading } = useQuery({
