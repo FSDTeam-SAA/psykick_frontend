@@ -6,15 +6,17 @@ import { TemperatureBar } from "./temperature-bar";
 import { LevelIndicator } from "./level-indicator";
 import { WaterBar } from "./water-bar";
 
-
-export default function GameDashboard() {
+type GameDashboardProps = {
+  totalScore: number; // or `number | undefined` if profileData.totalPoints might be undefined
+};
+export default function GameDashboard({ totalScore }: GameDashboardProps) {
   const [temperature, setTemperature] = useState(275);
-  const [budBudPercentage, setBudBudPercentage] = useState(50);
-  const [score, setScore] = useState(80);
+  // const [budBudPercentage, setBudBudPercentage] = useState(60);
+  // const [score, setScore] = useState(20);
 
   console.log(setTemperature);
-  console.log(setBudBudPercentage);
-  console.log(setScore);
+  // console.log(setBudBudPercentage);
+  console.log("tota",totalScore);
 
   return (
     <div className="w-full flex items-center justify-center">
@@ -51,7 +53,7 @@ export default function GameDashboard() {
           </div>
 
           {/* Right side - Bud Bud Bar */}
-          <WaterBar percentage={budBudPercentage} score={score} />
+          <WaterBar  totalScore={totalScore} />
         </div>
       </Card>
     </div>
