@@ -98,7 +98,7 @@ export function SiteFooter() {
               {/* Legal Links */}
               <div className="flex space-x-4 text-sm text-white/70">
                 <Link
-                  href="/privacy"
+                  href="/PrivacyPolicy"
                   className="hover:text-white transition-colors"
                 >
                   Privacy Policy

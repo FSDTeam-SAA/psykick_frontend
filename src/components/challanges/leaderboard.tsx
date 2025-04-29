@@ -1,22 +1,79 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { RefreshCw } from "lucide-react";
-import { useLeaderboardStore } from "@/store/use-leaderboard-store";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Leaderboard() {
-  const {
-    tmcLeaderboard,
-    arvLeaderboard,
-    combinedLeaderboard,
-    fetchLeaderboardData,
-    isLoading,
-  } = useLeaderboardStore();
 
-  // Fetch data on initial load
+  const [token, setToken] = useState<string | null>(null);
+
   useEffect(() => {
-    fetchLeaderboardData();
-  }, [fetchLeaderboardData]);
+    const token = localStorage.getItem("authToken");
+    setToken(token);
+  }, []);
+
+  const { data:tmsleaderboardData, refetch:tmsleaderboardDataFatching } = useQuery({
+    queryKey: ["tmsleaderboardData"],
+    queryFn: async () => {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/leaderboard/get-TMCLeaderboard`,{
+        headers:{
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    },
+  });
+
+  const { data:arvleaderboardData, isLoading , refetch:arvleaderboardDataFatching} = useQuery({
+    queryKey: ["tmsleaderboardData"],
+    queryFn: async () => {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/leaderboard/get-TMCLeaderboard`,{
+        headers:{
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    },
+  });
+  
+  const { data:totalLeaderboard, refetch:totalleaderboardDataFatching } = useQuery({
+    queryKey: ["tmsleaderboardData"],
+    queryFn: async () => {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/leaderboard/get-totalLeaderboard`,{
+        headers:{
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    },
+  });
+  console.log(totalLeaderboard)
+  
+  const fetchLeaderbardData = () => {
+  if(token){
+    totalleaderboardDataFatching()
+    arvleaderboardDataFatching()
+    tmsleaderboardDataFatching()
+  }
+  }
+
+  // You can then use 'data', 'isLoading', and 'error' in your component
+
+
 
   // Function to get row background color based on rank
   const getRowColor = (rank: string, isCurrentUser: boolean) => {
@@ -108,35 +165,35 @@ export default function Leaderboard() {
             </div>
 
             <div className="max-h-[500px] px-4 overflow-y-auto flex flex-col gap-4 relative">
-              {tmcLeaderboard
-                .filter((entry) => !entry.isCurrentUser)
-                .map((entry) => (
+              {tmsleaderboardData?.data.filter((entry:any) => !entry.screenName).map((entry:any,i) => (
                   <div
-                    key={entry.id}
-                    className={`grid rounded-lg grid-cols-4 items-center text-center py-3 ${getRowColor(entry.rank, entry.isCurrentUser)}`}
+                    key={entry._id}
+                    className={`grid rounded-lg grid-cols-4 items-center text-center py-3 ${getRowColor(i, entry.user.screenName)}`}
                   >
-                    <div className="font-medium text-[16px] text-white">{entry.rank}</div>
+                    <div className="font-medium text-[16px] text-white">
+                      {i}
+                    </div>
                     <div className="flex items-center text-left">
-                      <div className="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-white font-bold mr-2">
-                        {entry.name.charAt(0)}
-                      </div>
+                      {/* <div className="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-white font-bold mr-2">
+                        {entry.user.name.charAt(0)}
+                      </div> */}
                       <div>
                         <div className="font-medium text-[16px] text-white">
-                          {entry.name}
+                          {entry.user.screenName}
                         </div>
                       </div>
                     </div>
-                    <div className="text-white">{entry.tier}</div>
-                    <div className="font-bold text-white">{entry.score}</div>
+                    <div className="text-white">{entry.tierRank}</div>
+                    <div className="font-bold text-white">{entry.totalPoints}</div>
                   </div>
                 ))}
 
               {/* Current user fixed at bottom */}
-              <div
+              {/* <div
                 className={`grid grid-cols-4 items-center text-center py-3 bg-[#2a904c] sticky bottom-0`}
               >
                 <div className="font-bold text-white">
-                  {tmcLeaderboard.find((entry) => entry.isCurrentUser)?.rank}
+                  {tmcLeaderboard.find((entry) => entry.user.screenName)?.rank}
                 </div>
                 <div className="flex items-center text-left">
                   <div className="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-white font-bold mr-2">
@@ -151,7 +208,7 @@ export default function Leaderboard() {
                 <div className="font-bold text-white">
                   {tmcLeaderboard.find((entry) => entry.isCurrentUser)?.score}
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -194,39 +251,37 @@ export default function Leaderboard() {
             </div>
 
             <div className="max-h-[500px] px-4  flex flex-col gap-4 overflow-y-auto relative">
-              {arvLeaderboard
-                .filter((entry) => !entry.isCurrentUser)
-                .map((entry) => (
+              {arvleaderboardData?.data.filter((entry:any) => !entry.user.screenName).map((entry:any,i) => (
                   <div
-                    key={entry.id}
-                    className={`grid rounded-lg grid-cols-4  items-center text-center py-3 ${getRowColor(entry.rank, entry.isCurrentUser)}`}
+                    key={entry._id}
+                    className={`grid rounded-lg grid-cols-4  items-center text-center py-3 ${getRowColor(i, entry.user.screenName)}`}
                   >
-                    <div className="font-bold text-white">{entry.rank}</div>
+                    <div className="font-bold text-white">{i}</div>
                     <div className="flex items-center text-left">
-                      <div className="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-white font-bold mr-2">
-                        {entry.name.charAt(0)}
-                      </div>
+                      {/* <div className="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-white font-bold mr-2">
+                        {entry.user.name.charAt(0)}
+                      </div> */}
                       <div>
                         <div className="font-medium text-white">
-                          {entry.name}
+                          {entry.user.screenName}
                         </div>
                         {/* <div className="text-xs text-white/70">
                           {entry.username}
                         </div> */}
                       </div>
                     </div>
-                    <div className="text-white">{entry.tier}</div>
-                    <div className="font-bold text-white">{entry.score}</div>
+                    <div className="text-white">{entry.tierRank}</div>
+                    <div className="font-bold text-white">{entry.totalARVPoints}</div>
                   </div>
                 ))}
 
               {/* Current user fixed at bottom */}
-              {arvLeaderboard.find((entry) => entry.isCurrentUser) && (
+              {/* {arvleaderboardData?.data.find((entry) => entry.user.screenName) && (
                 <div
                   className={`grid grid-cols-4 items-center text-center py-3 bg-[#2a904c] sticky bottom-0`}
                 >
                   <div className="font-bold text-white">
-                    {arvLeaderboard.find((entry) => entry.isCurrentUser)?.rank}
+                    {arvleaderboardData?.data.find((entry) => entry.user.screenName)?.rank}
                   </div>
                   <div className="flex items-center text-left">
                     <div className="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-white font-bold mr-2">
@@ -242,7 +297,7 @@ export default function Leaderboard() {
                     {arvLeaderboard.find((entry) => entry.isCurrentUser)?.score}
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </div>
@@ -286,32 +341,31 @@ export default function Leaderboard() {
           </div>
 
           <div className="max-h-[500px] pr-3 flex flex-col gap-4 overflow-y-auto relative">
-            {combinedLeaderboard
-              .filter((entry) => !entry.isCurrentUser)
-              .map((entry) => (
+            {totalLeaderboard?.data.filter((entry:any) => !entry.user.screenName)
+              .map((entry:any,i) => (
                 <div
-                  key={entry.id}
-                  className={`grid grid-cols-4 border items-center rounded-lg text-center py-3 ${getRowColor(entry.rank, entry.isCurrentUser)}`}
+                  key={entry._id}
+                  className={`grid grid-cols-4 border items-center rounded-lg text-center py-3 ${getRowColor(i, entry.user.screenName)}`}
                 >
-                  <div className="font-bold text-white">{entry.rank}</div>
+                  <div className="font-bold text-white">{i}</div>
                   <div className="flex items-center text-left">
-                    <div className="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-white font-bold mr-2">
-                      {entry.name.charAt(0)}
-                    </div>
+                    {/* <div className="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-white font-bold mr-2">
+                      {entry.user.name.charAt(0)}
+                    </div> */}
                     <div>
-                      <div className="font-medium text-white">{entry.name}</div>
+                      <div className="font-medium text-white">{entry.user.screenName}</div>
                       <div className="text-xs text-white/70">
-                        {entry.username}
+                        {entry.user.fullName}
                       </div>
                     </div>
                   </div>
-                  <div className="text-white">{entry.tier}</div>
-                  <div className="font-bold text-white">{entry.score}</div>
+                  <div className="text-white">{entry.tierRank}</div>
+                  <div className="font-bold text-white">{entry.totalPoints}</div>
                 </div>
               ))}
 
             {/* Current user fixed at bottom */}
-            {combinedLeaderboard.find((entry) => entry.isCurrentUser) && (
+            {/* {combinedLeaderboard.find((entry) => entry.isCurrentUser) && (
               <div
                 className={`grid grid-cols-4 items-center text-center py-3 bg-[#2a904c] sticky bottom-0`}
               >
@@ -338,7 +392,7 @@ export default function Leaderboard() {
                   }
                 </div>
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </div>
@@ -346,7 +400,7 @@ export default function Leaderboard() {
       {/* Refresh button */}
       <div className="flex justify-center mt-6">
         <button
-          onClick={fetchLeaderboardData}
+          onClick={fetchLeaderbardData}
           className="flex items-center px-4 py-2 bg-[#8a2be2] text-white rounded-lg hover:bg-[#7a1bd2] transition-colors"
           disabled={isLoading}
         >
