@@ -6,6 +6,7 @@ const Faq = () => {
   return (
     <section className=" text-white px-6 py-12 md:py-16">
     <div className="max-w-7xl mx-auto grid gap-8 lg:grid-cols-2 lg:gap-12">
+      
       <div className="space-y-6">
         <h2 className="title textLargeShadow">
         Curious about Remote Viewing and how our challenges work?
@@ -30,7 +31,7 @@ const Faq = () => {
             <AccordionTrigger className="text-left hover:no-underline  challange-subTitle">
               1. What is Remote Viewing?
             </AccordionTrigger>
-            <AccordionContent className="text-[#C5C5C5] text-[16px] font-normal">
+            <AccordionContent defaultValue={"item-1"} className="text-[#C5C5C5] text-[16px] font-normal">
               Remote Viewing (RV) is a practice that allows individuals to perceive distant or unseen targets using
               only their mind. It is not tied to any specific belief system and has been studied in scientific
               settings. RV can be used for personal development, problem-solving, and even predictive analysis.
@@ -38,7 +39,7 @@ const Faq = () => {
           </AccordionItem>
 
           <AccordionItem value="item-2" className="border-b-[#4C2A85]">
-            <AccordionTrigger className="text-left hover:no-underline challange-subTitle">
+            <AccordionTrigger defaultValue={"item-2"} className="text-left hover:no-underline challange-subTitle">
               2. Do I need special abilities to do Remote Viewing?
             </AccordionTrigger>
             <AccordionContent className="text-[#C5C5C5] text-[16px] font-normal">
@@ -47,7 +48,7 @@ const Faq = () => {
           </AccordionItem>
 
           <AccordionItem value="item-3" className="border-b-[#4C2A85]">
-            <AccordionTrigger className="text-left hover:no-underline challange-subTitle">
+            <AccordionTrigger defaultValue={"item-3"} className="text-left hover:no-underline challange-subTitle">
               3. How do I start practicing Remote Viewing?
             </AccordionTrigger>
             <AccordionContent className="text-[#C5C5C5] text-[16px] font-normal">
@@ -55,7 +56,7 @@ const Faq = () => {
           </AccordionItem>
 
           <AccordionItem value="item-4" className="border-b-[#4C2A85]">
-            <AccordionTrigger className="text-left hover:no-underline challange-subTitle">
+            <AccordionTrigger defaultValue={"item-4"} className="text-left hover:no-underline challange-subTitle">
               4. Is there a right or wrong way to do Remote Viewing?
             </AccordionTrigger>
             <AccordionContent className="text-[#C5C5C5] text-[16px] font-normal">
@@ -64,7 +65,7 @@ const Faq = () => {
           </AccordionItem>
 
           <AccordionItem value="item-5" className="border-b-[#4C2A85]">
-            <AccordionTrigger className="text-left hover:no-underline challange-subTitle">
+            <AccordionTrigger defaultValue={"item-5"} className="text-left hover:no-underline challange-subTitle">
               5. How does your Remote Viewing challenge work?
             </AccordionTrigger>
             <AccordionContent className="text-[#C5C5C5] text-[16px] font-normal">
@@ -72,6 +73,7 @@ const Faq = () => {
           </AccordionItem>
         </Accordion>
       </div>
+
     </div>
   </section>
   )

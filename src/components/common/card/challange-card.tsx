@@ -19,7 +19,7 @@ export function ChallengeCard({
   return (
     <div
       className={cn(
-        " w-[370px] p-8 rounded-3xl bg-gray-900/80 backdrop-blur-sm bg-[url(/assets/img/challange_card-bg.png)] backdrop-blur-300 bg-white/30 border-[3px] p-6 rounded-[20px] border-[#c3a1e9]",
+        "lg:w-[370px] p-8 rounded-3xl bg-gray-900/80 backdrop-blur-sm bg-[url(/assets/img/challange_card-bg.png)] backdrop-blur-300 bg-white/30 border-[3px] p-6 rounded-[20px] border-[#c3a1e9]",
         className,
       )}
       
