@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import {
   LineChart,
   Line,
@@ -11,42 +10,43 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Card } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/useAuth";
 
-// Sample data that matches the trends in the image
-const initialData = [
-  { month: "Jan", TMC: 80, ARV: 40 },
-  { month: "Feb", TMC: 100, ARV: 60 },
-  { month: "Mar", TMC: 140, ARV: 90 },
-  { month: "Apr", TMC: 180, ARV: 110 },
-  { month: "May", TMC: 200, ARV: 120 },
-  { month: "Jun", TMC: 190, ARV: 140 },
-  { month: "Jul", TMC: 160, ARV: 150 },
-  { month: "Aug", TMC: 120, ARV: 160 },
-  { month: "Sep", TMC: 60, ARV: 170 },
-  { month: "Oct", TMC: 40, ARV: 180 },
-  { month: "Nov", TMC: 100, ARV: 190 },
-  { month: "Dec", TMC: 180, ARV: 200 },
-];
+const fetchGraphData = async (userId: string): Promise<
+  { month: string; TMC: number; ARV: number }[]
+> => {
+  const token = localStorage.getItem("authToken");
+  const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+  const res = await fetch(`${baseURL}/userSubmission/user-graph-data/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) throw new Error("Failed to fetch graph data");
+
+  const json = await res.json();
+
+  return json.data.map((item: { month: string; tmc: number; arv: number }) => ({
+    month: item.month,
+    TMC: item.tmc,
+    ARV: item.arv,
+  }));
+};
 
 export function AboutGraph() {
-  const [data, setData] = useState(initialData);
-  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const userId = user?._id;
 
-  // Simulate fetching data from an API
-  useEffect(() => {
-    const fetchData = async () => {
-      // In a real application, you would fetch data from an API here
-      // For demo purposes, we'll just use a timeout to simulate loading
-      setTimeout(() => {
-        setData(initialData);
-        setLoading(false);
-      }, 1000);
-    };
+  const { data, isLoading } = useQuery({
+    queryKey: ["userGraphData", userId],
+    queryFn: () => fetchGraphData(userId!),
+    enabled: !!userId, // avoids running the query until userId is available
+  });
 
-    fetchData();
-  }, []);
-
-  if (loading) {
+  if (isLoading || !data) {
     return (
       <Card className="p-6 flex items-center justify-center h-[300px]">
         <div className="animate-pulse">Loading chart data...</div>
@@ -55,7 +55,7 @@ export function AboutGraph() {
   }
 
   return (
-    <Card className="p-4 rounded-3xl  overflow-hidden bg-[#FFFFFF1A] ">
+    <Card className="p-4 rounded-3xl overflow-hidden bg-[#FFFFFF1A]">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-medium text-white">About Graph</h2>
         <div className="flex items-center gap-4">
@@ -72,10 +72,7 @@ export function AboutGraph() {
 
       <div className="h-[150px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={data}
-            margin={{ top: 10, right: 30, left: 0, bottom: 10 }}
-          >
+          <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 10 }}>
             <defs>
               <linearGradient id="colorTMC" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
@@ -86,11 +83,7 @@ export function AboutGraph() {
                 <stop offset="95%" stopColor="#10b981" stopOpacity={0.1} />
               </linearGradient>
             </defs>
-            <CartesianGrid
-              strokeDasharray="3 3"
-              vertical={false}
-              opacity={0.2}
-            />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.2} />
             <XAxis
               dataKey="month"
               axisLine={false}
