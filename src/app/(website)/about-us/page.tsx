@@ -3,7 +3,7 @@ import Image from "next/image"
 const page = () => {
   return (
     <div className="min-h-screen  text-white p-4 md:p-8 lg:p-12">
-    <div className="max-w-7xl mx-auto lg:mt-[61px]">
+    <div className="max-w-7xl mx-auto mt-[61px]">
       
       <div className="grid lg:grid-cols-2 gap-8 items-start">
         {/* Left Column */}

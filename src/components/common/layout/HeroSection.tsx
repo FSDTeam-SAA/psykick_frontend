@@ -8,7 +8,7 @@ export default function HeroSection() {
       className="min-h-screen bg-cover bg-no-repeat flex justify-center overflow-x-hidden rounded-b-[20px] mb-12 md:mb-20 lg:mb-[120px] py-6 md:py-10"
       style={{ backgroundImage: "url('/assets/img/hero_img.png')" }}
     >
-      <div className="w-full">
+      <div className="w-full mt-5 lg:mt-0">
         {/* Top section with title and articles */}
         <div className="px-4 sm:px-6 md:container mx-auto">
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-end gap-6 md:gap-8">
