@@ -11,7 +11,7 @@ const FaqPage = () => {
     <div className="min-h-screen bg-[#2D1B69] lg:pt-[40px] text-white">
       <div className="container mx-auto px-4 py-12 max-w-7xl">
         <div className="grid lg:grid-cols-2 gap-10 justify-center container mx-auto">
-          <div className="relative  aspect-square w-full max-w-[700px] h-[660px] mx-auto lg:max-w-none">
+          <div className="relative  aspect-square w-full lg:max-w-[700px] lg:h-[660px] mx-auto">
             <Image
               src="/assets/img/faq.png"
               alt="3D question mark floating above a smartphone"
@@ -36,7 +36,7 @@ const FaqPage = () => {
             </p>
 
             {/* FAQ items  */}
-            <div className="w-[95%] lg:w-full mx-auto">
+            <div className="">
               <Accordion type="single" collapsible className="space-y-4">
                 <AccordionItem value="item-1" className="border-b-[#4C2A85]">
                   <AccordionTrigger className="text-left hover:no-underline  challange-subTitle">
@@ -169,8 +169,6 @@ const FaqPage = () => {
                 </AccordionItem>
               </Accordion>
             </div>
-
-            
           </div>
         </div>
       </div>
@@ -179,3 +177,7 @@ const FaqPage = () => {
 };
 
 export default FaqPage;
+
+
+
+
