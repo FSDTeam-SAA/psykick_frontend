@@ -180,7 +180,7 @@ export default function ContactForm() {
                 <Link href="#">
                   <Button
                     size="icon"
-                    className="rounded-full p-0 border iconGradient border hover:border-none text-white"
+                    className="rounded-full p-0  iconGradient border hover:border-none text-white"
                     onClick={() => window.open("https://twitter.com", "_blank")}
                   >
                     <Twitter className="h-5 w-5" />
