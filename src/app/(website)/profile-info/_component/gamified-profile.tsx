@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import GameDashboard from "./GameDashboard";
 import Link from "next/link";
 import axios from "axios";
+import { useAuth } from "@/hooks/useAuth";
 
 
 
@@ -20,38 +21,15 @@ const fetchUserProfile = async (userId: string) => {
   return res.data.data;
 };
 
-// Component to render the tier avatar
-const TierAvatar = ({ tier }: { tier: string }) => {
-  const getAvatarForTier = (tier: string) => {
-    switch (tier.toUpperCase()) {
-      case "NOVICE SEEKER":
-      case "INITIATE":
-      case "APPRENTICE":
-        return "/placeholder.svg?height=60&width=60";
-      default:
-        return "/placeholder.svg?height=60&width=60";
-    }
-  };
-
-  return (
-    <div className="relative w-16 h-16 rounded-full bg-orange-400 overflow-hidden">
-      <Image
-        src={getAvatarForTier(tier)}
-        alt={`${tier} avatar`}
-        width={60}
-        height={60}
-        className="object-cover"
-      />
-    </div>
-  );
-};
 
 export default function GamifiedProfile() {
-  const userId = "680b13fe952ccea102170b34"; // Replace this with dynamic user ID from context or props
+  const {user} = useAuth()
+  const userId  = user?._id; // Replace this with dynamic user ID from context or props
 
   const { data: profileData, isLoading,  } = useQuery({
     queryKey: ["userProfile", userId],
-    queryFn: () => fetchUserProfile(userId),
+    queryFn: () => fetchUserProfile(userId!),
+    enabled: !!userId, // Only run the query if userId is available
   });
 
   useEffect(() => {
@@ -129,7 +107,16 @@ export default function GamifiedProfile() {
                   </div>
 
                   <div className="">
-                    <TierAvatar tier="Apprentice" />
+                
+                    <div className="relative w-[120px] h-[120px] rounded-full bg-orange-400 overflow-hidden flex items-center justify-center">
+  <Image
+    src="/assets/img/novice.png"
+    alt="Apprentice avatar"
+    width={100}
+    height={100}
+    className="object-cover w-full h-full"
+  />
+</div>
                   </div>
                 </div>
 
