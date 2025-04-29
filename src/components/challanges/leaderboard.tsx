@@ -127,22 +127,12 @@ export default function Leaderboard() {
             </div>
 
             <div className="max-h-[500px] px-4 overflow-y-auto flex flex-col gap-4 relative">
-<<<<<<< HEAD
-              {tmsleaderboardData?.data.filter((entry:any) => !entry.screenName).map((entry:any,i:number) => (
-                  <div
-                    key={entry._id}
-                    className={`grid rounded-lg grid-cols-4 items-center text-center py-3 ${getRowColor(i.toString(), entry.user.screenName)}`}
-                  >
-                    <div className="font-medium text-[16px] text-white">
-                      {i}
-=======
               {tmsleaderboardData?.data.map((entry, i) => (
                 <div key={entry._id} className={`grid rounded-lg grid-cols-4 items-center text-center py-3 ${getRowColor(i, false)}`}>
                   <div className="font-medium text-[16px] text-white">{i + 1}</div>
                   <div className="flex items-center text-left">
                     <div>
                       <div className="font-medium text-[16px] text-white">{entry.user.screenName}</div>
->>>>>>> 2c88641a8c7261329a57f43994bb22ee398f78d5
                     </div>
                   </div>
                   <div className="text-white">{entry.tierRank}</div>
@@ -176,46 +166,10 @@ export default function Leaderboard() {
               <div className="text-gray-600 font-medium">Score</div>
             </div>
 
-<<<<<<< HEAD
-            <div className="max-h-[500px] px-4  flex flex-col gap-4 overflow-y-auto relative">
-              {arvleaderboardData?.data.filter((entry:any) => !entry.user.screenName).map((entry:any,i:number) => (
-                  <div
-                    key={entry._id}
-                    className={`grid rounded-lg grid-cols-4  items-center text-center py-3 ${getRowColor(i.toString(), entry.user.screenName)}`}
-                  >
-                    <div className="font-bold text-white">{i}</div>
-                    <div className="flex items-center text-left">
-                      {/* <div className="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-white font-bold mr-2">
-                        {entry.user.name.charAt(0)}
-                      </div> */}
-                      <div>
-                        <div className="font-medium text-white">
-                          {entry.user.screenName}
-                        </div>
-                        {/* <div className="text-xs text-white/70">
-                          {entry.username}
-                        </div> */}
-                      </div>
-                    </div>
-                    <div className="text-white">{entry.tierRank}</div>
-                    <div className="font-bold text-white">{entry.totalARVPoints}</div>
-                  </div>
-                ))}
-
-              {/* Current user fixed at bottom */}
-              {/* {arvleaderboardData?.data.find((entry) => entry.user.screenName) && (
-                <div
-                  className={`grid grid-cols-4 items-center text-center py-3 bg-[#2a904c] sticky bottom-0`}
-                >
-                  <div className="font-bold text-white">
-                    {arvleaderboardData?.data.find((entry) => entry.user.screenName)?.rank}
-                  </div>
-=======
             <div className="max-h-[500px] px-4 flex flex-col gap-4 overflow-y-auto relative">
               {arvleaderboardData?.data.map((entry, i) => (
                 <div key={entry._id} className={`grid rounded-lg grid-cols-4 items-center text-center py-3 ${getRowColor(i, false)}`}>
                   <div className="font-bold text-white">{i + 1}</div>
->>>>>>> 2c88641a8c7261329a57f43994bb22ee398f78d5
                   <div className="flex items-center text-left">
                     <div>
                       <div className="font-medium text-white">{entry.user.screenName}</div>
@@ -254,46 +208,9 @@ export default function Leaderboard() {
           </div>
 
           <div className="max-h-[500px] pr-3 flex flex-col gap-4 overflow-y-auto relative">
-<<<<<<< HEAD
-            {totalLeaderboard?.data.filter((entry:any) => !entry.user.screenName)
-              .map((entry:any,i:number) => (
-                <div
-                  key={entry._id}
-                  className={`grid grid-cols-4 border items-center rounded-lg text-center py-3 ${getRowColor(i.toString(), entry.user.screenName)}`}
-                >
-                  <div className="font-bold text-white">{i}</div>
-                  <div className="flex items-center text-left">
-                    {/* <div className="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-white font-bold mr-2">
-                      {entry.user.name.charAt(0)}
-                    </div> */}
-                    <div>
-                      <div className="font-medium text-white">{entry.user.screenName}</div>
-                      <div className="text-xs text-white/70">
-                        {entry.user.fullName}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-white">{entry.tierRank}</div>
-                  <div className="font-bold text-white">{entry.totalPoints}</div>
-                </div>
-              ))}
-
-            {/* Current user fixed at bottom */}
-            {/* {combinedLeaderboard.find((entry) => entry.isCurrentUser) && (
-              <div
-                className={`grid grid-cols-4 items-center text-center py-3 bg-[#2a904c] sticky bottom-0`}
-              >
-                <div className="font-bold text-white">
-                  {
-                    combinedLeaderboard.find((entry) => entry.isCurrentUser)
-                      ?.rank
-                  }
-                </div>
-=======
             {totalLeaderboard?.data.map((entry, i) => (
               <div key={entry._id} className={`grid grid-cols-4 border items-center rounded-lg text-center py-3 ${getRowColor(i, false)}`}>
                 <div className="font-bold text-white">{i + 1}</div>
->>>>>>> 2c88641a8c7261329a57f43994bb22ee398f78d5
                 <div className="flex items-center text-left">
                   <div>
                     <div className="font-medium text-white">{entry.user.screenName}</div>

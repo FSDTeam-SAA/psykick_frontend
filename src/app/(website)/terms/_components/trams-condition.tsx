@@ -3,11 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 const TermsConditions = () => {
-<<<<<<< HEAD
-  const [token, setToken] = useState<string | null>(null);
-=======
   // const token = localStorage.getItem('token');
->>>>>>> 2c88641a8c7261329a57f43994bb22ee398f78d5
   const [content, setContent] = useState<string>("");
   const [token, setToken] = useState<string | null>(null);
   // Load token on client side only
