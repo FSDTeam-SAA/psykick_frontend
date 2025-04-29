@@ -49,7 +49,7 @@ export default function ProfileCard({
         {/* Status Badge */}
         <div className="w-full bg-[#2d1e4f] border-2 border-white rounded-lg py-2 px-4 text-center">
           <div className="flex items-center justify-center gap-1">
-            <h3 className="text-white font-bold text-lg tracking-wide">
+            <h3 className="text-white font-bold text-[28px] tracking-wide">
               {user?.screenName}
             </h3>
             {showQuestionMark && (
@@ -57,7 +57,7 @@ export default function ProfileCard({
              
             )}
           </div>
-          <p className="text-amber-400 font-bold text-xl tracking-wide">
+          <p className="text-amber-400 font-bold text-[28px] tracking-wide">
             {user?.tierRank}
           </p>
         </div>
