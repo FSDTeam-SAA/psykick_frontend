@@ -1,37 +1,37 @@
-"use client"
+"use client";
 
-import { useEffect } from "react"
-import { useChallengeStore } from "@/store/use-challenge-store"
+import { useEffect } from "react";
+import { useChallengeStore } from "@/store/use-challenge-store";
 
 export default function Timer() {
-  const { timer, setTimer } = useChallengeStore()
+  const { timer, setTimer } = useChallengeStore();
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (timer.hours === 0 && timer.minutes === 0 && timer.seconds === 0) {
-        clearInterval(interval)
-        return
+        clearInterval(interval);
+        return;
       }
 
-      let newHours = timer.hours
-      let newMinutes = timer.minutes
-      let newSeconds = timer.seconds - 1
+      let newHours = timer.hours;
+      let newMinutes = timer.minutes;
+      let newSeconds = timer.seconds - 1;
 
       if (newSeconds < 0) {
-        newSeconds = 59
-        newMinutes -= 1
+        newSeconds = 59;
+        newMinutes -= 1;
       }
 
       if (newMinutes < 0) {
-        newMinutes = 59
-        newHours -= 1
+        newMinutes = 59;
+        newHours -= 1;
       }
 
-      setTimer(newHours, newMinutes, newSeconds)
-    }, 1000)
+      setTimer(newHours, newMinutes, newSeconds);
+    }, 1000);
 
-    return () => clearInterval(interval)
-  }, [timer, setTimer])
+    return () => clearInterval(interval);
+  }, [timer, setTimer]);
 
   return (
     <div className="bg-purple-200 rounded-lg p-4 text-center">
@@ -53,6 +53,5 @@ export default function Timer() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-

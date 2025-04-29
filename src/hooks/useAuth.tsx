@@ -152,6 +152,118 @@ export function useAuth() {
     router.push("/login");
   };
 
+  const forgotPassword = async (email: string): Promise<{ success: boolean; message: string }> => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/forget-password`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
+
+      const data = await response.json();
+
+      return {
+        success: response.ok,
+        message: data.message || "Failed to send OTP",
+      };
+    } catch (error) {
+      console.error("Forgot password error:", error);
+      return {
+        success: false,
+        message: "Failed to send OTP",
+      };
+    }
+  };
+
+  const verifyOTP = async (otp: string): Promise<{ success: boolean; message: string }> => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/verifyOTP`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ otp }),
+        }
+      );
+
+      const data = await response.json();
+
+      return {
+        success: response.ok,
+        message: data.message || "Failed to verify OTP",
+      };
+    } catch (error) {
+      console.error("OTP verification error:", error);
+      return {
+        success: false,
+        message: "Failed to verify OTP",
+      };
+    }
+  };
+
+  const resetPassword = async (email: string, newPassword: string): Promise<{ success: boolean; message: string }> => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/reset-password`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, newPassword }),
+        }
+      );
+
+      const data = await response.json();
+
+      return {
+        success: response.ok,
+        message: data.message || "Failed to reset password",
+      };
+    } catch (error) {
+      console.error("Reset password error:", error);
+      return {
+        success: false,
+        message: "Failed to reset password",
+      };
+    }
+  };
+
+  const resendOTP = async (email: string): Promise<{ success: boolean; message: string }> => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/resendOTP`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
+
+      const data = await response.json();
+
+      return {
+        success: response.ok,
+        message: data.message || "Failed to resend OTP",
+      };
+    } catch (error) {
+      console.error("Resend OTP error:", error);
+      return {
+        success: false,
+        message: "Failed to resend OTP",
+      };
+    }
+  };
+
   return {
     isLoggedIn,
     user,
@@ -159,5 +271,9 @@ export function useAuth() {
     login,
     logout,
     checkSession,
+    forgotPassword,
+    verifyOTP,
+    resetPassword,
+    resendOTP,
   };
 }
