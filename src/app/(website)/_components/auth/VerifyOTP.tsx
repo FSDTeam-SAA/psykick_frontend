@@ -70,7 +70,9 @@ export default function VerifyOTP() {
       }
     } catch (error: Error | unknown) {
       setError("Something went wrong");
-      toast.error(error instanceof Error ? error.message : "Failed to verify OTP");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to verify OTP",
+      );
     }
   };
 
@@ -89,8 +91,24 @@ export default function VerifyOTP() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[url('/space-background.png')] bg-cover bg-center">
-      <div className="w-full max-w-md p-8 rounded-lg backdrop-blur-sm bg-black/30 text-white border border-white/10">
+    <div
+      className="flex items-center justify-center min-h-screen bg-[url('/space-background.png')] bg-cover bg-center"
+      style={{
+        backgroundImage: 'url("/assets/img/backloging.png")', // 👈 image path ekhane
+        backgroundSize: "cover", // pura div e image fill korbe
+        backgroundRepeat: "no-repeat", // repeat korbe na
+        backgroundPosition: "center", // image ke center e rakhbe
+      }}
+    >
+      <div
+        className="w-full max-w-[618px] p-8 rounded-lg backdrop-blur-sm bg-black/30 text-white border border-white/10"
+        style={{
+          backgroundImage: 'url("/assets/img/loginUpimg.png")', // 👈 image path ekhane
+          backgroundSize: "cover", // pura div e image fill korbe
+          backgroundRepeat: "no-repeat", // repeat korbe na
+          backgroundPosition: "center", // image ke center e rakhbe
+        }}
+      >
         <h1 className="text-2xl font-bold text-center mb-2">
           {error ? "Please Try Again" : "Verify Email"}
         </h1>
@@ -139,12 +157,14 @@ export default function VerifyOTP() {
             </button>
           </div>
 
+          <div className="flex items-center justify-center">
           <button
             type="submit"
-            className="w-full rounded-md bg-purple-600 py-3 font-medium text-white transition-colors hover:bg-purple-700 disabled:bg-purple-400"
+            className="btn rounded-md bg-purple-600 py-3 font-medium text-white transition-colors hover:bg-purple-700 disabled:bg-purple-400"
           >
             Verify
           </button>
+          </div>
         </form>
       </div>
     </div>
