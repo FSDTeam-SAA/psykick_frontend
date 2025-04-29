@@ -1,12 +1,12 @@
-import React from 'react'
-import GamifiedProfile from './_component/gamified-profile'
+import React from "react";
+import GamifiedProfile from "./_component/gamified-profile";
 
 const page = () => {
   return (
     <div>
-     <GamifiedProfile/>
+      <GamifiedProfile />
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default page;
