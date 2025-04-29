@@ -10,26 +10,36 @@ import Link from "next/link";
 import axios from "axios";
 import { useAuth } from "@/hooks/useAuth";
 
-
-
-
 const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-// Fetch function using Axios
+// Map tier names to image paths
+const tierImageMap: Record<string, string> = {
+  "NOVICE SEEKER": "/assets/img/novice.png",
+  "INITIATE": "/assets/img/initiate.png",
+  "APPRENTICE": "/assets/img/apprentice.png",
+  "EXPLORER": "/assets/img/explorer.png",
+  "VISIONARY": "/assets/img/visionary.png",
+  "ADEPT": "/assets/img/adept.png",
+  "SEER": "/assets/img/seer.png",
+  "ORACLE": "/assets/img/oracle.png",
+  "MASTER REMOTE VIEWER": "/assets/img/master_remote_viewer.png",
+  "ASCENDING MASTER": "/assets/img/ascending_master.png",
+};
+
+// Fetch function
 const fetchUserProfile = async (userId: string) => {
   const res = await axios.get(`${baseURL}/profile/get-user/${userId}`);
   return res.data.data;
 };
 
-
 export default function GamifiedProfile() {
-  const {user} = useAuth()
-  const userId  = user?._id; // Replace this with dynamic user ID from context or props
+  const { user } = useAuth();
+  const userId = user?._id;
 
-  const { data: profileData, isLoading,  } = useQuery({
+  const { data: profileData, isLoading } = useQuery({
     queryKey: ["userProfile", userId],
     queryFn: () => fetchUserProfile(userId!),
-    enabled: !!userId, // Only run the query if userId is available
+    enabled: !!userId,
   });
 
   useEffect(() => {
@@ -41,6 +51,10 @@ export default function GamifiedProfile() {
   if (isLoading || !profileData) {
     return <div className="p-8 text-center">Loading profile data...</div>;
   }
+
+  const avatarSrc =
+    tierImageMap[profileData.tierRank?.toUpperCase()] ||
+    "/assets/img/placeholder.png";
 
   return (
     <div className="w-full max-w-6xl mx-auto pt-[80px] p-6 rounded-lg h-screen text-white">
@@ -59,9 +73,7 @@ export default function GamifiedProfile() {
         </div>
         <div className="border border-yellow-400 rounded-full px-4 py-1">
           TOTAL POINTS:{" "}
-          <span className="text-yellow-400">
-            {profileData.totalPoints}
-          </span>
+          <span className="text-yellow-400">{profileData.totalPoints}</span>
         </div>
       </div>
 
@@ -91,7 +103,6 @@ export default function GamifiedProfile() {
               >
                 <div className="text-center text-2xl mt-4">YOU NEED</div>
                 <div className="text-center text-7xl font-bold text-yellow-500 my-2">
-                  {/* Just example: You can calculate needed points based on logic */}
                   {profileData.nextTierPoint}
                 </div>
                 <div className="text-center text-2xl mb-4">
@@ -102,21 +113,18 @@ export default function GamifiedProfile() {
                   <div className="border-2 bg-[#372759] border-white/40 rounded-lg p-2 text-center mb-4 max-w-xs">
                     <div className="text-lg">NEXT TIER</div>
                     <div className="text-2xl text-yellow-500">
-                      Apprentice
+                      {profileData.nextTierName || "N/A"}
                     </div>
                   </div>
 
-                  <div className="">
-                
-                    <div className="relative w-[120px] h-[120px] rounded-full bg-orange-400 overflow-hidden flex items-center justify-center">
-  <Image
-    src="/assets/img/novice.png"
-    alt="Apprentice avatar"
-    width={100}
-    height={100}
-    className="object-cover w-full h-full"
-  />
-</div>
+                  <div className="relative w-[120px] h-[120px] rounded-full bg-orange-400 overflow-hidden flex items-center justify-center">
+                    <Image
+                      src={avatarSrc}
+                      alt={`${profileData.tierRank} avatar`}
+                      width={100}
+                      height={100}
+                      className="object-cover w-full h-full"
+                    />
                   </div>
                 </div>
 
