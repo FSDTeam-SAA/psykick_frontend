@@ -1,31 +1,30 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { motion, useAnimation } from "framer-motion";
 
 interface WaterBarProps {
-  percentage: number;
-  score: number;
+  
+  totalScore: number;
 }
 
-export function WaterBar({ percentage, score }: WaterBarProps) {
+export function WaterBar({ totalScore }: WaterBarProps) {
   const controls = useAnimation();
-  const prevPercentage = useRef(percentage);
+  // const prevPercentage = useRef(percentage);
 
-  useEffect(() => {
-    if (prevPercentage.current !== percentage) {
-      controls.start({
-        height: `${percentage}%`,
-        transition: {
-          type: "spring",
-          stiffness: 60,
-          damping: 20,
-          restDelta: 0.001,
-        },
-      });
-      prevPercentage.current = percentage;
-    }
-  }, [percentage, controls]);
+  // useEffect(() => {
+  //   if (prevPercentage.current !== percentage) {
+  //     controls.start({
+  //       height: `${percentage}%`,
+  //       transition: {
+  //         type: "spring",
+  //         stiffness: 60,
+  //         damping: 20,
+  //         restDelta: 0.001,
+  //       },
+  //     });
+  //     prevPercentage.current = percentage;
+  //   }
+  // }, [percentage, controls]);
 
   return (
     <div className="flex items-center gap-5">
@@ -36,7 +35,7 @@ export function WaterBar({ percentage, score }: WaterBarProps) {
             style={{
               backgroundColor: "#00c2c2",
             }}
-            initial={{ height: `${percentage}%` }}
+            initial={{ height: `${totalScore}%` }}
             animate={controls}
           >
             {/* Bubbles animation */}
@@ -65,8 +64,9 @@ export function WaterBar({ percentage, score }: WaterBarProps) {
         <h3 className="text-white text-xl font-bold">CURRENT</h3>
         <h3 className="text-white text-xl font-bold">SCORE</h3>
         <span className="text-white text-3xl font-bold">
-          {score.toString().padStart(2, "0")}
+          {totalScore}
         </span>
+        
       </div>
     </div>
   );

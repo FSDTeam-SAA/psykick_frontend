@@ -9,6 +9,9 @@ import GameDashboard from "./GameDashboard";
 import Link from "next/link";
 import axios from "axios";
 
+
+
+
 const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 // Fetch function using Axios
@@ -88,7 +91,7 @@ export default function GamifiedProfile() {
       <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
         {/* Left side - Progress meter */}
         <div className="md:col-span-3">
-          <GameDashboard />
+          <GameDashboard totalScore={profileData.totalPoints} />
         </div>
 
         {/* Right side - Stats */}
@@ -111,7 +114,7 @@ export default function GamifiedProfile() {
                 <div className="text-center text-2xl mt-4">YOU NEED</div>
                 <div className="text-center text-7xl font-bold text-yellow-500 my-2">
                   {/* Just example: You can calculate needed points based on logic */}
-                  {Math.max(0, 100 - profileData.totalPoints)}
+                  {profileData.nextTierPoint}
                 </div>
                 <div className="text-center text-2xl mb-4">
                   MORE POINTS TO LEVEL UP
