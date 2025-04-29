@@ -101,19 +101,19 @@ export default function GamifiedProfile() {
                 bg-[url('/assets/img/profileBg.png')] bg-cover bg-center bg-no-repeat 
                 w-[500px] h-[500px]"
               >
-                <div className="text-center text-2xl mt-4">YOU NEED</div>
+                <div className="text-center text-2xl mt-4 font-bold">YOU NEED</div>
                 <div className="text-center text-7xl font-bold text-yellow-500 my-2">
                   {profileData.nextTierPoint}
                 </div>
-                <div className="text-center text-2xl mb-4">
-                  MORE POINTS TO LEVEL UP
+                <div className="text-center text-2xl mb-4 font-bold">
+                MORE POINTS TO ACHIEVE
                 </div>
 
                 <div className="mb-4 mx-auto flex justify-around items-center">
-                  <div className="border-2 bg-[#372759] border-white/40 rounded-lg p-2 text-center mb-4 max-w-xs">
-                    <div className="text-lg">NEXT TIER</div>
+                  <div className="border-2 w-[200px] bg-[#372759] border-white/40 rounded-lg p-2 text-center mb-4 max-w-xs">
+                    <div className="text-lg font-bold">RV TIER</div>
                     <div className="text-2xl text-yellow-500">
-                      {profileData.nextTierName || "N/A"}
+                      {profileData.tierRank || "N/A"}
                     </div>
                   </div>
 
