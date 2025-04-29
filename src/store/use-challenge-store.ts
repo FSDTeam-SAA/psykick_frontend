@@ -34,6 +34,7 @@ type ChallengeState = {
     seconds: number;
   };
 
+
   // Drawing state
   drawingHistory: string[];
   currentDrawing: string | null;
@@ -152,6 +153,7 @@ export const useChallengeStore = create<ChallengeState & ChallengeActions>()(
           revealTime: target.revealTime,
           gameTime: target.gameTime,
           bufferTime: target.bufferTime,
+
           timer: {
             hours: Math.max(0, diffHours),
             minutes: Math.max(0, diffMinutes),
