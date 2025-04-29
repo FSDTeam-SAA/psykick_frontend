@@ -12,10 +12,19 @@ const TermsConditions = () => {
     setToken(storedToken);
   }, []);
 
+  // Ensure localStorage is accessed only on the client side
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setToken(localStorage.getItem("token"));
+    }
+  }, []);
+
   // Fetch data from the backend for the Terms and Conditions
   const { data, error, isLoading } = useQuery({
-    queryKey: ["getTermsAndCondition"],
+    queryKey: ["getTermsAndCondition", token],
     queryFn: async () => {
+      if (!token) return null; // Avoid fetching if token is not available
+
       try {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/terms-and-condition/get-terms-and-condition`,
@@ -24,7 +33,7 @@ const TermsConditions = () => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          },
+          }
         );
 
         if (!response.ok) {
@@ -36,15 +45,13 @@ const TermsConditions = () => {
         console.log("Error fetching terms and conditions:", error);
       }
     },
-    // onError: (error: any) => {
-    // console.error("Error fetching terms and conditions:", error);
-    // },
+    enabled: !!token, // Only run the query if the token is available
   });
 
   // Update the content state with fetched data when available
   useEffect(() => {
     if (data) {
-      setContent(data?.data[0].content || ""); // Assuming 'content' is the field in the response
+      setContent(data?.data[0]?.content || ""); // Assuming 'content' is the field in the response
     }
   }, [data]);
 
@@ -59,14 +66,12 @@ const TermsConditions = () => {
   return (
     <div className="p-4 w-full container bg-[#FFFFFF1A] rounded-lg mt-10 pb-10">
       {/* Header */}
-      <div className="flex justify-between  items-center mb-6 bg-gradient-to-r from-[#8F37FF] to-[#2D17FF] py-5 px-4 rounded-lg">
-        <h1 className="text-2xl font-bold p-5 text-white">
-          Terms & Conditions
-        </h1>
+      <div className="flex justify-between items-center mb-6 bg-gradient-to-r from-[#8F37FF] to-[#2D17FF] py-5 px-4 rounded-lg">
+        <h1 className="text-2xl font-bold p-5 text-white">Terms & Conditions</h1>
       </div>
 
       {/* Content Area */}
-      <div className="bg-purple-800 bg-opacity-50 rounded-lg p-6 ">
+      <div className="bg-purple-800 bg-opacity-50 rounded-lg p-6">
         <div className="space-y-4 h-[800px] overflow-y-auto scroll-smooth">
           {/* Render content as HTML */}
           <div

@@ -104,8 +104,23 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-4">
-      <div className="w-full max-w-xl p-8 rounded-3xl backdrop-blur-sm bg-black/30 border border-[#FFFFFF33]/20">
+    <div className="min-h-screen w-full flex items-center justify-center p-4 overflow-hidden" style={{
+      backgroundImage: 'url("/assets/img/backloging.png")', // 👈 image path ekhane
+      backgroundSize: "cover", // pura div e image fill korbe
+      backgroundRepeat: "no-repeat", // repeat korbe na
+      backgroundPosition: "center",
+       // image ke center e rakhbe
+    }}>
+      <div
+        className="w-full max-w-xl p-8 rounded-3xl backdrop-blur-sm bg-black/30 border border-[#FFFFFF33]/20"
+        style={{
+          backgroundImage: 'url("/assets/img/loginUpimg.png")', // 👈 image path ekhane
+          backgroundSize: "cover", // pura div e image fill korbe
+          backgroundRepeat: "no-repeat", // repeat korbe na
+          backgroundPosition: "center",
+          opacity: "0.8", // image ke center e rakhbe
+        }}
+      >
         <div className="text-center space-y-2 mb-8">
           <h1 className="font-kdam text-[32px] text-white smallShadow">
             Log In

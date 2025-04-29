@@ -24,7 +24,7 @@ export function Navbar() {
   const pathname = usePathname();
 
   // Define routes where the footer should be hidden
-  const HIDE_ROUTES = ["/signUp", "/login"];
+  const HIDE_ROUTES = ["/signUp", "/login","/forgot-password","/verify-otp","/reset-password"];
 
   const menuItems = [
     { href: "/", label: "Home" },

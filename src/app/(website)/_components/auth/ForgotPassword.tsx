@@ -27,15 +27,33 @@ export default function ForgotPassword() {
         toast.error(result.message || "Failed to send OTP");
       }
     } catch (error: Error | unknown) {
-      toast.error(error instanceof Error ? error.message : "Something went wrong");
+      toast.error(
+        error instanceof Error ? error.message : "Something went wrong",
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[url('/space-background.png')] bg-cover bg-center">
-      <div className="w-full max-w-md p-8 rounded-lg backdrop-blur-sm bg-black/30 text-white border border-white/10">
+    <div
+      className="flex items-center justify-center min-h-screen"
+      style={{
+        backgroundImage: 'url("/assets/img/backloging.png")', // 👈 image path ekhane
+        backgroundSize: "cover", // pura div e image fill korbe
+        backgroundRepeat: "no-repeat", // repeat korbe na
+        backgroundPosition: "center", // image ke center e rakhbe
+      }}
+    >
+      <div
+        className="w-full max-w-[618px] p-8 rounded-lg bg-[#FFFFFF33]/20% backdrop-blur-lg text-white border border-white/10"
+        style={{
+          backgroundImage: 'url("/assets/img/loginUpimg.png")', // 👈 image path ekhane
+          backgroundSize: "cover", // pura div e image fill korbe
+          backgroundRepeat: "no-repeat", // repeat korbe na
+          backgroundPosition: "center", // image ke center e rakhbe
+        }}
+      >
         <h1 className="text-2xl font-bold text-center mb-2">
           Forget Password?
         </h1>
@@ -49,7 +67,7 @@ export default function ForgotPassword() {
         </h2>
 
         <form onSubmit={handleSubmit}>
-          <div className="space-y-4">
+          <div className="">
             <div className="space-y-2">
               <label htmlFor="email" className="block">
                 Email address
@@ -67,7 +85,7 @@ export default function ForgotPassword() {
 
             <button
               type="submit"
-              className="w-full rounded-md bg-purple-600 py-3 font-medium text-white transition-colors hover:bg-purple-700 disabled:bg-purple-400"
+              className="w-full mt-9 rounded-md bg-purple-600 py-3 font-medium text-white transition-colors hover:bg-purple-700 disabled:bg-purple-400"
               disabled={isLoading}
             >
               {isLoading ? "Sending..." : "Send OTP"}

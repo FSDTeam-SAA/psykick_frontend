@@ -52,13 +52,31 @@ export default function ResetPassword() {
         toast.error(result.message || "Failed to reset password");
       }
     } catch (error: unknown) {
-      toast.error(error instanceof Error ? error.message : "Something went wrong");
+      toast.error(
+        error instanceof Error ? error.message : "Something went wrong",
+      );
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[url('/space-background.png')] bg-cover bg-center">
-      <div className="w-full max-w-md p-8 rounded-lg backdrop-blur-sm bg-black/30 text-white border border-white/10">
+    <div
+      className="flex items-center justify-center min-h-screen"
+      style={{
+        backgroundImage: 'url("/assets/img/backloging.png")', // 👈 image path ekhane
+        backgroundSize: "cover", // pura div e image fill korbe
+        backgroundRepeat: "no-repeat", // repeat korbe na
+        backgroundPosition: "center", // image ke center e rakhbe
+      }}
+    >
+      <div
+        className="w-full max-w-[618px] p-8 rounded-lg bg-[#FFFFFF33]/50% backdrop-blur-lg text-white border border-white/10"
+        style={{
+          backgroundImage: 'url("/assets/img/loginUpimg.png")', // 👈 image path ekhane
+          backgroundSize: "cover", // pura div e image fill korbe
+          backgroundRepeat: "no-repeat", // repeat korbe na
+          backgroundPosition: "center", // image ke center e rakhbe
+        }}
+      >
         <h1 className="text-2xl font-bold text-center mb-2">Reset Password</h1>
         <p className="text-sm text-center text-gray-300 mb-6">
           Create your new password
@@ -114,12 +132,14 @@ export default function ResetPassword() {
               </div>
             </div>
 
-            <button
-              type="submit"
-              className="w-full rounded-md bg-purple-600 py-3 font-medium text-white transition-colors hover:bg-purple-700"
-            >
-              Reset Password
-            </button>
+            <div className="w-[260px] mx-auto">
+              <button
+                type="submit"
+                className="btn mt-10 rounded-md bg-purple-600 py-3 font-medium text-white transition-colors hover:bg-purple-700"
+              >
+                Reset Password
+              </button>
+            </div>
           </div>
         </form>
       </div>
