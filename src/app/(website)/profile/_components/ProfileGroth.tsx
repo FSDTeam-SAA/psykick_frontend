@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect, type ReactNode } from "react"
+import { useEffect, useState, type ReactNode } from "react"
+import { useQuery } from "@tanstack/react-query"
 import { Target, Activity } from "lucide-react"
 
 interface StatCardProps {
@@ -25,52 +26,69 @@ function StatCard({ title, value, icon, className }: StatCardProps) {
 }
 
 interface StatsData {
-  completedTarget: number
-  successRate: number
+  totalCompletedTargets: number
+  successRate: string
+}
+
+async function fetchProfileStats(): Promise<StatsData> {
+  const token = localStorage.getItem("authToken")
+  if (!token) throw new Error("No auth token found")
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/profile/completed-targets-count`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!res.ok) throw new Error("Failed to fetch profile stats")
+
+  const json = await res.json()
+  if (!json.status) throw new Error(json.message || "API error")
+
+  return json.data
 }
 
 export default function ProfileGroth() {
-  const [stats, setStats] = useState<StatsData>({
-    completedTarget: 0,
-    successRate: 0,
-  })
-  const [loading, setLoading] = useState(true)
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true)
-      try {
-        setTimeout(() => {
-          setStats({
-            completedTarget: 211,
-            successRate: 70,
-          })
-          setLoading(false)
-        }, 1000)
-      } catch (error) {
-        console.error("Error fetching stats:", error)
-        setLoading(false)
-      }
-    }
-
-    fetchData()
+    setIsClient(true)
   }, [])
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["profileStats"],
+    queryFn: fetchProfileStats,
+    enabled: isClient, // prevent mismatch by deferring to client
+  })
 
   return (
     <main className="w-full py-6">
       <div className="max-w-5xl mx-auto px-4">
-        <div className="flex gap-6">
+        <div className="flex flex-col md:flex-row gap-6">
           <StatCard
             title="Completed Target"
-            value={loading ? "..." : stats.completedTarget}
+            value={
+              !isClient || isLoading
+                ? "..."
+                : isError
+                ? "Error"
+                : data?.totalCompletedTargets ?? 0
+            }
             icon={<Target className="h-8 w-8" />}
-            className="bg-[linear-gradient(90deg,rgba(143,55,255,0.6)_0%,rgba(45,23,255,0.6)_100%)] w-full"
+            className="bg-[linear-gradient(90deg,rgba(143,55,255,0.6)_0%,rgba(45,23,255,0.6)_100%)]"
           />
           <StatCard
             title="Success Rate"
-            value={loading ? "..." : `${stats.successRate}%`}
+            value={
+              !isClient || isLoading
+                ? "..."
+                : isError
+                ? "Error"
+                : `${data?.successRate ?? "0"}%`
+            }
             icon={<Activity className="h-8 w-8" />}
-            className="bg-[linear-gradient(90deg,rgba(143,55,255,0.6)_0%,rgba(45,23,255,0.6)_100%)] w-full"
+            className="bg-[linear-gradient(90deg,rgba(143,55,255,0.6)_0%,rgba(45,23,255,0.6)_100%)]"
           />
         </div>
       </div>
