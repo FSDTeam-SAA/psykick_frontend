@@ -1,36 +1,45 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { TMCTarget } from "@/lib/tmc-service";
 
 export type ImageChoice = {
-  id: number;
+  id: string;
   src: string;
   selected: boolean;
   order: number | null;
 };
 
+type TextBox = {
+  id: string;
+  text: string;
+  x: number;
+  y: number;
+  color: string;
+  fontSize: number;
+};
+
 type ChallengeState = {
-  // Challenge data
+  // Challenge data from API
+  targetId: string | null;
   challengeCode: string;
   revealTime: string;
+  gameTime: string;
+  bufferTime: string;
+
+  // Timer state
   timer: {
     hours: number;
     minutes: number;
     seconds: number;
   };
 
+
   // Drawing state
   drawingHistory: string[];
   currentDrawing: string | null;
   currentStep: number;
-  textBoxes: Array<{
-    id: string;
-    text: string;
-    x: number;
-    y: number;
-    color: string;
-    fontSize: number;
-  }>;
+  textBoxes: TextBox[];
 
   // Tool state
   currentTool: "pencil" | "text" | "eraser";
@@ -44,6 +53,10 @@ type ChallengeState = {
   // Image selection
   imageChoices: ImageChoice[];
   showImageSelection: boolean;
+  selectedChoices: {
+    firstChoice: string | null;
+    secondChoice: string | null;
+  };
 
   // Results
   submitted: boolean;
@@ -51,13 +64,15 @@ type ChallengeState = {
   targetMatched: boolean;
   pointsEarned: number;
   targetImage: string | null;
+};
 
-  // User data
-  userRank: number;
-  userTier: string;
-
-  // Actions
+type ChallengeActions = {
+  setTargetData: (target: TMCTarget) => void;
   setTimer: (hours: number, minutes: number, seconds: number) => void;
+  setSelectedChoices: (choices: {
+    firstChoice: string | null;
+    secondChoice: string | null;
+  }) => void;
   updateDrawing: (drawing: string) => void;
   addToHistory: () => void;
   undo: () => void;
@@ -68,100 +83,114 @@ type ChallengeState = {
   clearCanvas: () => void;
   toggleTMCInfo: () => void;
   setDontShowTMCAgain: (value: boolean) => void;
-  selectImage: (id: number) => void;
+  selectImage: (id: string) => void;
   submitImpression: () => void;
   submitChoices: () => void;
   revealResults: () => void;
   closeTMCInfo: () => void;
-  updateTextBoxes: (textBoxes: any[]) => void;
-  addTextBox: (textBox: any) => void;
-  updateTextBox: (id: string, updates: Partial<any>) => void;
+  updateTextBoxes: (textBoxes: TextBox[]) => void;
+  addTextBox: (textBox: TextBox) => void;
+  updateTextBox: (id: string, updates: Partial<TextBox>) => void;
   removeTextBox: (id: string) => void;
   resetCanvasState: () => void;
+  setActiveChallenge: (
+    code: string,
+    revealTime: string,
+    targetId: string,
+  ) => void;
 };
 
-export const useChallengeStore = create<ChallengeState>()(
+export const useChallengeStore = create<ChallengeState & ChallengeActions>()(
   persist(
     (set, get) => ({
       // Initial state
-      challengeCode: "ABC-25G",
-      revealTime: "20/05/2026",
+      targetId: null,
+      challengeCode: "",
+      revealTime: "",
+      gameTime: "",
+      bufferTime: "",
       timer: {
-        hours: 23,
-        minutes: 34,
-        seconds: 57,
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
       },
-
       drawingHistory: [],
       currentDrawing: null,
       currentStep: -1,
       textBoxes: [],
-
       currentTool: "pencil",
       currentColor: "#000000",
       brushSize: 5,
-
       showTMCInfo: false,
       dontShowTMCAgain: false,
-
-      imageChoices: [
-        {
-          id: 1,
-          src: "/assets/challenges/house.png",
-          selected: false,
-          order: null,
-        },
-        {
-          id: 2,
-          src: "/assets/challenges/Rectangle 52.png",
-          selected: false,
-          order: null,
-        },
-        {
-          id: 3,
-          src: "/assets/challenges/Rectangle 53.png",
-          selected: false,
-          order: null,
-        },
-        {
-          id: 4,
-          src: "/assets/challenges/Rectangle 54.png",
-          selected: false,
-          order: null,
-        },
-        {
-          id: 5,
-          src: "/assets/challenges/Rectangle 55.png",
-          selected: false,
-          order: null,
-        },
-        {
-          id: 6,
-          src: "/assets/challenges/Rectangle 57.png",
-          selected: false,
-          order: null,
-        },
-      ],
+      imageChoices: [],
       showImageSelection: false,
-
+      selectedChoices: {
+        firstChoice: null,
+        secondChoice: null,
+      },
       submitted: false,
       waitingForResults: false,
       targetMatched: false,
       pointsEarned: 0,
       targetImage: null,
 
-      userRank: 12,
-      userTier: "NOVICE SEEKER",
-
       // Actions
+      setTargetData: (target: TMCTarget) => {
+        // Calculate time remaining from gameTime
+        const gameTimeDate = new Date(target.gameTime);
+        const now = new Date();
+        const diffMs = gameTimeDate.getTime() - now.getTime();
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffMinutes = Math.floor(
+          (diffMs % (1000 * 60 * 60)) / (1000 * 60),
+        );
+        const diffSeconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+        set({
+          targetId: target._id,
+          challengeCode: target.code,
+          revealTime: target.revealTime,
+          gameTime: target.gameTime,
+          bufferTime: target.bufferTime,
+
+          timer: {
+            hours: Math.max(0, diffHours),
+            minutes: Math.max(0, diffMinutes),
+            seconds: Math.max(0, diffSeconds),
+          },
+          imageChoices: [
+            {
+              id: "target",
+              src: target.targetImage,
+              selected: false,
+              order: null,
+            },
+            ...target.controlImages.map((src, index) => ({
+              id: `control-${index}`,
+              src,
+              selected: false,
+              order: null,
+            })),
+          ].sort(() => Math.random() - 0.5), // Shuffle images
+        });
+      },
+
       setTimer: (hours, minutes, seconds) =>
-        set({ timer: { hours, minutes, seconds } }),
+        set({
+          timer: {
+            hours: Math.max(0, hours),
+            minutes: Math.max(0, minutes),
+            seconds: Math.max(0, seconds),
+          },
+        }),
+
+      setSelectedChoices: (choices) => set({ selectedChoices: choices }),
 
       updateDrawing: (drawing) => set({ currentDrawing: drawing }),
 
       addToHistory: () => {
         const { drawingHistory, currentDrawing, currentStep } = get();
-        // Only add to history if the drawing has changed and is not null
         if (
           !currentDrawing ||
           (currentStep >= 0 && drawingHistory[currentStep] === currentDrawing)
@@ -218,44 +247,87 @@ export const useChallengeStore = create<ChallengeState>()(
       closeTMCInfo: () => {
         set({
           showTMCInfo: false,
-          showImageSelection: true, // Show image selection after closing the modal
+          showImageSelection: true,
         });
       },
 
       setDontShowTMCAgain: (value) => set({ dontShowTMCAgain: value }),
 
-      selectImage: (id) => {
-        const { imageChoices } = get();
+      selectImage: (id: string) =>
+        set((state) => {
+          // Get current selected images
+          const firstChoice = state.selectedChoices.firstChoice;
+          const secondChoice = state.selectedChoices.secondChoice;
 
-        // Count how many are already selected
-        const selectedCount = imageChoices.filter((img) => img.selected).length;
-
-        // If this image is already selected, unselect it
-        const updatedChoices = imageChoices.map((img) => {
-          if (img.id === id) {
-            if (img.selected) {
-              // If unselecting, adjust order of other selections
-              // const unselectedOrder = img.order;
-              return { ...img, selected: false, order: null };
-            } else {
-              // If selecting and we have less than 2 selected, add it
-              if (selectedCount < 2) {
-                return { ...img, selected: true, order: selectedCount + 1 };
-              }
-            }
+          // If clicking an already selected image, deselect it
+          if (id === firstChoice) {
+            // If deselecting first choice, move second choice to first if it exists
+            return {
+              selectedChoices: {
+                firstChoice: secondChoice,
+                secondChoice: null,
+              },
+              imageChoices: state.imageChoices.map((img) => ({
+                ...img,
+                selected: img.id === secondChoice,
+                order: img.id === secondChoice ? 1 : null,
+              })),
+            };
           }
-          return img;
-        });
 
-        set({ imageChoices: updatedChoices });
-      },
+          if (id === secondChoice) {
+            return {
+              selectedChoices: {
+                ...state.selectedChoices,
+                secondChoice: null,
+              },
+              imageChoices: state.imageChoices.map((img) => ({
+                ...img,
+                selected: img.id === firstChoice,
+                order: img.id === firstChoice ? 1 : null,
+              })),
+            };
+          }
+
+          // Handle new selection
+          if (!firstChoice) {
+            // First selection
+            return {
+              selectedChoices: {
+                ...state.selectedChoices,
+                firstChoice: id,
+              },
+              imageChoices: state.imageChoices.map((img) => ({
+                ...img,
+                selected: img.id === id,
+                order: img.id === id ? 1 : null,
+              })),
+            };
+          }
+
+          if (!secondChoice) {
+            // Second selection
+            return {
+              selectedChoices: {
+                ...state.selectedChoices,
+                secondChoice: id,
+              },
+              imageChoices: state.imageChoices.map((img) => ({
+                ...img,
+                selected: img.id === id || img.id === firstChoice,
+                order: img.id === firstChoice ? 1 : img.id === id ? 2 : null,
+              })),
+            };
+          }
+
+          return state;
+        }),
 
       submitImpression: () => {
-        // Show TMC info if user hasn't opted out
-        if (!get().dontShowTMCAgain) {
+        const state = get();
+        if (!state.dontShowTMCAgain) {
           set({ showTMCInfo: true });
         } else {
-          // If user opted out, show image selection directly
           set({ showImageSelection: true });
         }
       },
@@ -266,16 +338,6 @@ export const useChallengeStore = create<ChallengeState>()(
           waitingForResults: true,
           showImageSelection: false,
         });
-
-        // Simulate waiting for results
-        setTimeout(() => {
-          set({
-            waitingForResults: false,
-            targetMatched: true,
-            pointsEarned: 25,
-            targetImage: "/assets/challenges/house.png",
-          });
-        }, 3000);
       },
 
       revealResults: () => {
@@ -283,11 +345,9 @@ export const useChallengeStore = create<ChallengeState>()(
           waitingForResults: false,
           targetMatched: true,
           pointsEarned: 25,
-          targetImage: "/assets/challenges/house.png",
         });
       },
 
-      // New text box actions
       updateTextBoxes: (textBoxes) => set({ textBoxes }),
 
       addTextBox: (textBox) =>
@@ -306,6 +366,7 @@ export const useChallengeStore = create<ChallengeState>()(
         set((state) => ({
           textBoxes: state.textBoxes.filter((box) => box.id !== id),
         })),
+
       resetCanvasState: () => {
         set({
           currentDrawing: null,
@@ -313,11 +374,19 @@ export const useChallengeStore = create<ChallengeState>()(
           currentStep: -1,
           textBoxes: [],
         });
-        // Clear the persisted state
         localStorage.removeItem("psykick-challenge-storage");
       },
-    }),
 
+      setActiveChallenge: (code, revealTime, targetId) =>
+        set({
+          challengeCode: code,
+          revealTime: revealTime,
+          targetId: targetId,
+          submitted: false,
+          showImageSelection: false,
+          imageChoices: [],
+        }),
+    }),
     {
       name: "psykick-challenge-storage",
       partialize: (state) => ({

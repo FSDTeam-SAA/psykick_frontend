@@ -1,38 +1,56 @@
 "use client";
+
+import { useEffect } from "react";
 import Layout from "@/components/challanges/layout";
 import EnhancedDrawingCanvas from "@/components/challanges/EnhancedDrawingCanvas";
 import ImageSelection from "@/components/challanges/image-selection";
 import TMCInfoModal from "@/components/challanges/tmc-info-modal";
 import WaitingScreen from "@/components/challanges/waiting-screen";
-import Results from "@/components/challanges/results";
 import { useChallengeStore } from "@/store/use-challenge-store";
+import { useActiveTMCTarget } from "@/hooks/use-tmc-queries";
 
 export default function TargetMatchChallenge() {
-  const {
-    challengeCode,
-    revealTime,
-    timer,
-    submitted,
-    waitingForResults,
-    // targetMatched,
-    submitImpression,
-    clearCanvas,
-  } = useChallengeStore();
+  const { showImageSelection, submitted, clearCanvas, submitImpression, setTargetData } =
+    useChallengeStore();
 
-  // If waiting for results, show waiting screen
-  if (submitted && waitingForResults) {
+  const { data: activeTarget, isLoading } = useActiveTMCTarget();
+
+  // Set target data when it's loaded
+  useEffect(() => {
+    if (activeTarget) {
+      setTargetData(activeTarget);
+    }
+  }, [activeTarget, setTargetData]);
+
+  // Show loading state
+  if (isLoading) {
     return (
       <Layout>
-        <WaitingScreen />
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-white text-xl">Loading challenge...</div>
+        </div>
       </Layout>
     );
   }
 
-  // If results are available, show results
-  if (submitted && !waitingForResults) {
+  // If no active target is available
+  if (!activeTarget) {
     return (
       <Layout>
-        <Results />
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-white text-xl">
+            No active challenges available at the moment.
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Show waiting screen if submission is complete
+  if (submitted) {
+    return (
+      <Layout>
+        <WaitingScreen />
       </Layout>
     );
   }
@@ -46,62 +64,40 @@ export default function TargetMatchChallenge() {
 
         <div className="flex flex-col md:flex-row gap-[58px] mb-6">
           <div>
-            <p className="challange-subTitle mb-2">Code: {challengeCode}</p>
-            <p className="challange-subTitle">Reveal Time: {revealTime}</p>
-          </div>
-
-          <div className="mt-4 md:mt-0 bg-[#e4d0ff] rounded-lg p-2 text-black">
-            <p className=" text-base leading-[120%] font-normal mb-1">
-              Hurry up! Time ends In:
+            <p className="challange-subTitle mb-2">Code: {activeTarget.code}</p>
+            <p className="challange-subTitle">
+              Game ends: {new Date(activeTarget.gameTime).toLocaleString()}
             </p>
-            <div className="flex justify-center ">
-              <div className="text-center">
-                <span className="text-xl font-bold">
-                  {String(timer.hours).padStart(2, "0")}
-                </span>
-                <p className="text-xs">Hours</p>
-              </div>
-              <span className="mx-2 text-xl font-bold">:</span>
-              <div className="text-center">
-                <span className="text-xl font-bold">
-                  {String(timer.minutes).padStart(2, "0")}
-                </span>
-                <p className="text-xs">Mins</p>
-              </div>
-              <span className="mx-2 text-xl font-bold">:</span>
-              <div className="text-center">
-                <span className="text-xl font-bold">
-                  {String(timer.seconds).padStart(2, "0")}
-                </span>
-                <p className="text-xs">Secs</p>
+          </div>
+        </div>
+
+        {!showImageSelection && (
+          <div className="space-y-6">
+            <div className="mb-6 relative">
+              <h2 className="text-xl font-bold text-white mb-4">
+                Draw Your Impressions:
+              </h2>
+              <EnhancedDrawingCanvas mode="tmc" />
+
+              <div className="flex space-x-4 mt-4">
+                <button
+                  onClick={clearCanvas}
+                  className="px-4 py-2 bg-purple-900 text-white rounded-lg hover:bg-purple-800"
+                >
+                  Clear Canvas
+                </button>
+                <button
+                  onClick={submitImpression}
+                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+                >
+                  Submit Impression
+                </button>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
-        <div className="mb-6 relative">
-          <h2 className="text-xl font-bold text-white mb-4">
-            Draw Your Impressions:
-          </h2>
-          <EnhancedDrawingCanvas mode="tmc" />
-
-          <div className="flex space-x-4 mt-4">
-            <button
-              onClick={clearCanvas}
-              className="px-4 py-2 bg-purple-900 text-white rounded-lg hover:bg-purple-800"
-            >
-              Clear Canvas
-            </button>
-            <button
-              onClick={submitImpression}
-              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
-            >
-              Submit Impression
-            </button>
-          </div>
-        </div>
-
-        <ImageSelection />
+        {showImageSelection && <ImageSelection />}
       </div>
 
       <TMCInfoModal />
