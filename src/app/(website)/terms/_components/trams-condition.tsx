@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 const TermsConditions = () => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('token');
   const [content, setContent] = useState<string>("");
 
   // Fetch data from the backend for the Terms and Conditions
