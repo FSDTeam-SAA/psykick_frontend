@@ -21,7 +21,8 @@ const Page = () => {
         </p>
       </div>
       <div className="flex justify-items-center pt-[40px]  mx-auto gap-8">
-        <ProfileCard />
+       
+       <ProfileCard />
         <div className="flex flex-col px-3  pb-6 gap-4 w-full  bg-[#FFFFFF1A] border border-white rounded-lg">
           <ProfileGroth />
           <AboutGraph />

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { MessageCircleQuestionIcon as QuestionMarkCircle } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import Link from "next/link";
 
 interface GameCardProps {
   avatarSrc?: string;
@@ -52,7 +53,8 @@ export default function ProfileCard({
               {user?.screenName}
             </h3>
             {showQuestionMark && (
-              <QuestionMarkCircle className="h-5 w-5 text-white" />
+              <Link href="profile-info"> <QuestionMarkCircle className="h-5 w-5 text-white" /></Link>
+             
             )}
           </div>
           <p className="text-amber-400 font-bold text-xl tracking-wide">
