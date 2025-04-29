@@ -1,10 +1,10 @@
-import ForgotPassword from "../_components/auth/ForgotPassword";
+import ResetPassword from "../_components/auth/ResetPassword";
 import React from "react";
 
 const page = () => {
   return (
     <div>
-      <ForgotPassword />
+      <ResetPassword />
     </div>
   );
 };

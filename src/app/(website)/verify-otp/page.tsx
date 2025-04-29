@@ -1,10 +1,10 @@
-import ForgotPassword from "../_components/auth/ForgotPassword";
 import React from "react";
+import VerifyOTP from "../_components/auth/VerifyOTP";
 
 const page = () => {
   return (
     <div>
-      <ForgotPassword />
+      <VerifyOTP />
     </div>
   );
 };
