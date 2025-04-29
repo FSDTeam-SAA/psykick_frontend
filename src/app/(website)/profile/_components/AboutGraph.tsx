@@ -11,13 +11,13 @@ import {
 } from "recharts";
 import { Card } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
-import { useAuth } from "@/hooks/useAuth";
 
-const fetchGraphData = async (userId: string): Promise<
+const fetchGraphData = async (): Promise<
   { month: string; TMC: number; ARV: number }[]
 > => {
   const token = localStorage.getItem("authToken");
   const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const userId = "680b13fe952ccea102170b34";
 
   const res = await fetch(`${baseURL}/userSubmission/user-graph-data/${userId}`, {
     headers: {
@@ -29,21 +29,17 @@ const fetchGraphData = async (userId: string): Promise<
 
   const json = await res.json();
 
-  return json.data.map((item: { month: string; tmc: number; arv: number }) => ({
+  return json.map((item: { month: string; TMC: number; ARV: number }) => ({
     month: item.month,
-    TMC: item.tmc,
-    ARV: item.arv,
+    TMC: item.TMC,
+    ARV: item.ARV,
   }));
 };
 
 export function AboutGraph() {
-  const { user } = useAuth();
-  const userId = user?._id;
-
   const { data, isLoading } = useQuery({
-    queryKey: ["userGraphData", userId],
-    queryFn: () => fetchGraphData(userId!),
-    enabled: !!userId, // avoids running the query until userId is available
+    queryKey: ["userGraphData"],
+    queryFn: fetchGraphData,
   });
 
   if (isLoading || !data) {
