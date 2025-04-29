@@ -35,7 +35,7 @@ const navigation = {
 };
 
 // Define routes where the footer should be hidden
-const HIDE_ROUTES = ["/signUp", "/login"];
+const HIDE_ROUTES = ["/signUp", "/login","/forgot-password","/verify-otp","/reset-password"];
 
 export function SiteFooter() {
   return (
