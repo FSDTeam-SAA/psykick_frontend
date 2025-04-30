@@ -11,11 +11,8 @@ type GameDashboardProps = {
 };
 export default function GameDashboard({ totalScore }: GameDashboardProps) {
   const [temperature, setTemperature] = useState(275);
-  // const [budBudPercentage, setBudBudPercentage] = useState(60);
-  // const [score, setScore] = useState(20);
 
   console.log(setTemperature);
-  // console.log(setBudBudPercentage);
   console.log("tota",totalScore);
 
   return (
