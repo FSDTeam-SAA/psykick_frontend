@@ -38,7 +38,7 @@ export default function EditProfileForm() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       toast.success(response.data.message || "Profile updated successfully");
@@ -48,7 +48,10 @@ export default function EditProfileForm() {
     } catch (error) {
       console.error(error);
       if (axios.isAxiosError(error) && error.response) {
-        toast.error(error.response.data?.message || "Failed to update profile. Please try again.");
+        toast.error(
+          error.response.data?.message ||
+            "Failed to update profile. Please try again.",
+        );
       } else {
         toast.error("An unexpected error occurred. Please try again.");
       }
