@@ -57,11 +57,11 @@ export function AboutGraph() {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-            <span className="text-sm text-gray-600">TMC</span>
+            <span className="text-sm text-white">TMC</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-green-500"></div>
-            <span className="text-sm text-gray-600">ARV</span>
+            <span className="text-sm text-white ">ARV</span>
           </div>
         </div>
       </div>
