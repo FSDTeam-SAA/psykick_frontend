@@ -34,9 +34,7 @@ export default function ProfileCard({
   // const [isLoaded, setIsLoaded] = useState(false);
   const { user } = useAuth();
 
-  // useEffect(() => {
-  //   setIsLoaded(true);
-  // }, []);
+
 
   // Determine avatar based on tierRank or fallback
   const avatarSrc =

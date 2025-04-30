@@ -79,6 +79,8 @@ export default function GamifiedProfile() {
 
       {/* Main content */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+  
+  
         {/* Left side - Progress meter */}
         <div className="md:col-span-3">
           <GameDashboard totalScore={profileData.totalPoints} />

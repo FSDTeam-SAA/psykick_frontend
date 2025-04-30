@@ -6,7 +6,7 @@ import ProfileRoutes from "./_components/profileRoutes";
 
 const Page = () => {
   return (
-    <div className="container pb-10">
+    <div className="container py-10">
       <div className="mt-10">
         <h1 className="text-center smallTextShadow font-normal !text-5xl mb-4">
           Profile
