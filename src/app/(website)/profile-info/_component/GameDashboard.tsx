@@ -25,7 +25,7 @@ export default function GameDashboard({ totalScore }: GameDashboardProps) {
   // Define the tier ranks 
   const tierRanks = [
     "ASCENDING MASTER",
-    "MASTER REMOTE VIEWER",
+    "MASTER REMOTE ",
     "ORACLE",
     "SEER",
     "ADEPT",
@@ -61,7 +61,7 @@ const tierImageMap: Record<string, string> = {
   "ADEPT": "/assets/img/adept.png",
   "SEER": "/assets/img/seer.png",
   "ORACLE": "/assets/img/oracle.png",
-  "MASTER REMOTE VIEWER": "/assets/img/master_remote_viewer.png",
+  "MASTER REMOTE ": "/assets/img/master_remote_viewer.png",
   "ASCENDING MASTER": "/assets/img/ascending_master.png",
 };
 
@@ -72,10 +72,11 @@ tierImageMap[user?.tierRank?.toUpperCase() || ""] || "/assets/img/profile.png";
 // console.log("avatarSrc",avatarSrc);
 
 const upperAvatar1 = tierImageMap[upperRank1?.toUpperCase() || ""] || "/assets/img/profile.png";
-console.log("upperAvatar1",upperAvatar1);
+// console.log("upperAvatar1",upperAvatar1);
 
 const upperAvatar2 = tierImageMap[upperRank2?.toUpperCase() || ""] || "/assets/img/profile.png";
-console.log("upperAvatar2",upperAvatar2);
+// console.log("upperAvatar2",upperAvatar2);
+
   {/* {upperRank2 && <p>Second highest above: {upperRank2}</p>}
             {upperRank1 && <p>Highest above: {upperRank1}</p>} */}
           
