@@ -1,0 +1,239 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useQuery } from "@tanstack/react-query";
+import CountdownTimer from "@/components/countdown-timer"; // Update import path
+
+// Add type for API response
+interface ARVResult {
+  targetId: string;
+  targetDescription: string;
+  submittedImage: string;
+  resultImage: string;
+  outcomeDescription: string;
+  points?: number;
+  endTime: string;
+  status: string;
+}
+
+// Function to fetch ARV result data
+async function fetchARVResult(arvId: string) {
+  if (!arvId) throw new Error("No ARV ID provided");
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/userSubmission/get-ARVResult/${arvId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(response.statusText || "Failed to fetch ARV result");
+    }
+
+    const data: ARVResult = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching ARV result:", error);
+    throw error;
+  }
+}
+
+export default function ArvReveal() {
+  // Get arvId from URL params
+  const searchParams = new URLSearchParams(
+    typeof window !== "undefined" ? window.location.search : "",
+  );
+  const arvId = searchParams.get("id") || "";
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["arvResult", arvId],
+    queryFn: () => fetchARVResult(arvId),
+    refetchInterval: 30000,
+    enabled: !!arvId,
+  });
+
+  const [timeLeft, setTimeLeft] = useState({
+    hours: "00",
+    mins: "00",
+    secs: "00",
+  });
+
+  // Update timer based on endTime from API
+  useEffect(() => {
+    if (!data?.endTime) return;
+
+    const endTime = new Date(data.endTime).getTime();
+
+    const updateTimer = () => {
+      const now = new Date().getTime();
+      const distance = endTime - now;
+
+      if (distance <= 0) {
+        setTimeLeft({ hours: "00", mins: "00", secs: "00" });
+        return;
+      }
+
+      const hours = Math.floor(distance / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      setTimeLeft({
+        hours: hours.toString().padStart(2, "0"),
+        mins: minutes.toString().padStart(2, "0"),
+        secs: seconds.toString().padStart(2, "0"),
+      });
+    };
+
+    updateTimer();
+    const interval = setInterval(updateTimer, 1000);
+    return () => clearInterval(interval);
+  }, [data?.endTime]);
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
+        <div className="text-center text-white">
+          <div className="mb-4 text-2xl">Loading...</div>
+          <div className="text-sm">Fetching your ARV challenge data</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
+        <div className="rounded-lg bg-white p-8 text-center">
+          <div className="mb-4 text-2xl text-red-600">Error</div>
+          <div className="text-gray-800">
+            {error instanceof Error
+              ? error.message
+              : "Failed to load challenge data. Please try again later."}
+          </div>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 rounded-full bg-purple-600 px-6 py-2 text-white hover:bg-purple-700"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
+      <main className="container mx-auto px-4 py-8">
+        {/* Timer Section */}
+        <div className="mb-8 rounded-lg bg-purple-800 bg-opacity-60 p-6">
+          <div className="mb-4 rounded-lg bg-purple-200 bg-opacity-20 p-4 text-center">
+            <h2 className="text-xl font-semibold text-white">
+              Time Remaining:
+            </h2>
+            <CountdownTimer targetDate={timeLeft} />
+          </div>
+
+          {/* Target Information */}
+          <div className="mb-8">
+            <h3 className="mb-4 text-xl text-white">
+              Target ID: {data?.targetId || arvId}
+            </h3>
+            <div className="mb-4 overflow-hidden rounded-lg">
+              <Image
+                src={data?.submittedImage || "/placeholder.jpg"}
+                alt="Target image"
+                width={400}
+                height={250}
+                className="h-auto w-full object-cover"
+              />
+            </div>
+            <p className="mb-6 text-xl text-white">
+              The Target with Target ID: {data?.targetId || arvId} concerns the
+              outcome of the following event:
+            </p>
+            <p className="mb-8 text-xl text-yellow-400">
+              {data?.targetDescription || "No target description available."}
+            </p>
+          </div>
+
+          {/* Outcome Information */}
+          <div className="mb-8">
+            <p className="mb-4 text-xl text-white">
+              Your image selection corresponds to the following Outcome:
+            </p>
+            <div className="mb-4 overflow-hidden rounded-lg">
+              <Image
+                src={data?.resultImage || "/placeholder.jpg"}
+                alt="Outcome image"
+                width={400}
+                height={250}
+                className="h-auto w-full object-cover"
+              />
+            </div>
+            <p className="text-xl text-yellow-400">
+              {data?.outcomeDescription || "No outcome description available."}
+            </p>
+          </div>
+        </div>
+
+        {/* Results Section - Only show if available */}
+        {data?.points && (
+          <div className="mb-8 rounded-lg bg-purple-800 bg-opacity-60 p-6 text-center">
+            <h2 className="text-3xl font-bold text-green-400">
+              Congratulations!
+            </h2>
+            <p className="mt-2 text-xl text-white">
+              You have successfully predicted the outcome for this event. You
+              received {data.points} points!
+            </p>
+          </div>
+        )}
+
+        {/* Disclaimer */}
+        <div className="rounded-lg bg-white p-6">
+          <h3 className="mb-4 text-xl font-bold text-red-600">
+            Disclaimer: ⚠
+          </h3>
+          <p className="mb-4 text-sm text-gray-800">
+            The <span className="font-bold">Psykick Club</span> platform and the{" "}
+            <span className="font-bold">
+              Associative Remote Viewing (ARV) Challenge
+            </span>{" "}
+            are intended solely for entertainment and personal development
+            purposes. The results of any ARV session do not constitute
+            financial, betting, or gambling advice, and{" "}
+            <span className="font-bold">
+              Psykick Club does not endorse, promote, or encourage users to
+              place wagers based on their predictions.
+            </span>
+          </p>
+          <p className="mb-4 text-sm text-gray-800">
+            Psykick Club assumes no responsibility for any decisions made by
+            users regarding gambling, sports betting, or other speculative
+            activities based on ARV results. If you choose to engage in such
+            activities, you{" "}
+            <span className="font-bold">do so at your own risk</span> and
+            acknowledge that Psykick Club and its affiliates bear no liability
+            for any losses incurred.
+          </p>
+          <p className="text-sm text-gray-800">
+            By participating in the ARV Challenge, you acknowledge and agree
+            that this experience is{" "}
+            <span className="font-bold">
+              purely experimental and recreational
+            </span>
+            . Always engage responsibly and within the boundaries of legal and
+            ethical conduct in your jurisdiction.
+          </p>
+        </div>
+      </main>
+    </div>
+  );
+}
