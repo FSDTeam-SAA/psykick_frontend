@@ -18,6 +18,8 @@ export default function GameDashboard({ totalScore }: GameDashboardProps) {
 
   const {user}  = useAuth()
   console.log("userxxxx",user?.tierRank);
+  
+  // Define the tier ranks 
   const tierRanks = [
     "ASCENDING MASTER",
     "MASTER REMOTE VIEWER",
