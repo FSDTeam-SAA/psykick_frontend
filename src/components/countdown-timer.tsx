@@ -1,50 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
-
 interface CountdownTimerProps {
-  seconds: number;
-  onComplete?: () => void;
-  className?: string;
+  targetDate: {
+    hours: string;
+    mins: string;
+    secs: string;
+  };
 }
 
-export default function CountdownTimer({
-  seconds: initialSeconds,
-  onComplete,
-  className,
-}: CountdownTimerProps) {
-  const [timeLeft, setTimeLeft] = useState(initialSeconds);
-
-  useEffect(() => {
-    if (timeLeft <= 0) {
-      onComplete?.();
-      return;
-    }
-
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          onComplete?.();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [timeLeft, onComplete]);
-
-  const hours = Math.floor(timeLeft / 3600);
-  const minutes = Math.floor((timeLeft % 3600) / 60);
-  const seconds = timeLeft % 60;
-
-  const formatNumber = (num: number) => num.toString().padStart(2, "0");
-
+export default function CountdownTimer({ targetDate }: CountdownTimerProps) {
   return (
-    <div className={cn("font-mono", className)}>
-      {formatNumber(hours)}:{formatNumber(minutes)}:{formatNumber(seconds)}
+    <div className="mt-4 flex items-center justify-center gap-4 text-4xl font-bold">
+      <div className="flex flex-col items-center">
+        <span className="text-white">{targetDate.hours}</span>
+        <span className="text-sm text-gray-300">Hours</span>
+      </div>
+      <span className="text-white">:</span>
+      <div className="flex flex-col items-center">
+        <span className="text-white">{targetDate.mins}</span>
+        <span className="text-sm text-gray-300">Minutes</span>
+      </div>
+      <span className="text-white">:</span>
+      <div className="flex flex-col items-center">
+        <span className="text-white">{targetDate.secs}</span>
+        <span className="text-sm text-gray-300">Seconds</span>
+      </div>
     </div>
   );
 }

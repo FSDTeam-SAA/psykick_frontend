@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -63,6 +64,18 @@ type ARVState = {
   isCorrect: boolean;
   pointsEarned: number;
 
+  // Active target
+  activeTarget: {
+    targetId: string;
+    code: string;
+    eventName: string;
+    eventDescription: string;
+    image1: { url: string; description: string };
+    image2: { url: string; description: string };
+    image3: { url: string; description: string };
+    controlImage: string;
+  } | null;
+
   // Actions
   setTimer: (hours: number, minutes: number, seconds: number) => void;
   updateDrawing: (drawing: string) => void;
@@ -87,6 +100,7 @@ type ARVState = {
   updateTextBox: (id: string, updates: Partial<TextBox>) => void;
   removeTextBox: (id: string) => void;
   resetCanvasState: () => void;
+  setActiveTarget: (target: any) => void;
 };
 
 export const useARVStore = create<ARVState>()(
@@ -135,6 +149,8 @@ export const useARVStore = create<ARVState>()(
 
       isCorrect: false,
       pointsEarned: 0,
+
+      activeTarget: null,
 
       // Actions
       setTimer: (hours, minutes, seconds) =>
@@ -296,6 +312,24 @@ export const useARVStore = create<ARVState>()(
         });
         // Clear the persisted state
         localStorage.removeItem("psykick-arv-storage");
+      },
+
+      setActiveTarget: (target) => {
+        set({
+          activeTarget: target,
+          imageChoices: [
+            { id: 1, src: target.image1.url, selected: false },
+            { id: 2, src: target.image2.url, selected: false },
+            { id: 3, src: target.image3.url, selected: false },
+          ],
+          challengeCode: target.code,
+          eventInfo: {
+            id: target.code,
+            description: target.eventDescription,
+            outcome: "", // Will be set when results are available
+            outcomeImage: "", // Will be set when results are available
+          },
+        });
       },
     }),
     {

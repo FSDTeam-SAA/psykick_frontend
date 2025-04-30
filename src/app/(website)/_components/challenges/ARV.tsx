@@ -7,22 +7,36 @@ import ARVInfoModal from "@/components/challanges/arv-info-modal";
 import ARVShareModal from "@/components/challanges/arv-share-modal";
 import ARVWaitingScreen from "@/components/challanges/arv-waiting-screen";
 import ARVResults from "@/components/challanges/arv-results";
-// import ARVTimer from "@/components/challanges/arv-timer";
 import ARVDisclaimer from "@/components/challanges/arv-disclaimer";
 import { useARVStore } from "@/store/use-arv-store";
 import { useEffect } from "react";
+import {
+  useActiveARVTarget,
+  useSubmitARVTarget,
+} from "@/hooks/use-arv-queries";
+import { Loader2 } from "lucide-react";
 
 export default function ARVPredictionMode() {
   const {
-    challengeCode,
-    revealTime,
     stage,
     submitImpression,
     clearCanvas,
     eventInfo,
     toggleARVInfo,
     resetCanvasState,
+    setActiveTarget,
+    currentDrawing,
   } = useARVStore();
+
+  const { data: activeTarget, isLoading } = useActiveARVTarget();
+  const { mutate: submitARV } = useSubmitARVTarget();
+
+  // Update store with active target data
+  useEffect(() => {
+    if (activeTarget) {
+      setActiveTarget(activeTarget);
+    }
+  }, [activeTarget, setActiveTarget]);
 
   // Show ARV info modal on first visit
   useEffect(() => {
@@ -34,6 +48,7 @@ export default function ARVPredictionMode() {
   useEffect(() => {
     resetCanvasState();
   }, [resetCanvasState]);
+
   // If waiting for results, show waiting screen
   if (stage === "waiting") {
     return (
@@ -53,9 +68,33 @@ export default function ARVPredictionMode() {
     );
   }
 
+  if (isLoading || !activeTarget) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-screen">
+          <Loader2 className="w-8 h-8 animate-spin text-white" />
+        </div>
+      </Layout>
+    );
+  }
+
   const clearCanva = () => {
     clearCanvas();
     resetCanvasState();
+  };
+
+  const handleSubmitImpression = async () => {
+    if (!currentDrawing || stage !== "drawing") return;
+
+    try {
+      await submitARV({
+        submittedImage: currentDrawing,
+        ARVTargetId: activeTarget.targetId,
+      });
+      submitImpression();
+    } catch (error) {
+      console.error("Failed to submit impression:", error);
+    }
   };
 
   return (
@@ -68,36 +107,16 @@ export default function ARVPredictionMode() {
 
         <div className="flex flex-col md:flex-row gap-[58px] mb-6">
           <div>
-            <p className="challange-subTitle mb-2">Code: {challengeCode}</p>
-            <p className="challange-subTitle">Reveal Time: {revealTime}</p>
+            <p className="challange-subTitle mb-2">Code: {activeTarget.code}</p>
+            <p className="challange-subTitle">
+              Event: {activeTarget.eventName}
+            </p>
           </div>
 
           <div className="mt-4 md:mt-0 bg-[#e4d0ff] rounded-lg p-2 text-black">
-            <p className=" text-base leading-[120%] font-normal mb-1">
-              Hurry up! Time ends In:
+            <p className="text-base leading-[120%] font-normal mb-1">
+              {activeTarget.eventDescription}
             </p>
-            <div className="flex justify-center ">
-              <div className="text-center">
-                <span className="text-xl font-bold">
-                  {String(19).padStart(2, "0")}
-                </span>
-                <p className="text-xs">Hours</p>
-              </div>
-              <span className="mx-2 text-xl font-bold">:</span>
-              <div className="text-center">
-                <span className="text-xl font-bold">
-                  {String(50).padStart(2, "0")}
-                </span>
-                <p className="text-xs">Mins</p>
-              </div>
-              <span className="mx-2 text-xl font-bold">:</span>
-              <div className="text-center">
-                <span className="text-xl font-bold">
-                  {String(25).padStart(2, "0")}
-                </span>
-                <p className="text-xs">Secs</p>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -115,7 +134,7 @@ export default function ARVPredictionMode() {
               Clear Canvas
             </button>
             <button
-              onClick={submitImpression}
+              onClick={handleSubmitImpression}
               className="px-4 py-2 bg-[#8a2be2] text-white rounded-lg hover:bg-[#7a1bd2]"
             >
               Submit Impression
