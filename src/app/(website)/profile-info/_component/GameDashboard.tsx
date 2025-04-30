@@ -19,6 +19,9 @@ export default function GameDashboard({ totalScore }: GameDashboardProps) {
   const {user}  = useAuth()
   console.log("userxxxx",user?.tierRank);
   
+
+
+
   // Define the tier ranks 
   const tierRanks = [
     "ASCENDING MASTER",
@@ -48,6 +51,34 @@ export default function GameDashboard({ totalScore }: GameDashboardProps) {
         {/* {upperRank2 && <p>Second highest above: {upperRank2}</p>}
             {upperRank1 && <p>Highest above: {upperRank1}</p>} */}
 
+              // Map tier names to avatar image paths
+const tierImageMap: Record<string, string> = {
+  "NOVICE SEEKER": "/assets/img/novice.png",
+  "INITIATE": "/assets/img/initiate.png",
+  "APPRENTICE": "/assets/img/apprentice.png",
+  "EXPLORER": "/assets/img/explorer.png",
+  "VISIONARY": "/assets/img/visionary.png",
+  "ADEPT": "/assets/img/adept.png",
+  "SEER": "/assets/img/seer.png",
+  "ORACLE": "/assets/img/oracle.png",
+  "MASTER REMOTE VIEWER": "/assets/img/master_remote_viewer.png",
+  "ASCENDING MASTER": "/assets/img/ascending_master.png",
+};
+
+// Determine avatar based on tierRank or fallback
+const avatarSrc =
+tierImageMap[user?.tierRank?.toUpperCase() || ""] || "/assets/img/profile.png";
+
+// console.log("avatarSrc",avatarSrc);
+
+const upperAvatar1 = tierImageMap[upperRank1?.toUpperCase() || ""] || "/assets/img/profile.png";
+console.log("upperAvatar1",upperAvatar1);
+
+const upperAvatar2 = tierImageMap[upperRank2?.toUpperCase() || ""] || "/assets/img/profile.png";
+console.log("upperAvatar2",upperAvatar2);
+  {/* {upperRank2 && <p>Second highest above: {upperRank2}</p>}
+            {upperRank1 && <p>Highest above: {upperRank1}</p>} */}
+          
   return (
     <div className="w-full flex items-center justify-center">
       <Card className="p-16 w-full max-w-3xl bg-transparent border-none">
@@ -61,7 +92,7 @@ export default function GameDashboard({ totalScore }: GameDashboardProps) {
               <LevelIndicator
                 title={upperRank2 || ""}
                 bgColor="bg-yellow-400"
-                imageSrc="/assets/profile/apprentice.png"
+                imageSrc={upperAvatar2}
               />
             </div>
 
@@ -70,7 +101,7 @@ export default function GameDashboard({ totalScore }: GameDashboardProps) {
               <LevelIndicator
                 title= {upperRank1 || ""}
                 bgColor="bg-orange-400"
-                imageSrc="/assets/profile/initiate.png"
+                imageSrc={upperAvatar1}
               />
             </div>
 
@@ -78,7 +109,7 @@ export default function GameDashboard({ totalScore }: GameDashboardProps) {
               <LevelIndicator
                 title={user?.tierRank || ""}
                 bgColor="bg-red-500"
-                imageSrc="/assets/profile/novice.png"
+                imageSrc={avatarSrc}
               />
             </div>
           </div>
