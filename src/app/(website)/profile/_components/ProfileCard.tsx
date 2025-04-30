@@ -6,17 +6,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { MessageCircleQuestionIcon as QuestionMarkCircle } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 // Map tier names to avatar image paths
 const tierImageMap: Record<string, string> = {
   "NOVICE SEEKER": "/assets/img/novice.png",
-  "INITIATE": "/assets/img/initiate.png",
-  "APPRENTICE": "/assets/img/apprentice.png",
-  "EXPLORER": "/assets/img/explorer.png",
-  "VISIONARY": "/assets/img/visionary.png",
-  "ADEPT": "/assets/img/adept.png",
-  "SEER": "/assets/img/seer.png",
-  "ORACLE": "/assets/img/oracle.png",
+  INITIATE: "/assets/img/initiate.png",
+  APPRENTICE: "/assets/img/apprentice.png",
+  EXPLORER: "/assets/img/explorer.png",
+  VISIONARY: "/assets/img/visionary.png",
+  ADEPT: "/assets/img/adept.png",
+  SEER: "/assets/img/seer.png",
+  ORACLE: "/assets/img/oracle.png",
   "MASTER REMOTE VIEWER": "/assets/img/master_remote_viewer.png",
   "ASCENDING MASTER": "/assets/img/ascending_master.png",
 };
@@ -34,19 +35,25 @@ export default function ProfileCard({
   // const [isLoaded, setIsLoaded] = useState(false);
   const { user } = useAuth();
 
-
+  const router = useRouter();
 
   // Determine avatar based on tierRank or fallback
   const avatarSrc =
-    tierImageMap[user?.tierRank?.toUpperCase() || ""] || "/assets/img/profile.png";
+    tierImageMap[user?.tierRank?.toUpperCase() || ""] ||
+    "/assets/img/profile.png";
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-[#FFFFFF1A] border-2 border-white rounded-2xl shadow-lg">
+    <Card
+      onClick={() => router.push("/profile-info")}
+      className="w-full max-w-md mx-auto cursor-pointer bg-[#FFFFFF1A] border-2 border-white rounded-2xl shadow-lg"
+    >
       <div className="text-center py-6 px-4">
         <h1 className="text-3xl text-white font-semibold">
           {user?.fullName || "Darlene Robertson"}
         </h1>
-        <p className="text-white text-sm">@{user?.screenName || "darlenerobertson"}</p>
+        <p className="text-white text-sm">
+          @{user?.screenName || "darlenerobertson"}
+        </p>
       </div>
 
       <CardContent className="flex flex-col items-center space-y-5 pb-6 px-6">

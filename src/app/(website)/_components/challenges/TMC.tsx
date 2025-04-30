@@ -10,8 +10,13 @@ import { useChallengeStore } from "@/store/use-challenge-store";
 import { useActiveTMCTarget } from "@/hooks/use-tmc-queries";
 
 export default function TargetMatchChallenge() {
-  const { showImageSelection, submitted, clearCanvas, submitImpression, setTargetData } =
-    useChallengeStore();
+  const {
+    showImageSelection,
+    submitted,
+    clearCanvas,
+    submitImpression,
+    setTargetData,
+  } = useChallengeStore();
 
   const { data: activeTarget, isLoading } = useActiveTMCTarget();
 
@@ -37,9 +42,15 @@ export default function TargetMatchChallenge() {
   if (!activeTarget) {
     return (
       <Layout>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-white text-xl">
+        <div className="flex flex-col items-center justify-center min-h-[60vh] max-w-2xl mx-auto px-4">
+          <div className="text-white text-xl text-center mb-4">
             No active challenges available at the moment.
+          </div>
+          <div className="text-purple-300 text-center">
+            This could be because you&apos;ve completed all your targets for
+            this cycle. Your tier will be updated and a new cycle will begin
+            automatically. Check your notifications for updates about your tier
+            changes!
           </div>
         </div>
       </Layout>
