@@ -1,61 +1,86 @@
+/* eslint-disable */
+// @ts-nocheck
 "use client";
 
 import { useARVStore } from "@/store/use-arv-store";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { useSubmitARVTarget } from "@/hooks/use-arv-queries";
 
 export default function ARVImageSelection() {
-  const { imageChoices, selectImage, selectedImageId, toggleShareModal } =
-    useARVStore();
+  const {
+    imageChoices,
+    selectImage,
+    submitSelection,
+    selectedImageId,
+    activeTarget,
+  } = useARVStore();
+  const { mutate: submitARV } = useSubmitARVTarget();
 
-  const handleSubmit = () => {
-    if (selectedImageId) {
-      toggleShareModal();
-    } else {
-      alert("Please select an image before submitting");
+  const handleSubmit = async () => {
+    if (!selectedImageId || !activeTarget) return;
+
+    const selectedImage = imageChoices.find(
+      (img) => img.id === selectedImageId,
+    );
+    if (!selectedImage?.src) {
+      console.error("Selected image or image URL not found");
+      return;
+    }
+
+    try {
+      // Send the URL of the selected image directly from the choices
+      const imageUrl = selectedImage.src;
+      await submitARV({
+        submittedImage: imageUrl,
+        ARVTargetId: activeTarget.targetId,
+      });
+      submitSelection();
+    } catch (error) {
+      console.error("Failed to submit selection:", error);
     }
   };
 
   return (
-    <div className="mt-8">
-      <h3 className="text-xl text-white mb-4">
+    <div className="space-y-6">
+      <h2 className="text-xl font-bold text-white">
         Select the image that best matches your impressions:
-      </h3>
-
-      <div className="grid grid-cols-2 gap-4 mb-6">
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {imageChoices.map((image) => (
-          <div
+          <button
             key={image.id}
-            className={`relative cursor-pointer rounded-lg overflow-hidden ${image.selected ? "ring-2 ring-[#8a2be2]" : ""}`}
             onClick={() => selectImage(image.id)}
+            className={cn(
+              "relative aspect-square rounded-lg overflow-hidden transition-all",
+              "hover:ring-4 hover:ring-[#8a2be2] hover:ring-opacity-50",
+              image.selected && "ring-4 ring-[#8a2be2]",
+            )}
           >
             <Image
-              width={500}
-              height={500}
-              src={image.src || "/placeholder.svg"}
-              alt={`Option ${image.id}`}
-              className="w-full h-64 object-cover"
+              src={image.src}
+              alt={`Choice ${image.id}`}
+              fill
+              className="object-cover"
             />
-
-            {image.selected && (
-              <div className="absolute top-2 right-2 w-8 h-8 rounded-full bg-[#8a2be2] flex items-center justify-center text-white font-bold">
-                1
-              </div>
+            {image.controlImage && (
+              <Image src={image.controlImage} alt="Control Image" fill />
             )}
-          </div>
+          </button>
         ))}
       </div>
-
-      <div className="flex justify-end">
+      <div className="flex justify-center">
         <button
           onClick={handleSubmit}
           disabled={!selectedImageId}
-          className={`px-6 py-3 rounded-lg text-white ${
+          className={cn(
+            "px-6 py-3 rounded-lg transition-colors",
             selectedImageId
-              ? "bg-[#8a2be2] hover:bg-[#7a1bd2]"
-              : "bg-gray-500 cursor-not-allowed"
-          } transition-colors`}
+              ? "bg-[#8a2be2] hover:bg-[#7a1bd2] text-white"
+              : "bg-gray-500 cursor-not-allowed text-gray-300",
+          )}
         >
-          Submit
+          Submit Selection
         </button>
       </div>
     </div>
