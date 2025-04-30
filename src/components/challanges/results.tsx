@@ -36,7 +36,7 @@ export default function Results() {
   const { firstChoiceImage, secondChoiceImage, points } = results.data;
 
   return (
-    <div className="max-w-[1170px] mx-auto">
+    <div className="max-w-[1170px] mx-auto mt-28">
       <h2 className="text-3xl font-semibold text-[#ECECEC] mb-8">
         Feedback for Target ID: {targetId}
       </h2>
