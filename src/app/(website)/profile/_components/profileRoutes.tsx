@@ -9,9 +9,9 @@ const ProfileRoutes = () => {
 
   const profileRoute = [
     { name: "Personal Information", path: "/profile/personal-information" },
-    { name: "Notifications", path: "/notifications" },
+    // { name: "Notifications", path: "/notifications" },
     { name: "Leaderboard", path: "challenges/leaderboard" },
-    { name: "Help", path: "/profile/help" },
+    // { name: "Help", path: "/profile/help" },
     { name: "Change Password", path: "/profile/chnage-password" },
     { name: "Sing Out", path: "/Sing Out" },
   ];
@@ -21,6 +21,7 @@ const ProfileRoutes = () => {
       setShowLogout(true);
     }
   };
+
   return (
     <div>
       <div className="flex flex-col gap-9 pt-10">

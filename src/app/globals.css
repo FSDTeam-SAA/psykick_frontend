@@ -304,7 +304,7 @@ body {
     rgb(143, 55, 255) 20%,
     rgb(45, 23, 255) 100%
   );
-  scale: 1.1;
+  /* scale: 1.1; */
 }
 
 .gradient-border {

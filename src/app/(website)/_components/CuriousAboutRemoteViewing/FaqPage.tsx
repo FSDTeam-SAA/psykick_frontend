@@ -11,12 +11,12 @@ const FaqPage = () => {
     <div className="min-h-screen bg-[#2D1B69] lg:pt-[40px] text-white">
       <div className="container mx-auto px-4 py-12 max-w-7xl">
         <div className="grid lg:grid-cols-2 gap-10 justify-center container mx-auto">
-          <div className="relative  aspect-square w-full lg:max-w-[700px] lg:h-[660px] mx-auto">
+          <div className="relative aspect-square top-0 w-full min-h-[90vh] lg:max-w-[700px] lg:h-[660px] mx-auto">
             <Image
               src="/assets/img/faq.png"
               alt="3D question mark floating above a smartphone"
               fill
-              className="object-cover rounded-2xl"
+              className="object-cover rounded-2xl fixed top-0"
               priority
             />
           </div>
@@ -27,9 +27,9 @@ const FaqPage = () => {
             </h1>
 
             <p className="paragraph">
-              We`&lsquo;`ve compiled answers to the most common questions to
-              help you get started. Whether you`&lsquo;`re new to RV or looking
-              to refine your skills, this section will guide you through the
+              We&lsquo;ve compiled answers to the most common questions to help
+              you get started. Whether you&lsquo;re new to RV or looking to
+              refine your skills, this section will guide you through the
               basics, techniques, and how to participate in our interactive
               sessions. Explore the FAQ below and take your first step into the
               world of Remote Viewing!
@@ -177,7 +177,3 @@ const FaqPage = () => {
 };
 
 export default FaqPage;
-
-
-
-

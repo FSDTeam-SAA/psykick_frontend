@@ -1,15 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import Layout from "@/components/challanges/layout";
 import Leaderboard from "@/components/challanges/leaderboard";
 import ARVPredictionMode from "../_components/challenges/ARV";
 import TargetMatchChallenge from "../_components/challenges/TMC";
+import { useChallengeStore } from "@/store/use-challenge-store";
 
 export default function ChallengesPage() {
-  const [activeTab, setActiveTab] = useState<"tmc" | "arv" | "leaderboard">(
-    "tmc",
-  );
+  const { activeTab, setActiveTab } = useChallengeStore();
 
   return (
     <Layout>
