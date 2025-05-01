@@ -49,6 +49,27 @@ export default function ARVPredictionMode() {
     resetCanvasState();
   }, [resetCanvasState]);
 
+  // If no active target is available
+  if (!activeTarget) {
+    return (
+      <Layout>
+        <div className="flex flex-col items-center justify-center min-h-[60vh] max-w-2xl mx-auto px-4">
+          <div className="text-white text-xl text-center mb-4">
+            No active challenges available at the moment.
+          </div>
+          <div className="text-purple-300 text-center">
+            You have no active targets at the moment. Please check back later or
+            contact support if you believe this is an error.
+            {/* This could be because you&apos;ve completed all your targets for
+            this cycle. Your tier will be updated and a new cycle will begin
+            automatically. Check your notifications for updates about your tier
+            changes! */}
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
   // If waiting for results, show waiting screen
   if (stage === "waiting") {
     return (

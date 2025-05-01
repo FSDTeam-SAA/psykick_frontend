@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // "use client";
 
 // import { useState } from "react";
@@ -335,7 +336,7 @@ const NotificationPage = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
-        }
+        },
       );
 
       if (!res.ok) {
@@ -350,11 +351,17 @@ const NotificationPage = () => {
   const notifications = notificationsData?.data || [];
 
   if (isLoading) {
-    return <p className="text-white text-center mt-8">Loading notifications...</p>;
+    return (
+      <p className="text-white text-center mt-8">Loading notifications...</p>
+    );
   }
 
   if (isError) {
-    return <p className="text-red-500 text-center mt-8">Failed to load notifications.</p>;
+    return (
+      <p className="text-red-500 text-center mt-8">
+        Failed to load notifications.
+      </p>
+    );
   }
 
   return (
@@ -381,7 +388,9 @@ const NotificationPage = () => {
             >
               <div className="flex gap-4 items-start sm:items-center">
                 <Bell className="text-yellow-400 mt-1 sm:mt-0 shrink-0" />
-                <h2 className="text-white font-medium text-sm sm:text-base">{notification.message}</h2>
+                <h2 className="text-white font-medium text-sm sm:text-base">
+                  {notification.message}
+                </h2>
               </div>
               <p className="text-gray-300 text-xs sm:text-sm sm:whitespace-nowrap">
                 {new Date(notification.updatedAt).toLocaleString("en-US", {

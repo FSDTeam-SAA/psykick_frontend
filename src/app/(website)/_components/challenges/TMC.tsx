@@ -47,10 +47,11 @@ export default function TargetMatchChallenge() {
             No active challenges available at the moment.
           </div>
           <div className="text-purple-300 text-center">
-            This could be because you&apos;ve completed all your targets for
+            You have no active targets at the moment. Please check back later
+            {/* This could be because you&apos;ve completed all your targets for
             this cycle. Your tier will be updated and a new cycle will begin
             automatically. Check your notifications for updates about your tier
-            changes!
+            changes! */}
           </div>
         </div>
       </Layout>
