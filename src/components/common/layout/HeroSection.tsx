@@ -13,7 +13,7 @@ export default function HeroSection() {
         <div className="px-4 sm:px-6 md:container mx-auto">
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-end gap-6 md:gap-8">
             <div className="max-w-full lg:max-w-[500px]">
-              <h1 className="textLargeShadow pt-10 md:pt-20 mb-6 title text-center lg:text-left text-3xl md:text-4xl lg:text-5xl">
+              <h1 className="textLargeShadow pt-10 md:pt-20 mb-6 title text-center text-nowrap lg:text-left text-3xl md:text-4xl lg:text-5xl">
                 Kick your Psy into Gear!
               </h1>
               <article className="w-full md:max-w-[400px] paragraph !font-inter p-4 md:p-5 bg-[#F8F8F8]/10 backdrop-blur-md rounded-2xl border-2 border-[#7c4bb8]">

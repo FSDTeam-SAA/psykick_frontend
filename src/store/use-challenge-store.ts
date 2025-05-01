@@ -34,7 +34,6 @@ type ChallengeState = {
     seconds: number;
   };
 
-
   // Drawing state
   drawingHistory: string[];
   currentDrawing: string | null;
@@ -64,6 +63,9 @@ type ChallengeState = {
   targetMatched: boolean;
   pointsEarned: number;
   targetImage: string | null;
+
+  // Active tab
+  activeTab: "tmc" | "arv" | "leaderboard";
 };
 
 type ChallengeActions = {
@@ -98,6 +100,7 @@ type ChallengeActions = {
     revealTime: string,
     targetId: string,
   ) => void;
+  setActiveTab: (tab: "tmc" | "arv" | "leaderboard") => void;
 };
 
 export const useChallengeStore = create<ChallengeState & ChallengeActions>()(
@@ -134,6 +137,7 @@ export const useChallengeStore = create<ChallengeState & ChallengeActions>()(
       targetMatched: false,
       pointsEarned: 0,
       targetImage: null,
+      activeTab: "tmc",
 
       // Actions
       setTargetData: (target: TMCTarget) => {
@@ -386,6 +390,8 @@ export const useChallengeStore = create<ChallengeState & ChallengeActions>()(
           showImageSelection: false,
           imageChoices: [],
         }),
+
+      setActiveTab: (tab) => set({ activeTab: tab }),
     }),
     {
       name: "psykick-challenge-storage",
@@ -395,6 +401,7 @@ export const useChallengeStore = create<ChallengeState & ChallengeActions>()(
         drawingHistory: state.drawingHistory,
         currentStep: state.currentStep,
         textBoxes: state.textBoxes,
+        activeTab: state.activeTab,
       }),
     },
   ),
