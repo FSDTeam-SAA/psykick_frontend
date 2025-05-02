@@ -26,7 +26,7 @@ const msToSeconds = (ms: number | null) => Math.floor((ms || 0) / 1000);
 const fetchARVResult = async (arvId: string) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/userSubmission/get-ARVResult/${arvId}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/userSubmission/get-ARVResult/${arvId}`,
     );
     if (!response.ok) {
       throw new Error("Failed to fetch ARV result");
@@ -41,7 +41,7 @@ const fetchARVResult = async (arvId: string) => {
 const updateARVPoints = async (arvId: string) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/userSubmission/update-ARVPoints/${arvId}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/userSubmission/update-ARVPoints/${arvId}`,
       {
         method: "POST",
         headers: {
@@ -230,7 +230,7 @@ export default function ARVPredictionPage() {
 
             <div className="mb-4">
               <h3 className="text-lg font-medium text-white">
-                Target ID: {targetData.targetId}
+                Target IDfasfasd: {targetData.targetId}
               </h3>
             </div>
 

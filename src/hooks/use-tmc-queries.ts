@@ -22,7 +22,7 @@ export function useTMCSubmission() {
 
 export function useTMCResult(targetId: string) {
   return useQuery({
-    queryKey: ["tmcResult", targetId],
+    queryKey: ["tmcResults", targetId],
     queryFn: () => tmcService.getResult(targetId),
     enabled: !!targetId,
     refetchInterval: 1000 * 30, // Refetch every 30s

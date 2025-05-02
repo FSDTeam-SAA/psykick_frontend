@@ -1,118 +1,96 @@
+/* eslint-disable */
+// @ts-nocheck
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-// import { useARVStore } from "@/store/use-arv-store";
-// import Link from "next/link";
-// import { useEffect, useState } from "react";
-// import moment from "moment";
-// import ARVPredictionPage from "@/app/(website)/_components/challenges/arv-prediction";
-import ArvReveal from "./tests/arv-reveal";
+import { useEffect, useCallback } from "react";
+import { useARVStore } from "@/store/use-arv-store";
+import CountdownTimer from "@/components/countdown-timer";
+import { calculateTimeLeft } from "@/lib/utils";
 
 export default function ARVWaitingScreen() {
-  // const { revealTime, challengeCode, gameTime } = useARVStore();
-  // const [timeLeft, setTimeLeft] = useState({
-  //   days: 0,
-  //   hours: 0,
-  //   minutes: 0,
-  //   seconds: 0,
-  // });
+  const { activeTarget, submissionId, moveToReveal } = useARVStore();
+  const gameTime = activeTarget?.gameTime;
 
-  // useEffect(() => {
-  //   if (!gameTime) return;
+  const handleTimeUp = useCallback(() => {
+    moveToReveal();
+  }, [moveToReveal]);
 
-  //   const interval = setInterval(() => {
-  //     const now = moment();
-  //     const target = moment(gameTime);
-  //     const duration = moment.duration(target.diff(now));
+  useEffect(() => {
+    if (!gameTime) return;
 
-  //     if (duration.asMilliseconds() <= 0) {
-  //       clearInterval(interval);
-  //       setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  //     } else {
-  //       setTimeLeft({
-  //         days: Math.floor(duration.asDays()),
-  //         hours: duration.hours(),
-  //         minutes: duration.minutes(),
-  //         seconds: duration.seconds(),
-  //       });
-  //     }
-  //   }, 1000);
+    const now = new Date().getTime();
+    const gameDateTime = new Date(gameTime).getTime();
 
-  //   return () => clearInterval(interval);
-  // }, [gameTime]);
+    if (now >= gameDateTime) {
+      handleTimeUp();
+      return;
+    }
+
+    // Set up interval to check time
+    const interval = setInterval(() => {
+      const timeLeft = calculateTimeLeft(gameTime);
+      if (timeLeft.total <= 0) {
+        clearInterval(interval);
+        handleTimeUp();
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [gameTime, handleTimeUp]);
+
+  if (!gameTime || !submissionId) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900 flex items-center justify-center">
+        <div className="text-center text-white">
+          <p className="text-xl">
+            Missing game time or submission information.
+          </p>
+          <button
+            onClick={() => useARVStore.getState().resetChallenge()}
+            className="mt-4 px-6 py-2 bg-purple-600 rounded-lg hover:bg-purple-700"
+          >
+            Return to Drawing
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    // <ARVPredictionPage />
-    <ArvReveal />
-    // <div className="max-w-4xl mx-auto px-4">
-    //   <div className="bg-[#170A2C]/50 backdrop-blur-md rounded-[20px] p-10">
-    //     <div className="mb-8">
-    //       <h1 className="text-[40px] font-bold text-white text-center mb-4">
-    //         Time to let the universe work its magic! 🌟
-    //       </h1>
-    //       <p className="text-xl text-center text-[#ECECEC] mb-8">
-    //         Your initial impressions have been recorded. Come back at the reveal
-    //         time to see what the target was.
-    //       </p>
-    //     </div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900 flex items-center justify-center p-4">
+      <div className="max-w-2xl w-full text-center">
+        <h1 className="text-4xl font-bold text-white mb-8">
+          Your Prediction is Locked In!
+        </h1>
 
-    //     <div className="flex justify-center gap-6 mb-12">
-    //       <div className="bg-[#170A2C]/30 rounded-[20px] p-6 text-center min-w-[200px]">
-    //         <p className="text-[#C5C5C5] text-lg mb-2">Challenge Code</p>
-    //         <p className="text-white text-2xl font-semibold">{challengeCode}</p>
-    //       </div>
-    //       <div className="bg-[#170A2C]/30 rounded-[20px] p-6 text-center min-w-[300px]">
-    //         <p className="text-[#C5C5C5] text-lg mb-4">
-    //           Hurry up! Game ends in:
-    //         </p>
-    //         <div className="flex justify-center gap-4">
-    //           {timeLeft.days > 0 && (
-    //             <>
-    //               <div className="text-center">
-    //                 <span className="text-2xl font-bold text-white">
-    //                   {String(timeLeft.days).padStart(2, "0")}
-    //                 </span>
-    //                 <p className="text-sm text-[#C5C5C5]">Days</p>
-    //               </div>
-    //               <span className="text-2xl font-bold text-white">:</span>
-    //             </>
-    //           )}
-    //           <div className="text-center">
-    //             <span className="text-2xl font-bold text-white">
-    //               {String(timeLeft.hours).padStart(2, "0")}
-    //             </span>
-    //             <p className="text-sm text-[#C5C5C5]">Hours</p>
-    //           </div>
-    //           <span className="text-2xl font-bold text-white">:</span>
-    //           <div className="text-center">
-    //             <span className="text-2xl font-bold text-white">
-    //               {String(timeLeft.minutes).padStart(2, "0")}
-    //             </span>
-    //             <p className="text-sm text-[#C5C5C5]">Mins</p>
-    //           </div>
-    //           <span className="text-2xl font-bold text-white">:</span>
-    //           <div className="text-center">
-    //             <span className="text-2xl font-bold text-white">
-    //               {String(timeLeft.seconds).padStart(2, "0")}
-    //             </span>
-    //             <p className="text-sm text-[#C5C5C5]">Secs</p>
-    //           </div>
-    //         </div>
-    //       </div>
-    //     </div>
+        <div className="bg-purple-800 bg-opacity-50 rounded-lg p-8 mb-8">
+          <h2 className="text-2xl text-white mb-6">Time Until Reveal:</h2>
+          <div className="flex justify-center">
+            <CountdownTimer targetDate={gameTime} onComplete={handleTimeUp} />
+          </div>
+        </div>
 
-    //     <div className="flex justify-center gap-4">
-    //       <Link href="/challenges">
-    //         <button className="px-6 py-4 bg-gradient-to-r from-[#8F37FF] to-[#2D17FF] text-white rounded-[20px] hover:opacity-90 transition-opacity font-medium">
-    //           Try Another Challenge
-    //         </button>
-    //       </Link>
-    //       <Link href="/dashboard">
-    //         <button className="px-6 py-4 bg-[#170A2C]/20 text-white border-2 border-[#8F37FF] rounded-[20px] hover:bg-[#170A2C]/30 transition-colors font-medium">
-    //           Return to Dashboard
-    //         </button>
-    //       </Link>
-    //     </div>
-    //   </div>
-    // </div>
+        <div className="bg-white rounded-lg p-6">
+          <p className="text-lg text-gray-800 mb-4">
+            Your prediction has been successfully recorded. The result will be
+            revealed when the countdown reaches zero.
+          </p>
+          <p className="text-gray-600">
+            You can close this window and come back later - we&apos;ll send you
+            a notification when the results are ready!
+          </p>
+        </div>
+
+        <div className="mt-8">
+          <button
+            onClick={() => useARVStore.getState().resetChallenge()}
+            className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+          >
+            Try Another Challenge
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
