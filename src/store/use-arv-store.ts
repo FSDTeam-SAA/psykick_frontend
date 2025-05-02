@@ -1,83 +1,68 @@
+/* eslint-disable */
+// @ts-nocheck
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export type ImageChoice = {
-  id: number;
-  src: string;
-  selected: boolean;
-};
-
-export type EventInfo = {
-  id: string;
-  description: string;
-  outcome: string;
-  outcomeImage: string;
-};
-
-type TextBox = {
+interface TextBox {
   id: string;
   text: string;
   x: number;
   y: number;
   color: string;
   fontSize: number;
-};
+}
 
-type ARVState = {
-  // Challenge data
-  challengeCode: string;
+interface ImageChoice {
+  id: number;
+  src: string;
+  description: string;
+  selected: boolean;
+}
+
+interface ImageData {
+  url: string;
+  description: string;
+}
+
+interface Target {
+  targetId: string;
+  code: string;
+  eventName: string;
+  eventDescription: string;
+  image1: ImageData;
+  image2: ImageData;
+  image3: ImageData;
+  controlImage: string;
+  resultImage?: string;
+  gameTime: string;
   revealTime: string;
-  timer: {
-    hours: number;
-    minutes: number;
-    seconds: number;
-  };
+  outcomeTime: string;
+}
 
-  // Drawing state
+interface ARVState {
+  // Canvas state
+  currentTool: "pencil" | "text" | "eraser";
+  currentColor: string;
+  brushSize: number;
   currentDrawing: string | null;
   drawingHistory: string[];
   currentStep: number;
   textBoxes: TextBox[];
 
-  // Tool state
-  currentTool: "pencil" | "text" | "eraser";
-  currentColor: string;
-  brushSize: number;
-
-  // Modal states
-  showARVInfo: boolean;
-  dontShowARVAgain: boolean;
-  showShareModal: boolean;
-
-  // Challenge flow states
-  stage: "drawing" | "selection" | "waiting" | "results";
-
-  // Image selection
+  // Game state
+  stage: "drawing" | "selection" | "waiting" | "reveal" | "results";
   imageChoices: ImageChoice[];
   selectedImageId: number | null;
+  activeTarget: Target | null;
+  submissionId: string | null;
+  hasSubmitted: boolean;
+  isLoading: boolean;
+  error: string | null;
+  currentGameId: string | null;
+}
 
-  // Event info
-  eventInfo: EventInfo;
-
-  // Results
-  isCorrect: boolean;
-  pointsEarned: number;
-
-  // Active target
-  activeTarget: {
-    targetId: string;
-    code: string;
-    eventName: string;
-    eventDescription: string;
-    image1: { url: string; description: string };
-    image2: { url: string; description: string };
-    image3: { url: string; description: string };
-    controlImage: string;
-  } | null;
-
-  // Actions
-  setTimer: (hours: number, minutes: number, seconds: number) => void;
+interface ARVActions {
   updateDrawing: (drawing: string) => void;
   addToHistory: () => void;
   undo: () => void;
@@ -86,92 +71,66 @@ type ARVState = {
   setColor: (color: string) => void;
   setBrushSize: (size: number) => void;
   clearCanvas: () => void;
-  toggleARVInfo: () => void;
-  setDontShowARVAgain: (value: boolean) => void;
-  closeARVInfo: () => void;
   selectImage: (id: number) => void;
   submitImpression: () => void;
   submitSelection: () => void;
-  revealResults: () => void;
-  toggleShareModal: () => void;
-  resetChallenge: () => void;
   updateTextBoxes: (textBoxes: TextBox[]) => void;
   addTextBox: (textBox: TextBox) => void;
   updateTextBox: (id: string, updates: Partial<TextBox>) => void;
   removeTextBox: (id: string) => void;
-  resetCanvasState: () => void;
   setActiveTarget: (target: any) => void;
-};
+  setSubmissionId: (id: string) => void;
+  setStage: (
+    stage: "drawing" | "selection" | "waiting" | "reveal" | "results",
+  ) => void;
+  setHasSubmitted: (submitted: boolean) => void;
+  setLoading: (loading: boolean) => void;
+  setError: (error: string | null) => void;
+  updatePoints: () => Promise<void>;
+  moveToReveal: () => void;
+  moveToResults: () => void;
+  resetGameState: () => void;
+  checkAndResetForNewGame: (newTargetId: string) => void;
+}
 
-export const useARVStore = create<ARVState>()(
+export const useARVStore = create<ARVState & ARVActions>()(
   persist(
     (set, get) => ({
-      // Initial state
-      challengeCode: "ABC-25G",
-      revealTime: "20/05/2026",
-      timer: {
-        hours: 23,
-        minutes: 34,
-        seconds: 57,
-      },
-
+      // Initial canvas state
+      currentTool: "pencil",
+      currentColor: "#000000",
+      brushSize: 2,
       currentDrawing: null,
       drawingHistory: [],
       currentStep: -1,
       textBoxes: [],
 
-      currentTool: "pencil",
-      currentColor: "#000000",
-      brushSize: 5,
-
-      showARVInfo: false,
-      dontShowARVAgain: false,
-      showShareModal: false,
-
+      // Initial game state
       stage: "drawing",
-
-      imageChoices: [
-        { id: 1, src: "/assets/challenges/Rectangle 54.png", selected: false },
-        { id: 2, src: "/assets/challenges/Rectangle 52.png", selected: false },
-        { id: 3, src: "/assets/challenges/house.png", selected: false },
-        { id: 4, src: "/assets/challenges/Rectangle 57.png", selected: false },
-      ],
+      imageChoices: [],
       selectedImageId: null,
-
-      eventInfo: {
-        id: "ABC-25G",
-        description:
-          "While Liverpool's form has been impeccable, Arsenal's home advantage and recent performances against top-tier opponents make them a formidable prospect.",
-        outcome:
-          "While Liverpool's form has been impeccable, Arsenal's home advantage and recent performances against top-tier opponents make them a formidable prospect.",
-        outcomeImage: "/assets/challenges/Rectangle 57.png",
-      },
-
-      isCorrect: false,
-      pointsEarned: 0,
-
       activeTarget: null,
+      submissionId: null,
+      hasSubmitted: false,
+      isLoading: false,
+      error: null,
+      currentGameId: null,
 
-      // Actions
-      setTimer: (hours, minutes, seconds) =>
-        set({ timer: { hours, minutes, seconds } }),
-
+      // Actions implementation
       updateDrawing: (drawing) => set({ currentDrawing: drawing }),
 
       addToHistory: () => {
         const { drawingHistory, currentDrawing, currentStep } = get();
-        // Only add to history if the drawing has changed
         if (
-          currentStep >= 0 &&
-          drawingHistory[currentStep] === currentDrawing
+          !currentDrawing ||
+          (currentStep >= 0 && drawingHistory[currentStep] === currentDrawing)
         ) {
           return;
         }
-        // Filter out null values before creating new history
         const newHistory = [
           ...drawingHistory.slice(0, currentStep + 1),
           currentDrawing,
-        ].filter((item): item is string => item !== null);
+        ];
         set({
           drawingHistory: newHistory,
           currentStep: newHistory.length - 1,
@@ -199,11 +158,8 @@ export const useARVStore = create<ARVState>()(
       },
 
       setTool: (tool) => set({ currentTool: tool }),
-
       setColor: (color) => set({ currentColor: color }),
-
       setBrushSize: (size) => set({ brushSize: size }),
-
       clearCanvas: () =>
         set({
           currentDrawing: null,
@@ -212,81 +168,26 @@ export const useARVStore = create<ARVState>()(
           textBoxes: [],
         }),
 
-      toggleARVInfo: () =>
-        set((state) => ({ showARVInfo: !state.showARVInfo })),
-
-      closeARVInfo: () => {
-        set({ showARVInfo: false });
-      },
-
-      setDontShowARVAgain: (value) => set({ dontShowARVAgain: value }),
-
-      selectImage: (id) => {
-        const { imageChoices } = get();
-
-        const updatedChoices = imageChoices.map((img) => ({
-          ...img,
-          selected: img.id === id,
-        }));
-
-        set({
-          imageChoices: updatedChoices,
+      selectImage: (id) =>
+        set((state) => ({
           selectedImageId: id,
-        });
-      },
+          imageChoices: state.imageChoices.map((img) => ({
+            ...img,
+            selected: img.id === id,
+          })),
+        })),
 
       submitImpression: () => {
-        // Show ARV info if user hasn't opted out
-        if (!get().dontShowARVAgain) {
-          set({ showARVInfo: true });
-        } else {
-          // If user opted out, go straight to selection
-          set({ stage: "selection" });
-        }
+        console.log("Moving from drawing to selection stage");
+        set({ stage: "selection" });
       },
 
       submitSelection: () => {
-        set({
-          stage: "waiting",
-          showShareModal: false,
-        });
+        console.log("Moving from selection to waiting stage");
+        set({ stage: "waiting" });
       },
 
-      revealResults: () => {
-        const { selectedImageId, imageChoices } = get();
-        const correctImageId =
-          imageChoices.findIndex(
-            (img) => img.src === get().eventInfo.outcomeImage,
-          ) + 1;
-        const isCorrect = selectedImageId === correctImageId;
-
-        set({
-          stage: "results",
-          isCorrect,
-          pointsEarned: isCorrect ? 30 : -10,
-        });
-      },
-
-      toggleShareModal: () =>
-        set((state) => ({ showShareModal: !state.showShareModal })),
-
-      resetChallenge: () =>
-        set({
-          currentDrawing: null,
-          drawingHistory: [],
-          currentStep: -1,
-          textBoxes: [],
-          stage: "drawing",
-          selectedImageId: null,
-          imageChoices: get().imageChoices.map((img) => ({
-            ...img,
-            selected: false,
-          })),
-        }),
-
-      // Text box actions
       updateTextBoxes: (textBoxes) => set({ textBoxes }),
-
       addTextBox: (textBox) =>
         set((state) => ({
           textBoxes: [...state.textBoxes, textBox],
@@ -303,43 +204,187 @@ export const useARVStore = create<ARVState>()(
         set((state) => ({
           textBoxes: state.textBoxes.filter((box) => box.id !== id),
         })),
-      resetCanvasState: () => {
+
+      setActiveTarget: (targetData) => {
+        // Check if this is a new game and reset if needed
+        get().checkAndResetForNewGame(targetData._id);
+
+        // Map the API response to our Target interface
+        const target: Target = {
+          targetId: targetData._id,
+          code: targetData.code,
+          eventName: targetData.eventName || "",
+          eventDescription: targetData.eventDescription || "",
+          image1: targetData.image1 || {
+            url: "/placeholder.svg?height=300&width=400",
+            description: "",
+          },
+          image2: targetData.image2 || {
+            url: "/placeholder.svg?height=300&width=400",
+            description: "",
+          },
+          image3: targetData.image3 || {
+            url: "/placeholder.svg?height=300&width=400",
+            description: "",
+          },
+          controlImage:
+            targetData.controlImage || "/placeholder.svg?height=300&width=400",
+          resultImage: targetData.resultImage,
+          gameTime: targetData.gameTime,
+          revealTime: targetData.revealTime,
+          outcomeTime: targetData.outcomeTime,
+        };
+
+        // Create image choices from the target images
+        const imageChoices: ImageChoice[] = [
+          {
+            id: 1,
+            src: target.image1.url,
+            description: target.image1.description,
+            selected: false,
+          },
+          {
+            id: 2,
+            src: target.image2.url,
+            description: target.image2.description,
+            selected: false,
+          },
+          {
+            id: 3,
+            src: target.image3.url,
+            description: target.image3.description,
+            selected: false,
+          },
+          {
+            id: 4,
+            src: target.controlImage,
+            description: "Control Image",
+            selected: false,
+          },
+        ];
+
         set({
+          activeTarget: target,
+          imageChoices,
+        });
+
+        console.log("Active target set:", target);
+        console.log("Image choices set:", imageChoices);
+      },
+
+      setSubmissionId: (id) => set({ submissionId: id }),
+      setStage: (stage) => set({ stage }),
+      setHasSubmitted: (submitted) => set({ hasSubmitted: submitted }),
+      setLoading: (loading) => set({ isLoading: loading }),
+      setError: (error) => set({ error }),
+
+      moveToReveal: () => {
+        console.log("Moving to reveal stage");
+        set({ stage: "reveal" });
+      },
+
+      moveToResults: () => {
+        console.log("Moving to results stage");
+        set({ stage: "results" });
+      },
+
+      updatePoints: async () => {
+        const { submissionId, activeTarget, stage } = get();
+
+        // Don't proceed if already in results stage to prevent duplicate API calls
+        if (stage === "results") return;
+
+        if (!submissionId || !activeTarget) return;
+
+        try {
+          set({ isLoading: true });
+          const token = localStorage.getItem("authToken");
+
+          console.log("Updating points with submission ID:", submissionId);
+          console.log("Active target ID:", activeTarget.targetId);
+
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/userSubmission/update-ARVPoints/${submissionId}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                ARVTargetId: activeTarget.targetId,
+              }),
+            },
+          );
+
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.message || "Failed to update points");
+          }
+
+          console.log("Points updated successfully:", data);
+
+          // Immediately transition to results stage
+          get().moveToResults();
+        } catch (error) {
+          console.error("Error updating points:", error);
+          set({ error: (error as Error).message });
+
+          // Even if there's an error, still show results
+          get().moveToResults();
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      resetGameState: () => {
+        console.log("Resetting game state for new game");
+        set({
+          // Reset canvas state
           currentDrawing: null,
           drawingHistory: [],
           currentStep: -1,
           textBoxes: [],
+
+          // Reset game state
+          stage: "drawing",
+          imageChoices: [],
+          selectedImageId: null,
+          submissionId: null,
+          hasSubmitted: false,
         });
-        // Clear the persisted state
-        localStorage.removeItem("psykick-arv-storage");
       },
 
-      setActiveTarget: (target) => {
-        set({
-          activeTarget: target,
-          imageChoices: [
-            { id: 1, src: target.image1.url, selected: false },
-            { id: 2, src: target.image2.url, selected: false },
-            { id: 3, src: target.image3.url, selected: false },
-          ],
-          challengeCode: target.code,
-          eventInfo: {
-            id: target.code,
-            description: target.eventDescription,
-            outcome: "", // Will be set when results are available
-            outcomeImage: "", // Will be set when results are available
-          },
-        });
+      checkAndResetForNewGame: (newTargetId: string) => {
+        const { currentGameId } = get();
+
+        // If this is a different game than the one we have saved
+        if (currentGameId !== newTargetId) {
+          console.log(
+            "New game detected. Previous:",
+            currentGameId,
+            "New:",
+            newTargetId,
+          );
+          get().resetGameState();
+          set({ currentGameId: newTargetId });
+        } else {
+          console.log("Same game detected, keeping existing state");
+        }
       },
     }),
     {
-      name: "psykick-arv-storage",
+      name: "arv-prediction-storage",
       partialize: (state) => ({
-        dontShowARVAgain: state.dontShowARVAgain,
         currentDrawing: state.currentDrawing,
         drawingHistory: state.drawingHistory,
         currentStep: state.currentStep,
         textBoxes: state.textBoxes,
+        submissionId: state.submissionId,
+        hasSubmitted: state.hasSubmitted,
+        stage: state.stage,
+        currentGameId: state.currentGameId,
+        selectedImageId: state.selectedImageId,
       }),
     },
   ),

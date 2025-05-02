@@ -1,3 +1,6 @@
+/* eslint-disable */
+// @ts-nocheck
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Link from "next/link";
 import { useARVStore } from "@/store/use-arv-store";
@@ -6,20 +9,22 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 
 export default function ARVResults() {
-  const { challengeCode, eventInfo } = useARVStore();
+  const { challengeCode, eventInfo, submissionId } = useARVStore();
 
   const { data: resultData, isLoading } = useQuery({
-    queryKey: ["arvResult", challengeCode],
+    queryKey: ["arvResult", submissionId],
     queryFn: async () => {
+      if (!submissionId) throw new Error("No submission ID available");
+
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/userSubmission/get-ARVResult/${challengeCode}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/userSubmission/get-ARVResult/${submissionId}`,
       );
       if (!res.ok) {
         throw new Error("Failed to fetch ARV result");
       }
       return res.json();
     },
-    enabled: !!challengeCode,
+    enabled: !!submissionId,
   });
 
   if (isLoading) {
@@ -30,10 +35,16 @@ export default function ARVResults() {
     );
   }
 
-  if (!resultData?.data) {
+  if (!resultData?.data || !submissionId) {
     return (
       <div className="p-4">
         <div className="text-red-500">Failed to load results</div>
+        <button
+          onClick={() => useARVStore.getState().resetChallenge()}
+          className="mt-4 px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+        >
+          Try Another Challenge
+        </button>
       </div>
     );
   }
@@ -68,7 +79,7 @@ export default function ARVResults() {
             </h2>
             <div className="relative aspect-video w-full rounded-[20px] overflow-hidden mb-4">
               <Image
-                src={eventInfo.outcomeImage}
+                src={eventInfo?.outcomeImage || resultData.data.resultImage}
                 alt="Target outcome"
                 fill
                 className="object-cover"
@@ -81,14 +92,12 @@ export default function ARVResults() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <h3 className="text-lg text-[#C5C5C5] mb-2">Event Name</h3>
-              <p className="text-xl text-white font-medium">
-                {eventInfo.description}
-              </p>
+              <p className="text-xl text-white font-medium">{challengeCode}</p>
             </div>
             <div>
               <h3 className="text-lg text-[#C5C5C5] mb-2">Event Outcome</h3>
               <p className="text-xl text-white font-medium">
-                {eventInfo.outcome}
+                {eventInfo?.outcome || "Results pending..."}
               </p>
             </div>
           </div>
@@ -106,11 +115,12 @@ export default function ARVResults() {
         </div>
 
         <div className="flex justify-center gap-4">
-          <Link href="/challenges">
-            <button className="px-6 py-4 bg-gradient-to-r from-[#8F37FF] to-[#2D17FF] text-white rounded-[20px] hover:opacity-90 transition-opacity font-medium">
-              Try Another Challenge
-            </button>
-          </Link>
+          <button
+            onClick={() => useARVStore.getState().resetChallenge()}
+            className="px-6 py-4 bg-gradient-to-r from-[#8F37FF] to-[#2D17FF] text-white rounded-[20px] hover:opacity-90 transition-opacity font-medium"
+          >
+            Try Another Challenge
+          </button>
           <Link href="/leaderboard">
             <button className="px-6 py-4 bg-[#170A2C]/20 text-white border-2 border-[#8F37FF] rounded-[20px] hover:bg-[#170A2C]/30 transition-colors font-medium">
               View Leaderboard

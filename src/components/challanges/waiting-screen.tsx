@@ -26,7 +26,7 @@ export default function WaitingScreen() {
   if (!activeTarget || !submitted) return null;
 
   return (
-    <div className="max-w-2xl mx-auto p-4 text-center">
+    <div className="max-w-2xl mx-auto p-4 text-center mt-16">
       <div className="mb-16">
         <CountdownDisplay
           targetDate={new Date(activeTarget.revealTime)}
@@ -42,7 +42,8 @@ export default function WaitingScreen() {
       </div>
 
       <p className="text-xl text-white mb-4">
-        Target will be revealed in: {new Date(activeTarget.revealTime).toLocaleString()}
+        Target will be revealed in:{" "}
+        {new Date(activeTarget.revealTime).toLocaleString()}
       </p>
 
       <p className="text-xl text-white">Target ID: {challengeCode}</p>
