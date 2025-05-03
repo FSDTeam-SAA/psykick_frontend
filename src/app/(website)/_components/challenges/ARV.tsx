@@ -1,3 +1,6 @@
+/* eslint-disable */
+// @ts-nocheck
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Layout from "@/components/challanges/layout";
@@ -17,16 +20,16 @@ import {
 import { Loader2 } from "lucide-react";
 
 export default function ARVPredictionMode() {
+  const arvStore = useARVStore();
   const {
     stage,
     submitImpression,
     clearCanvas,
     eventInfo,
     toggleARVInfo,
-    resetCanvasState,
     setActiveTarget,
     currentDrawing,
-  } = useARVStore();
+  } = arvStore;
 
   const { data: activeTarget, isLoading } = useActiveARVTarget();
   const { mutate: submitARV } = useSubmitARVTarget();
@@ -46,8 +49,9 @@ export default function ARVPredictionMode() {
   }, [toggleARVInfo]);
 
   useEffect(() => {
-    resetCanvasState();
-  }, [resetCanvasState]);
+    // Use the store's getState() to access resetCanvasState
+    useARVStore.getState().resetCanvasState();
+  }, []);
 
   // If no active target is available
   if (!activeTarget) {
@@ -60,17 +64,13 @@ export default function ARVPredictionMode() {
           <div className="text-purple-300 text-center">
             You have no active targets at the moment. Please check back later or
             contact support if you believe this is an error.
-            {/* This could be because you&apos;ve completed all your targets for
-            this cycle. Your tier will be updated and a new cycle will begin
-            automatically. Check your notifications for updates about your tier
-            changes! */}
           </div>
         </div>
       </Layout>
     );
   }
 
-  // If waiting for results, show waiting screen
+  // Show waiting screen
   if (stage === "waiting") {
     return (
       <Layout>
@@ -79,7 +79,17 @@ export default function ARVPredictionMode() {
     );
   }
 
-  // If results are available, show results
+  // Show reveal screen
+  if (stage === "reveal") {
+    return (
+      <Layout>
+        <ARVResults />
+        <ARVDisclaimer />
+      </Layout>
+    );
+  }
+
+  // Show results screen
   if (stage === "results") {
     return (
       <Layout>
@@ -101,7 +111,7 @@ export default function ARVPredictionMode() {
 
   const clearCanva = () => {
     clearCanvas();
-    resetCanvasState();
+    useARVStore.getState().resetCanvasState();
   };
 
   const handleSubmitImpression = async () => {

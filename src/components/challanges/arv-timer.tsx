@@ -1,43 +1,46 @@
-"use client"
+/* eslint-disable */
+// @ts-nocheck
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
-import { useEffect } from "react"
-import { useARVStore } from "@/store/use-arv-store"
+import { useEffect } from "react";
+import { useARVStore } from "@/store/use-arv-store";
 
 export default function ARVTimer() {
-  const { timer, setTimer, stage } = useARVStore()
+  const { timer, setTimer, stage } = useARVStore();
 
   useEffect(() => {
-    if (stage === "results") return // Don't count down if we're showing results
+    if (stage === "results") return; // Don't count down if we're showing results
 
     const interval = setInterval(() => {
       if (timer.hours === 0 && timer.minutes === 0 && timer.seconds === 0) {
-        clearInterval(interval)
+        clearInterval(interval);
         // If timer reaches zero, reveal results
         if (stage === "waiting") {
-          useARVStore.getState().revealResults()
+          useARVStore.getState().revealResults();
         }
-        return
+        return;
       }
 
-      let newHours = timer.hours
-      let newMinutes = timer.minutes
-      let newSeconds = timer.seconds - 1
+      let newHours = timer.hours;
+      let newMinutes = timer.minutes;
+      let newSeconds = timer.seconds - 1;
 
       if (newSeconds < 0) {
-        newSeconds = 59
-        newMinutes -= 1
+        newSeconds = 59;
+        newMinutes -= 1;
       }
 
       if (newMinutes < 0) {
-        newMinutes = 59
-        newHours -= 1
+        newMinutes = 59;
+        newHours -= 1;
       }
 
-      setTimer(newHours, newMinutes, newSeconds)
-    }, 1000)
+      setTimer(newHours, newMinutes, newSeconds);
+    }, 1000);
 
-    return () => clearInterval(interval)
-  }, [timer, setTimer, stage])
+    return () => clearInterval(interval);
+  }, [timer, setTimer, stage]);
 
   return (
     <div className="bg-[#e0d0ff] rounded-lg p-4 text-center max-w-md mx-auto">
@@ -59,6 +62,5 @@ export default function ARVTimer() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-

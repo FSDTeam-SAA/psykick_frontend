@@ -94,7 +94,7 @@ export default function ArvReveal() {
   const searchParams = new URLSearchParams(
     typeof window !== "undefined" ? window.location.search : "",
   );
-  const arvId = searchParams.get("id") || "681232fa747b93ada2bbe294";
+  const arvId = searchParams.get("id") || "6813554fa5cdced2de12b937";
 
   // State for points data
   const [pointsData, setPointsData] = useState<
@@ -209,6 +209,7 @@ export default function ArvReveal() {
             <h2 className="text-xl font-semibold text-white">
               {timeExpired ? "Time Expired:" : "Time Remaining:"}
             </h2>
+            {/* TODO: Add a countdown timer component here */}
             <CountdownTimer targetDate={timeLeft} />
           </div>
 
@@ -219,7 +220,7 @@ export default function ArvReveal() {
             </h3>
             <div className="mb-4 overflow-hidden rounded-lg">
               <Image
-                src={data?.submittedImage || "/placeholder.jpg"}
+                src={data.data?.submittedImage || "/placeholder.jpg"}
                 alt="Target image"
                 width={400}
                 height={250}
