@@ -1,29 +1,51 @@
-"use client";
-import Image from "next/image";
-import { ArrowRight } from "lucide-react";
-import { useEffect, useState } from "react";
-import Link from "next/link";
+"use client"
+import Image from "next/image"
+import { ArrowRight } from "lucide-react"
+import Link from "next/link"
+import { useQuery } from "@tanstack/react-query"
+import { useEffect, useState } from "react"
+
+interface HomeCounts {
+  activeUsers: number
+  runningEvents: number
+  totalParticipation: number
+}
+
+// API fetcher function
+async function fetchHomeCounts(): Promise<HomeCounts> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/home/counts`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+
+  if (!res.ok) throw new Error("Failed to fetch home counts")
+
+  const json = await res.json()
+  if (!json.success) throw new Error(json.message || "API error")
+
+  return json.data
+}
 
 export default function AboutRemotView() {
-  const [data, setData] = useState({
-    totalParticipants: "0",
-    activeUsers: "0",
-    runningEvents: "0",
-  });
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    // Simulate fetching data from an API
-    setTimeout(() => {
-      setData({
-        totalParticipants: "30K",
-        activeUsers: "150+",
-        runningEvents: "10",
-      });
-    }, 1000);
-  }, []);
+    setIsClient(true)
+  }, [])
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["homeCounts"],
+    queryFn: fetchHomeCounts,
+    enabled: isClient,
+  })
+
+  const totalParticipants = data?.totalParticipation ?? 0
+  const activeUsers = data?.activeUsers ?? 0
+  const runningEvents = data?.runningEvents ?? 0
 
   return (
-    <div className="  text-white p-4 md:p-8 lg:p-12">
+    <div className="text-white p-4 md:p-8 lg:p-12">
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-[130px] items-center">
           <div className="space-y-6">
@@ -45,32 +67,32 @@ export default function AboutRemotView() {
             </p>
 
             <Link href="/learn-more-about">
-              <button className=" mt-[18px] lg:mt-[32px] btn hover:bg-[#7C3AED] text-white rounded-full px-6 py-2 flex items-center gap-2 text-sm md:text-base">
+              <button className="mt-[18px] lg:mt-[32px] btn hover:bg-[#7C3AED] text-white rounded-full px-6 py-2 flex items-center gap-2 text-sm md:text-base">
                 Click Here
                 <ArrowRight className="w-4 h-4" />
               </button>
             </Link>
 
             <div className="grid grid-cols-3 gap-4 pt-6">
-              <div className=" mt-[60px]">
+              <div className="mt-[60px]">
                 <div className="text-2xl md:text-3xl lg:text-[48px] font-semibold">
-                  {data.totalParticipants}
+                  {isLoading ? "..." : totalParticipants}
                 </div>
                 <div className="text-xs md:text-sm text-gray-300">
                   Total Participant
                 </div>
               </div>
-              <div className=" mt-[60px]">
+              <div className="mt-[60px]">
                 <div className="text-2xl md:text-3xl lg:text-[48px] font-semibold">
-                  {data.activeUsers}
+                  {isLoading ? "..." : activeUsers}
                 </div>
                 <div className="text-xs md:text-sm text-gray-300">
                   Active User
                 </div>
               </div>
-              <div className=" mt-[60px]">
+              <div className="mt-[60px]">
                 <div className="text-2xl md:text-3xl lg:text-[48px] font-semibold">
-                  {data.runningEvents}
+                  {isLoading ? "..." : runningEvents}
                 </div>
                 <div className="text-xs md:text-sm text-gray-300">
                   Running Event
@@ -93,5 +115,5 @@ export default function AboutRemotView() {
         </div>
       </div>
     </div>
-  );
+  )
 }
