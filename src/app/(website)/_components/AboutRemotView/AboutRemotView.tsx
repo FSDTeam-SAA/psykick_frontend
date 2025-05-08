@@ -34,7 +34,7 @@ export default function AboutRemotView() {
     setIsClient(true)
   }, [])
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["homeCounts"],
     queryFn: fetchHomeCounts,
     enabled: isClient,
@@ -59,7 +59,7 @@ export default function AboutRemotView() {
               mind. Rooted in scientific research and intuitive exploration, RV
               has been used for everything from personal discovery to practical
               applications in problem-solving and prediction. Whether
-              you're a beginner or looking to refine your skills,
+              you&apos;re a beginner or looking to refine your skills,
               understanding the fundamentals of remote viewing can unlock new
               ways of perceiving information beyond the five senses. Click to
               explore the principles, techniques, and real-world applications of
