@@ -17,7 +17,9 @@ const fetchGraphData = async (): Promise<
 > => {
   const token = localStorage.getItem("authToken");
   const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
-  const userId = "680b13fe952ccea102170b34";
+ const userId = localStorage.getItem("userId"); 
+// console.log("userid",userId);
+  // const userId = "680b13fe952ccea102170b34";
 
   const res = await fetch(`${baseURL}/userSubmission/user-graph-data/${userId}`, {
     headers: {
