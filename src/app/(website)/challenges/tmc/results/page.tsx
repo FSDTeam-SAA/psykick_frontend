@@ -1,12 +1,15 @@
 "use client";
 
+import GameTabNavigation from "@/app/(website)/_components/challenges/tab-navigation";
 import Results from "@/components/challanges/results";
-import Layout from "@/components/challanges/layout";
 
 export default function ResultsPage() {
   return (
-    <Layout>
+    // <Layout>
+    <div className="bg-[#3a1c6e]">
+      <GameTabNavigation />
       <Results />
-    </Layout>
+    </div>
+    // </Layout>
   );
 }

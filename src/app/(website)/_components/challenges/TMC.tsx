@@ -8,6 +8,7 @@ import TMCInfoModal from "@/components/challanges/tmc-info-modal";
 import WaitingScreen from "@/components/challanges/waiting-screen";
 import { useChallengeStore } from "@/store/use-challenge-store";
 import { useActiveTMCTarget } from "@/hooks/use-tmc-queries";
+import CountdownTimer from "@/components/ui/countrdown-timer";
 
 export default function TargetMatchChallenge() {
   const {
@@ -41,7 +42,7 @@ export default function TargetMatchChallenge() {
   // If no active target is available
   if (!activeTarget) {
     return (
-      <Layout>
+      // <Layout>
         <div className="flex flex-col items-center justify-center min-h-[60vh] max-w-2xl mx-auto px-4">
           <div className="text-white text-xl text-center mb-4">
             No active challenges available at the moment.
@@ -54,32 +55,44 @@ export default function TargetMatchChallenge() {
             changes! */}
           </div>
         </div>
-      </Layout>
+      // </Layout>
     );
   }
 
   // Show waiting screen if submission is complete
   if (submitted) {
     return (
-      <Layout>
+      // <Layout>
         <WaitingScreen />
-      </Layout>
+      // </Layout>
     );
   }
 
   return (
-    <Layout>
-      <div className="max-w-4xl mx-auto p-4">
+    <div>
+      <div className="container mx-auto p-4">
         <h1 className="challange-title mb-6">
           Clear your thoughts, tune in, and let your perception guide you.
         </h1>
 
-        <div className="flex flex-col md:flex-row gap-[58px] mb-6">
-          <div>
-            <p className="challange-subTitle mb-2">Code: {activeTarget.code}</p>
-            <p className="challange-subTitle">
-              Game ends: {new Date(activeTarget.gameTime).toLocaleString()}
-            </p>
+        <div className="flex flex-col md:flex-row gap-[58px] mb-10">
+          <div className="flex justify-center items-center w-full md:w-1/2 gap-6 ">
+            <div>
+              <p className="challange-subTitle mb-2">
+                Code: {activeTarget.code}
+              </p>
+              <p className="challange-subTitle mb-2">
+                Reveal Time:
+                {new Date(activeTarget.revealTime).toLocaleString()}
+              </p>
+            </div>
+            <CountdownTimer
+              endTime={activeTarget.gameTime}
+              onComplete={() => {
+                // Optional: Handle timer completion
+                // For example, you could refresh the page or show a message
+              }}
+            />
           </div>
         </div>
 
@@ -113,6 +126,6 @@ export default function TargetMatchChallenge() {
       </div>
 
       <TMCInfoModal />
-    </Layout>
+    </div>
   );
 }
