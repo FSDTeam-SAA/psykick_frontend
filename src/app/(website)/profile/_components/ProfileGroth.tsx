@@ -72,7 +72,7 @@ export default function ProfileGroth() {
               !isClient || isLoading
                 ? "..."
                 : isError
-                ? "Error"
+                ? "0"
                 : data?.totalCompletedTargets ?? 0
             }
             icon={<Target className="h-8 w-8" />}
@@ -84,7 +84,7 @@ export default function ProfileGroth() {
               !isClient || isLoading
                 ? "..."
                 : isError
-                ? "Error"
+                ? "0"
                 : `${data?.successRate ?? "0"}%`
             }
             icon={<Activity className="h-8 w-8" />}
