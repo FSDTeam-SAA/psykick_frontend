@@ -49,7 +49,7 @@ export function ChallengeCardThree({
         </div>
 
         <h3 className="text-xl font-semibold text-[#00A991]">{title}</h3>
-        <p className="text-sm text-gray-400">{description}</p>
+        <p className="text-sm text-gray-400 px-4">{description}</p>
 
         <button className="w-full group relative " onClick={handleClick}>
           <span className="flex items-center justify-center gap-2 !px-9 !py-5 btn">

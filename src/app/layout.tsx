@@ -23,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${poppins.variable} ${kdamThmorPro.variable}`}>
-      <body>{children}</body>
+      <body className="bg-[#3a1c6e]">{children}</body>
     </html>
   );
 }
