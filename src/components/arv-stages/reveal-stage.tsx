@@ -31,7 +31,7 @@ export default function RevealStage() {
         if (!submissionId) return;
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/userSubmission/get-ARVResult/${submissionId}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/userSubmission/get-ARVResult/${submissionId}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("authToken")}`,

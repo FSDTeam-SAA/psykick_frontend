@@ -304,7 +304,7 @@ export const useARVStore = create<ARVState & ARVActions>()(
           console.log("Active target ID:", activeTarget.targetId);
 
           const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/userSubmission/update-ARVPoints/${submissionId}`,
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/userSubmission/update-ARVPoints/${submissionId}`,
             {
               method: "PATCH",
               headers: {
