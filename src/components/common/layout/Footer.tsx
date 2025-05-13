@@ -5,7 +5,7 @@ import Hideon from "@/provider/Hideon";
 const navigation = {
   main: [
     { name: "Home", href: "/" },
-    { name: "About Us", href: "/about" },
+    { name: "About Us", href: "/about-us" },
     { name: "FAQ", href: "/faq" },
     { name: "Challenges", href: "/challenges" },
     { name: "Contact", href: "/contact" },
@@ -35,7 +35,13 @@ const navigation = {
 };
 
 // Define routes where the footer should be hidden
-const HIDE_ROUTES = ["/signUp", "/login","/forgot-password","/verify-otp","/reset-password"];
+const HIDE_ROUTES = [
+  "/signUp",
+  "/login",
+  "/forgot-password",
+  "/verify-otp",
+  "/reset-password",
+];
 
 export function SiteFooter() {
   return (
