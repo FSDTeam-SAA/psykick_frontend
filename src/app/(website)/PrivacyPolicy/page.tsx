@@ -20,7 +20,7 @@ const PrivacyPolicyPage = () => {
   });
 
   const privacyPolicyContent = data?.data?.[0]?.content;
-  console.log(data);
+  // console.log(data);
 
   if (isLoading) {
     return (
@@ -46,7 +46,7 @@ const PrivacyPolicyPage = () => {
   }
 
   return (
-    <div className="min-h-screen py-12 px-6 container mx-auto">
+    <div className="min-h-screen py-12 px-6 container mx-auto  mt-10">
       <div className="">
         {privacyPolicyContent ? (
           <div className="space-y-6 leading-relaxed text-lg text-white">
