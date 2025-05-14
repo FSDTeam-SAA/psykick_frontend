@@ -33,7 +33,7 @@ const TermsConditions = () => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         if (!response.ok) {
@@ -67,7 +67,9 @@ const TermsConditions = () => {
     <div className="p-4 w-full container bg-[#FFFFFF1A] rounded-lg mt-10 pb-10">
       {/* Header */}
       <div className="flex justify-between items-center mb-6 bg-gradient-to-r from-[#8F37FF] to-[#2D17FF] py-5 px-4 rounded-lg">
-        <h1 className="text-2xl font-bold p-5 text-white">Terms & Conditions</h1>
+        <h1 className="text-2xl font-bold p-5 text-white">
+          Terms & Conditions
+        </h1>
       </div>
 
       {/* Content Area */}
