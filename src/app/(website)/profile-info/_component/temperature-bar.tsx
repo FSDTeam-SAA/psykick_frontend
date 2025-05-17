@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react"
 import { motion, useAnimation } from "framer-motion"
 import { useQuery } from "@tanstack/react-query"
-import { CloudLightning } from "lucide-react"
 import { useAuth } from "@/hooks/useAuth"
 
 interface TemperatureBarProps {
