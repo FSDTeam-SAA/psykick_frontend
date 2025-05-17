@@ -65,8 +65,8 @@ console.log("data rank",data)
 
           {/* Temperature markers */}
           {/* <div className="absolute -left-8 top-0 text-white text-2xl font-bold">275</div> */}
-          <div className="absolute -left-8 top-[100px] -translate-y-1/2 text-white text-2xl font-bold">{data?.up1}</div>
-          <div className="absolute -left-8 bottom-1/4 text-white text-2xl font-bold">{data?.current}</div>
+          <div className="absolute -left-10 top-[100px] -translate-y-1/2 text-white text-2xl font-bold">{data?.up1}</div>
+          <div className="absolute -left-10 bottom-1/4 text-white text-2xl font-bold">{data?.current}</div>
           <div className="absolute left-2 -bottom-10 text-white text-2xl font-bold">{data?.down}</div>
 
           {/* Temperature indicator line */}
