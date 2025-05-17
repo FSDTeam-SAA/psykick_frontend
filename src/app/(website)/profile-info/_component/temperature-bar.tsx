@@ -5,9 +5,10 @@ import { motion, useAnimation } from "framer-motion"
 
 interface TemperatureBarProps {
   temperature: number
+  useRank : string
 }
 
-export function TemperatureBar({ temperature }: TemperatureBarProps) {
+export function TemperatureBar({ temperature,useRank }: TemperatureBarProps) {
   const controls = useAnimation()
   const prevTemp = useRef(temperature)
 
@@ -26,7 +27,8 @@ export function TemperatureBar({ temperature }: TemperatureBarProps) {
 
   return (
     <div className="flex flex-col items-center">
-      <span className="text-white text-3xl font-bold mb-4">{temperature}</span>
+      {/* <span className="text-white text-3xl font-bold mb-4">{temperature}</span> */}
+      <span className="text-white text-3xl font-bold mb-4">{useRank}</span>
       <div className="relative h-96 flex items-center">
         <div className="relative h-full w-16">
           <div className="absolute inset-0 bg-gradient-to-t from-red-500 via-yellow-400 to-green-500 rounded-md">
