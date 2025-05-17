@@ -85,7 +85,7 @@ const upperAvatar2 = tierImageMap[upperRank2?.toUpperCase() || ""] || "/assets/i
       <Card className="p-16 w-full max-w-3xl bg-transparent border-none">
         <div className="flex flex-col md:flex-row items-center justify-between gap-0">
           {/* Left side - Temperature Bar */}
-          <TemperatureBar useRank={user?.tierRank || ""} temperature={temperature} />
+          <TemperatureBar  temperature={temperature} />
 
           {/* Middle section - Levels */}
           <div className="flex flex-col items-center justify-center h-80 py-4 ">
