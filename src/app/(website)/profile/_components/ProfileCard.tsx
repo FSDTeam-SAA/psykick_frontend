@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 const tierImageMap: Record<string, string> = {
   "NOVICE SEEKER": "/assets/img/novice.png",
   INITIATE: "/assets/img/initiate.png",
-  APPRENTICE: "/assets/img/apprentice.png",
+  APPRENTICE: "/assets/img/apperentice.png",
   EXPLORER: "/assets/img/explorer.png",
   VISIONARY: "/assets/img/visionary.png",
   ADEPT: "/assets/img/adept.png",
