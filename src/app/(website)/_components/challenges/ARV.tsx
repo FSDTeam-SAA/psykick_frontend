@@ -18,6 +18,7 @@ import {
   useSubmitARVTarget,
 } from "@/hooks/use-arv-queries";
 import { Loader2 } from "lucide-react";
+import moment from "moment";
 
 export default function ARVPredictionMode() {
   const arvStore = useARVStore();
@@ -53,10 +54,12 @@ export default function ARVPredictionMode() {
     useARVStore.getState().resetCanvasState();
   }, []);
 
+  const now = moment();
+  const isBufferTime = now.isSameOrAfter(activeTarget?.bufferTime);
+
   // If no active target is available
-  if (!activeTarget) {
+  if (!isBufferTime || !activeTarget) {
     return (
-      <Layout>
         <div className="flex flex-col items-center justify-center min-h-[60vh] max-w-2xl mx-auto px-4">
           <div className="text-white text-xl text-center mb-4">
             No active challenges available at the moment.
@@ -66,7 +69,6 @@ export default function ARVPredictionMode() {
             contact support if you believe this is an error.
           </div>
         </div>
-      </Layout>
     );
   }
 
