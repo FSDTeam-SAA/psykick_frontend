@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import Layout from "@/components/challanges/layout";
+// import Layout from "@/components/challanges/layout";
 import EnhancedDrawingCanvas from "@/components/challanges/EnhancedDrawingCanvas";
 import ImageSelection from "@/components/challanges/image-selection";
 import TMCInfoModal from "@/components/challanges/tmc-info-modal";
@@ -9,6 +9,7 @@ import WaitingScreen from "@/components/challanges/waiting-screen";
 import { useChallengeStore } from "@/store/use-challenge-store";
 import { useActiveTMCTarget } from "@/hooks/use-tmc-queries";
 import CountdownTimer from "@/components/ui/countrdown-timer";
+import moment from "moment";
 
 export default function TargetMatchChallenge() {
   const {
@@ -19,42 +20,42 @@ export default function TargetMatchChallenge() {
     setTargetData,
   } = useChallengeStore();
 
-  const { data: activeTarget, isLoading } = useActiveTMCTarget();
-
-  // Set target data when it's loaded
+  const { data: activeTarget, isLoading } = useActiveTMCTarget(); // Set target data when it's loaded
   useEffect(() => {
     if (activeTarget) {
       setTargetData(activeTarget);
     }
   }, [activeTarget, setTargetData]);
+  const now = moment();
+  const isBufferTime = now.isSameOrAfter(activeTarget?.bufferTime);
 
-  // Show loading state
   if (isLoading) {
+    // Show loading state
     return (
-      <Layout>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-white text-xl">Loading challenge...</div>
-        </div>
-      </Layout>
+      // <Layout>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-white text-xl">Loading challenge...</div>
+      </div>
+      // </Layout>
     );
   }
 
   // If no active target is available
-  if (!activeTarget) {
+  if (!isBufferTime || !activeTarget) {
     return (
       // <Layout>
-        <div className="flex flex-col items-center justify-center min-h-[60vh] max-w-2xl mx-auto px-4">
-          <div className="text-white text-xl text-center mb-4">
-            No active challenges available at the moment.
-          </div>
-          <div className="text-purple-300 text-center">
-            You have no active targets at the moment. Please check back later
-            {/* This could be because you&apos;ve completed all your targets for
+      <div className="flex flex-col items-center justify-center min-h-[60vh] max-w-2xl mx-auto px-4">
+        <div className="text-white text-xl text-center mb-4">
+          No active challenges available at the moment.
+        </div>
+        <div className="text-purple-300 text-center">
+          You have no active targets at the moment. Please check back later
+          {/* This could be because you&apos;ve completed all your targets for
             this cycle. Your tier will be updated and a new cycle will begin
             automatically. Check your notifications for updates about your tier
             changes! */}
-          </div>
         </div>
+      </div>
       // </Layout>
     );
   }
@@ -63,7 +64,7 @@ export default function TargetMatchChallenge() {
   if (submitted) {
     return (
       // <Layout>
-        <WaitingScreen />
+      <WaitingScreen />
       // </Layout>
     );
   }
@@ -79,15 +80,15 @@ export default function TargetMatchChallenge() {
           <div className="flex justify-center items-center w-full md:w-1/2 gap-6 ">
             <div>
               <p className="challange-subTitle mb-2">
-                Code: {activeTarget.code}
+                Code: {activeTarget?.code}
               </p>
               <p className="challange-subTitle mb-2">
                 Reveal Time:
-                {new Date(activeTarget.revealTime).toLocaleString()}
+                {new Date(activeTarget?.revealTime).toLocaleString()}
               </p>
             </div>
             <CountdownTimer
-              endTime={activeTarget.gameTime}
+              endTime={activeTarget?.gameTime}
               onComplete={() => {
                 // Optional: Handle timer completion
                 // For example, you could refresh the page or show a message
