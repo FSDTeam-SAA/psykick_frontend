@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useChallengeStore } from "@/store/use-challenge-store";
 import { useTMCResult, useActiveTMCTarget } from "@/hooks/use-tmc-queries";
 import { Button } from "../ui/button";
+import CountdownTimer from "../ui/countrdown-timer";
 
 export default function Results() {
   const { setActiveTab } = useChallengeStore();
@@ -14,12 +15,19 @@ export default function Results() {
   const { targetId } = useChallengeStore();
   const { data: results, isLoading } = useTMCResult(targetId || "");
   const { data: activeTarget } = useActiveTMCTarget();
+
   if (isLoading || !results?.data) {
     return (
-      <div className="max-w-4xl mx-auto p-4">
-        <h2 className="text-3xl font-semibold text-[#ECECEC] mb-8">
-          Loading results...
+      <div className="max-w-4xl mx-auto p-4 flex flex-col items-center justify-center text-[#ECECEC]">
+        <h2 className="text-3xl text-center font-semibold  mb-8">
+          Game has been Finished!
         </h2>
+        <p className="mb-4">Please wait for the next Game!</p>
+        <CountdownTimer
+          endTime={
+            activeTarget?.bufferTime ? new Date(activeTarget.bufferTime) : ""
+          }
+        />
       </div>
     );
   }
@@ -28,11 +36,11 @@ export default function Results() {
 
   return (
     <div className="container mx-auto mt-28  ">
-      <h2 className="text-3xl font-semibold text-[#ECECEC] mb-8">
+      <h2 className="text-3xl font-semibold text-[#ECECEC] mb-8 text-center">
         Feedback for Target Code: {activeTarget?.code}
       </h2>
 
-      <div className="flex flex-wrap items-center gap-8">
+      <div className="flex flex-wrap items-center justify-center gap-8">
         {/* First Choice */}
         <div className="flex flex-col gap-6">
           <h3 className="text-2xl font-medium text-[#ECECEC]">
@@ -81,11 +89,19 @@ export default function Results() {
           <div className="flex flex-col justify-end gap-8 w-[370px] h-[278px]">
             <div>
               <h3 className="text-2xl font-semibold mb-4 text-red-400">
-                {points === 25
-                  ? "Congratulations! You matched the Target on your 1st choice. You received 25 points!"
-                  : points === 15
-                    ? "Good job! You matched the Target on your 2nd choice. You received 15 points!"
-                    : "Unfortunately, you didn't match the Target. -10 points."}
+                {points === 25 ? (
+                  <span className="text-lime-500">
+                    Congratulations! You matched the Target on your 1st choice.
+                    You received 25 points!
+                  </span>
+                ) : points === 15 ? (
+                  <span className="text-lime-500">
+                    Good job! You matched the Target on your 2nd choice. You
+                    received 15 points!
+                  </span>
+                ) : (
+                  "Unfortunately, you didn't match the Target. -10 points."
+                )}
               </h3>
             </div>
 
