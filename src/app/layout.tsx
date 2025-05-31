@@ -5,6 +5,7 @@ const kdamThmorPro = Kdam_Thmor_Pro({
   weight: "400",
   variable: "--font-kdam",
 });
+
 const poppins = Poppins({
   subsets: ["latin"],
   variable: "--font-poppins", // Define a CSS variable

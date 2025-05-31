@@ -10,6 +10,8 @@ import { useChallengeStore } from "@/store/use-challenge-store";
 import { useActiveTMCTarget } from "@/hooks/use-tmc-queries";
 import CountdownTimer from "@/components/ui/countrdown-timer";
 import moment from "moment";
+import { toast } from "@/hooks/use-toast";
+import Results from "@/components/challanges/results";
 
 export default function TargetMatchChallenge() {
   const {
@@ -28,6 +30,13 @@ export default function TargetMatchChallenge() {
   }, [activeTarget, setTargetData]);
   const now = moment();
   const isBufferTime = now.isSameOrAfter(activeTarget?.bufferTime);
+  const isGameTime = now.isSameOrAfter(activeTarget?.gameTime);
+  const isRevealTime = now.isSameOrAfter(activeTarget?.revealTime);
+
+  // console.log("Active Target:", activeTarget);
+  console.log("isBufferTime:", isBufferTime);
+  console.log("isgameTime:", isGameTime);
+  console.log("isRevealTime:", isRevealTime);
 
   if (isLoading) {
     // Show loading state
@@ -41,7 +50,7 @@ export default function TargetMatchChallenge() {
   }
 
   // If no active target is available
-  if (!isBufferTime || !activeTarget) {
+  if (isBufferTime) {
     return (
       // <Layout>
       <div className="flex flex-col items-center justify-center min-h-[60vh] max-w-2xl mx-auto px-4">
@@ -64,9 +73,16 @@ export default function TargetMatchChallenge() {
   if (submitted) {
     return (
       // <Layout>
-      <WaitingScreen />
+      <>
+        {/* <h1>No active game available</h1> */}
+        <WaitingScreen />
+      </>
       // </Layout>
     );
+  }
+
+  if (isRevealTime) {
+    return <Results />;
   }
 
   return (
@@ -84,12 +100,17 @@ export default function TargetMatchChallenge() {
               </p>
               <p className="challange-subTitle mb-2">
                 Reveal Time:
-                {new Date(activeTarget?.revealTime).toLocaleString()}
+                {activeTarget?.revealTime
+                  ? new Date(activeTarget.revealTime).toLocaleString()
+                  : ""}
               </p>
             </div>
             <CountdownTimer
-              endTime={activeTarget?.gameTime}
+              endTime={
+                activeTarget?.gameTime ? new Date(activeTarget.gameTime) : ""
+              }
               onComplete={() => {
+                toast({ title: "Time's up! Please submit your impressions." });
                 // Optional: Handle timer completion
                 // For example, you could refresh the page or show a message
               }}

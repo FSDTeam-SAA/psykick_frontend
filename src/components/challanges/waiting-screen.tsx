@@ -14,7 +14,7 @@ export default function WaitingScreen() {
 
   useEffect(() => {
     if (!submitted || !activeTarget || !targetId) {
-      router.replace("/challenges/tmc");
+      router.replace("/challenges/");
       return;
     }
   }, [activeTarget, router, submitted, targetId]);
