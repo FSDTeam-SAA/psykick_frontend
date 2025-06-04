@@ -15,13 +15,13 @@ const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
 // Map tier names to image paths
 const tierImageMap: Record<string, string> = {
   "NOVICE SEEKER": "/assets/img/novice.png",
-  "INITIATE": "/assets/img/initiate.png",
-  "APPRENTICE": "/assets/img/apperentice.png",
-  "EXPLORER": "/assets/img/explorer.png",
-  "VISIONARY": "/assets/img/visionary.png",
-  "ADEPT": "/assets/img/adept.png",
-  "SEER": "/assets/img/seer.png",
-  "ORACLE": "/assets/img/oracle.png",
+  INITIATE: "/assets/img/initiate.png",
+  APPRENTICE: "/assets/img/apperentice.png",
+  EXPLORER: "/assets/img/explorer.png",
+  VISIONARY: "/assets/img/visionary.png",
+  ADEPT: "/assets/img/adept.png",
+  SEER: "/assets/img/seer.png",
+  ORACLE: "/assets/img/oracle.png",
   "MASTER REMOTE VIEWER": "/assets/img/master_remote_viewer.png",
   "ASCENDING MASTER": "/assets/img/ascending_master.png",
 };
@@ -79,8 +79,6 @@ export default function GamifiedProfile() {
 
       {/* Main content */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-  
-  
         {/* Left side - Progress meter */}
         <div className="md:col-span-3">
           <GameDashboard totalScore={profileData.totalPoints} />
@@ -103,12 +101,14 @@ export default function GamifiedProfile() {
                 bg-[url('/assets/img/profileBg.png')] bg-cover bg-center bg-no-repeat 
                 w-[500px] h-[500px]"
               >
-                <div className="text-center text-2xl mt-4 font-bold">YOU NEED</div>
+                <div className="text-center text-2xl mt-4 font-bold">
+                  YOU NEED
+                </div>
                 <div className="text-center text-7xl font-bold text-yellow-500 my-2">
                   {profileData.nextTierPoint}
                 </div>
                 <div className="text-center text-2xl mb-4 font-bold">
-                MORE POINTS TO ACHIEVE
+                  MORE POINTS TO ACHIEVE
                 </div>
 
                 <div className="mb-4 mx-auto flex justify-around items-center">
@@ -141,7 +141,7 @@ export default function GamifiedProfile() {
             </div>
           </div>
         </div>
-      </div>  
+      </div>
     </div>
   );
 }

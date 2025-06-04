@@ -8,16 +8,16 @@ import WaitingStage from "./waiting-stage";
 import RevealStage from "./reveal-stage";
 import ResultsStage from "./results-stage";
 import { RefreshCw } from "lucide-react";
+import moment from "moment";
 
 export default function ARVPrediction() {
-  const {
-    stage,
-    activeTarget,
-    resetGameState,
-    moveToReveal,
-    updatePoints,
-  } = useARVStore();
+  const { stage, activeTarget, resetGameState, moveToReveal, updatePoints } =
+    useARVStore();
   const [mounted, setMounted] = useState(false);
+
+  const now = moment();
+  const isRevealTime = now.isSameOrAfter(activeTarget?.revealTime);
+  const isGameTime = now.isSameOrAfter(activeTarget?.gameTime);
 
   useEffect(() => {
     setMounted(true);
@@ -27,7 +27,9 @@ export default function ARVPrediction() {
   useEffect(() => {
     if (!mounted || !activeTarget) return;
 
-    const now = new Date().getTime();
+    // const now = new Date().getTime();
+
+    console.log("Current time:", now.toISOString());
 
     // Check if we should be in waiting stage
     if (stage === "drawing" || stage === "selection") {
@@ -39,23 +41,32 @@ export default function ARVPrediction() {
     }
 
     // Check if we should be in reveal stage
-    if (stage === "waiting" && activeTarget.gameTime) {
-      const gameTime = new Date(activeTarget.gameTime).getTime();
-      if (now >= gameTime) {
+    if (stage === "waiting" && !isGameTime) {
+      // const gameTime = new Date(activeTarget.gameTime).getTime();
+      if (!isGameTime) {
         console.log("Game time already passed, moving to reveal stage");
         moveToReveal();
       }
     }
 
     // Check if we should be in results stage
-    if (stage === "reveal" && activeTarget.revealTime) {
-      const revealTime = new Date(activeTarget.revealTime).getTime();
-      if (now >= revealTime) {
+    if (stage === "reveal" && !isRevealTime) {
+      // const revealTime = new Date(activeTarget.revealTime).getTime();
+      if (isRevealTime) {
         console.log("Reveal time already passed, moving to results stage");
         updatePoints();
       }
     }
-  }, [mounted, stage, activeTarget, moveToReveal, updatePoints]);
+  }, [
+    mounted,
+    stage,
+    activeTarget,
+    moveToReveal,
+    updatePoints,
+    now,
+    isGameTime,
+    isRevealTime,
+  ]);
 
   // Continuous check for stage transitions
   useEffect(() => {
@@ -102,9 +113,11 @@ export default function ARVPrediction() {
     return () => clearInterval(checkTimesInterval);
   }, [stage, activeTarget, moveToReveal, updatePoints]);
 
+  console.warn(activeTarget);
+
   if (!mounted) return null;
 
-  if (!activeTarget) {
+  if (isGameTime) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-4 text-white">
         <h1 className="text-2xl font-bold mb-4">No Active ARV Challenge</h1>
