@@ -1,3 +1,4 @@
+import GameTabNavigation from "@/app/(website)/_components/challenges/tab-navigation";
 import type React from "react";
 // import Link from "next/link";
 // import { Bell } from "lucide-react";
@@ -8,7 +9,9 @@ type LayoutProps = {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <div className="min-h-screen bg-[#3a1c6e] flex flex-col">
+    <div className="min-h-screen *:bg-[#3a1c6e] flex flex-col">
+      <GameTabNavigation />
+
       {/* Header */}
       {/* <header className="w-full py-4 px-6 flex justify-between items-center">
         <Link href="/" className="text-2xl font-bold">

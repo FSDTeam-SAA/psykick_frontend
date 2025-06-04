@@ -5,6 +5,7 @@ const kdamThmorPro = Kdam_Thmor_Pro({
   weight: "400",
   variable: "--font-kdam",
 });
+
 const poppins = Poppins({
   subsets: ["latin"],
   variable: "--font-poppins", // Define a CSS variable
@@ -23,7 +24,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${poppins.variable} ${kdamThmorPro.variable}`}>
-      <body>{children}</body>
+      <body className="bg-[#3a1c6e]">{children}</body>
     </html>
   );
 }

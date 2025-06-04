@@ -94,6 +94,7 @@ body {
     @apply text-[24px]  font-semibold leading-[28.4px] text-[#ECECEC];
   }
 }
+
 .textLargeShadow {
   text-shadow:
     rgb(0, 0, 0) 10px 0px 0px,

@@ -20,7 +20,7 @@ const PrivacyPolicyPage = () => {
   });
 
   const privacyPolicyContent = data?.data?.[0]?.content;
-  console.log(data);
+  // console.log(data);
 
   if (isLoading) {
     return (

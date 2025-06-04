@@ -24,7 +24,7 @@ export default function ResultsStage() {
         console.log("Active target ID:", activeTarget.targetId);
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/userSubmission/get-ARVResult/${submissionId}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/userSubmission/get-ARVResult/${submissionId}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("authToken")}`,

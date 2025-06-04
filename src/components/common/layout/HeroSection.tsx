@@ -36,7 +36,7 @@ export default function HeroSection() {
         </div>
 
         {/* Challenges section */}
-        <div className="border-[#c3a1e9] border-[5px] rounded-[40px] mt-10 md:mt-16 lg:mt-[400px] mx-4 sm:mx-6 md:mx-10 lg:w-full">
+        <div className="border-[#c3a1e9] border-[5px] rounded-[40px] mt-10 md:mt-16 lg:mt-[400px] mx-4 sm:mx-6 md:mx-10">
           <h2 className="font-black title rounded-t-[35px] bg-[#D9D9D980] w-full text-center textLargeShadow text-[#CB9191] py-3 md:py-5 text-2xl md:text-3xl lg:text-4xl">
             Challanges
           </h2>

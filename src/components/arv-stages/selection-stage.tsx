@@ -63,7 +63,7 @@ export default function SelectionStage() {
       console.log("Submitting selection:", submissionData);
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/userSubmission/submit-ARVTarget`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/userSubmission/submit-ARVTarget`,
         {
           method: "POST",
           headers: {

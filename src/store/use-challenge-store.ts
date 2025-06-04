@@ -246,12 +246,10 @@ export const useChallengeStore = create<ChallengeState & ChallengeActions>()(
         }),
 
       toggleTMCInfo: () =>
-        set((state) => ({ showTMCInfo: !state.showTMCInfo })),
-
-      closeTMCInfo: () => {
+        set((state) => ({ showTMCInfo: !state.showTMCInfo })),      closeTMCInfo: () => {
         set({
           showTMCInfo: false,
-          showImageSelection: true,
+          showImageSelection: true  // Show image selection when closing the modal
         });
       },
 
@@ -325,9 +323,7 @@ export const useChallengeStore = create<ChallengeState & ChallengeActions>()(
           }
 
           return state;
-        }),
-
-      submitImpression: () => {
+        }),      submitImpression: () => {
         const state = get();
         if (!state.dontShowTMCAgain) {
           set({ showTMCInfo: true });

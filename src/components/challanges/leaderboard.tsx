@@ -23,6 +23,7 @@ interface LeaderboardData {
 
 export default function Leaderboard() {
   const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("authToken");
@@ -50,29 +51,26 @@ export default function Leaderboard() {
       enabled: !!token,
     });
 
-  const {
-    data: arvleaderboardData,
-    isLoading,
-    refetch: arvleaderboardDataFatching,
-  } = useQuery<LeaderboardData>({
-    queryKey: ["arvleaderboardData"],
-    queryFn: async () => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/leaderboard/get-ARVLeaderboard`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+  const { data: arvleaderboardData, refetch: arvleaderboardDataFatching } =
+    useQuery<LeaderboardData>({
+      queryKey: ["arvleaderboardData"],
+      queryFn: async () => {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/leaderboard/get-ARVLeaderboard`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        },
-      );
+        );
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.json();
-    },
-    enabled: !!token,
-  });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      },
+      enabled: !!token,
+    });
 
   const { data: totalLeaderboard, refetch: totalleaderboardDataFatching } =
     useQuery<LeaderboardData>({
@@ -95,11 +93,22 @@ export default function Leaderboard() {
       enabled: !!token,
     });
 
-  const fetchLeaderbardData = () => {
-    if (token) {
-      totalleaderboardDataFatching();
-      arvleaderboardDataFatching();
-      tmsleaderboardDataFatching();
+  const fetchLeaderboardData = async () => {
+    if (!token) return;
+
+    setLoading(true);
+    try {
+      await Promise.all([
+        totalleaderboardDataFatching(),
+        arvleaderboardDataFatching(),
+        tmsleaderboardDataFatching(),
+      ]);
+    } catch (error) {
+      console.error("Error refreshing leaderboards:", error);
+      // You could add a toast notification here to show the error to the user
+    } finally {
+      // Ensure loading is always turned off, even if there's an error
+      setLoading(false);
     }
   };
 
@@ -154,7 +163,7 @@ export default function Leaderboard() {
               <div className="text-gray-600 font-medium">Score</div>
             </div>
 
-            <div className="max-h-[500px] px-4 overflow-y-auto flex flex-col gap-4 relative">
+            <div className="max-h-[500px] overflow-y-auto flex flex-col gap-4 relative">
               {tmsleaderboardData?.data.map((entry: any, i: number) => (
                 <div
                   key={entry._id}
@@ -215,7 +224,7 @@ export default function Leaderboard() {
               <div className="text-gray-600 font-medium">Score</div>
             </div>
 
-            <div className="max-h-[500px] px-4 flex flex-col gap-4 overflow-y-auto relative">
+            <div className="max-h-[500px] flex flex-col gap-4 overflow-y-auto relative">
               {arvleaderboardData?.data.map((entry, i) => (
                 <div
                   key={entry._id}
@@ -303,13 +312,13 @@ export default function Leaderboard() {
       {/* Refresh button */}
       <div className="flex justify-center mt-6">
         <button
-          onClick={fetchLeaderbardData}
+          onClick={fetchLeaderboardData}
           className="flex items-center px-4 py-2 bg-[#8a2be2] text-white rounded-lg hover:bg-[#7a1bd2] transition-colors"
-          disabled={isLoading}
+          disabled={loading}
         >
           <RefreshCw
             size={18}
-            className={`mr-2 ${isLoading ? "animate-spin" : ""}`}
+            className={`mr-2 ${loading ? "animate-spin" : ""}`}
           />
           Refresh Leaderboards
         </button>

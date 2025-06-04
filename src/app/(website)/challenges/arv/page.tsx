@@ -91,7 +91,7 @@ export default function Home() {
         const token = localStorage.getItem("authToken");
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/ARVTarget/get-activeARVTarget`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/ARVTarget/get-activeARVTarget`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
