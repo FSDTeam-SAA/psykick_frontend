@@ -1,54 +1,56 @@
-"use client"
+"use client";
 
-import { useEffect, useRef } from "react"
-import { motion, useAnimation } from "framer-motion"
-import { useQuery } from "@tanstack/react-query"
-import { useAuth } from "@/hooks/useAuth"
+import { useEffect, useRef } from "react";
+import { motion, useAnimation } from "framer-motion";
+// import { useQuery } from "@tanstack/react-query";
+// import { useAuth } from "@/hooks/useAuth";
 
 interface TemperatureBarProps {
-  temperature: number
+  temperature: number;
 }
 
 export function TemperatureBar({ temperature }: TemperatureBarProps) {
-  const controls = useAnimation()
-  const prevTemp = useRef(temperature)
-  const {user}  = useAuth()
+  const controls = useAnimation();
+  const prevTemp = useRef(temperature);
+  // const { user } = useAuth();
   // Calculate temperature percentage for the progress bar
-  const tempPercentage = ((temperature - -100) / (275 - -100)) * 100
+  const tempPercentage = ((temperature - -100) / (275 - -100)) * 100;
 
   useEffect(() => {
     if (prevTemp.current !== temperature) {
       controls.start({
         height: `${100 - tempPercentage}%`,
         transition: { type: "spring", stiffness: 100, damping: 15 },
-      })
-      prevTemp.current = temperature
+      });
+      prevTemp.current = temperature;
     }
-  }, [temperature, tempPercentage, controls])
+  }, [temperature, tempPercentage, controls]);
 
-     const userId = user?._id
+  // const userId = user?._id;
 
-  const { data } = useQuery({
- 
-    queryKey: ["nextTierInfo", userId],
-    queryFn: async () => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/userSubmission/get-nextTierInfo/${userId}`
-      )
-      if (!res.ok) {
-        throw new Error("Failed to fetch tier info")
-      }
-      const result = await res.json()
-      return result.data
-    },
-    enabled: !!userId,
-  })
+  // const { data } = useQuery({
+  //   queryKey: ["nextTierInfo", userId],
+  //   queryFn: async () => {
+  //     const res = await fetch(
+  //       `${process.env.NEXT_PUBLIC_BACKEND_URL}/userSubmission/get-nextTierInfo/${userId}`,
+  //     );
+  //     if (!res.ok) {
+  //       throw new Error("Failed to fetch tier info");
+  //     }
+  //     const result = await res.json();
+  //     return result.data;
+  //   },
+  //   enabled: !!userId,
+  // });
 
-console.log("data rank",data)
+  // console.log("data rank", data);
 
   return (
     <div className="flex flex-col items-center">
-      <span className="text-white text-3xl font-bold mb-4">{data?.up2}</span>
+      <span className="text-white text-3xl font-bold mb-4">
+        {/* {data?.up2} */}
+         275
+      </span>
       {/* <span className="text-white text-3xl font-bold mb-4">{useRank}</span> */}
       <div className="relative h-96 flex items-center">
         <div className="relative h-full w-16">
@@ -64,9 +66,15 @@ console.log("data rank",data)
 
           {/* Temperature markers */}
           {/* <div className="absolute -left-8 top-0 text-white text-2xl font-bold">275</div> */}
-          <div className="absolute -left-10 top-[100px] -translate-y-1/2 text-white text-2xl font-bold">{data?.up1}</div>
-          <div className="absolute -left-10 bottom-1/4 text-white text-2xl font-bold">{data?.current}</div>
-          <div className="absolute left-2 -bottom-10 text-white text-2xl font-bold">{data?.down}</div>
+          <div className="absolute -left-10 top-[100px] -translate-y-1/2 text-white text-2xl font-bold">
+            {/* {data?.up1} */} 138
+          </div>
+          <div className="absolute -left-10 bottom-1/4 text-white text-2xl font-bold">
+            {/* {data?.current} */} 0
+          </div>
+          <div className="absolute left-2 -bottom-10 text-white text-2xl font-bold">
+            {/* {data?.down} */} -100
+          </div>
 
           {/* Temperature indicator line */}
           <motion.div
@@ -94,5 +102,5 @@ console.log("data rank",data)
         <div className="absolute bottom-[116px] left-16 w-full border-t-2 border-dashed border-white" />
       </div>
     </div>
-  )
+  );
 }

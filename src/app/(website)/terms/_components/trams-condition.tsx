@@ -64,24 +64,27 @@ const TermsConditions = () => {
   }
 
   return (
-    <div className="p-4 w-full container bg-[#FFFFFF1A] rounded-lg mt-10 pb-10">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-6 bg-gradient-to-r from-[#8F37FF] to-[#2D17FF] py-5 px-4 rounded-lg">
-        <h1 className="text-2xl font-bold p-5 text-white">
-          Terms & Conditions
-        </h1>
-      </div>
+    <div className=" w-full container  ">
+    <div className="pt-32 pb-20">
+    <div className="bg-[#FFFFFF1A]  p-4 rounded-lg  pb-10 ">
+        <div className="flex   justify-between items-center mb-6 bg-gradient-to-r from-[#8F37FF] to-[#2D17FF] py-5 px-4 rounded-lg">
+          <h1 className="text-2xl font-bold p-5 text-white">
+            Terms & Conditions
+          </h1>
+        </div>
 
-      {/* Content Area */}
-      <div className="bg-purple-800 bg-opacity-50 rounded-lg p-6">
-        <div className="space-y-4 h-[800px] overflow-y-auto scroll-smooth">
-          {/* Render content as HTML */}
-          <div
-            className="prose prose-invert text-white"
-            dangerouslySetInnerHTML={{ __html: content }} // Render HTML content
-          />
+        {/* Content Area */}
+        <div className="bg-purple-800 bg-opacity-50 rounded-lg p-6">
+          <div className="space-y-4 h-[800px] overflow-y-auto scroll-smooth">
+            {/* Render content as HTML */}
+            <div
+              className="prose prose-invert text-white"
+              dangerouslySetInnerHTML={{ __html: content }} // Render HTML content
+            />
+          </div>
         </div>
       </div>
+    </div>
 
       {/* Extra styles for quill dark mode */}
       <style jsx global>{`
