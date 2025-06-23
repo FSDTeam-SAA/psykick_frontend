@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -42,11 +42,11 @@ export default function GamifiedProfile() {
     enabled: !!userId,
   });
 
-  useEffect(() => {
-    if (profileData) {
-      console.log("User profile data:", profileData);
-    }
-  }, [profileData]);
+  // useEffect(() => {
+  //   if (profileData) {
+  //     console.log("User profile data:", profileData);
+  //   }
+  // }, [profileData]);
 
   if (isLoading || !profileData) {
     return <div className="p-8 text-center">Loading profile data...</div>;
@@ -108,7 +108,7 @@ export default function GamifiedProfile() {
                   {profileData.nextTierPoint}
                 </div>
                 <div className="text-center text-2xl mb-4 font-bold">
-                  MORE POINTS TO ACHIEVE
+                  MORE POINTS TO ACHIEVE NEXT TIER
                 </div>
 
                 <div className="mb-4 mx-auto flex justify-around items-center">

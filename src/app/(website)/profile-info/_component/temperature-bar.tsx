@@ -2,8 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import { motion, useAnimation } from "framer-motion";
-// import { useQuery } from "@tanstack/react-query";
-// import { useAuth } from "@/hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/useAuth";
 
 interface TemperatureBarProps {
   temperature: number;
@@ -12,7 +12,7 @@ interface TemperatureBarProps {
 export function TemperatureBar({ temperature }: TemperatureBarProps) {
   const controls = useAnimation();
   const prevTemp = useRef(temperature);
-  // const { user } = useAuth();
+  const { user } = useAuth();
   // Calculate temperature percentage for the progress bar
   const tempPercentage = ((temperature - -100) / (275 - -100)) * 100;
 
@@ -26,24 +26,24 @@ export function TemperatureBar({ temperature }: TemperatureBarProps) {
     }
   }, [temperature, tempPercentage, controls]);
 
-  // const userId = user?._id;
+  const userId = user?._id;
 
-  // const { data } = useQuery({
-  //   queryKey: ["nextTierInfo", userId],
-  //   queryFn: async () => {
-  //     const res = await fetch(
-  //       `${process.env.NEXT_PUBLIC_BACKEND_URL}/userSubmission/get-nextTierInfo/${userId}`,
-  //     );
-  //     if (!res.ok) {
-  //       throw new Error("Failed to fetch tier info");
-  //     }
-  //     const result = await res.json();
-  //     return result.data;
-  //   },
-  //   enabled: !!userId,
-  // });
+  const { data } = useQuery({
+    queryKey: ["nextTierInfo", userId],
+    queryFn: async () => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/userSubmission/get-nextTierInfo/${userId}`,
+      );
+      if (!res.ok) {
+        throw new Error("Failed to fetch tier info");
+      }
+      const result = await res.json();
+      return result.data;
+    },
+    enabled: !!userId,
+  });
 
-  // console.log("data rank", data);
+  console.log("data rank", data);
 
   return (
     <div className="flex flex-col items-center">
@@ -67,10 +67,12 @@ export function TemperatureBar({ temperature }: TemperatureBarProps) {
           {/* Temperature markers */}
           {/* <div className="absolute -left-8 top-0 text-white text-2xl font-bold">275</div> */}
           <div className="absolute -left-14 top-[100px] -translate-y-1/2 text-yellow-400 text-2xl font-bold">
-            {/* {data?.up1} */} 81
+            {data?.tierDetails?.up}
+            {/* 81 */}
           </div>
           <div className="absolute -left-10 bottom-1/4 text-white text-2xl font-bold">
-            {/* {data?.current} */} 30
+            {data?.tierDetails?.down}
+            {/* 30 */}
           </div>
           <div className="absolute left-2 -bottom-10 text-red-500 text-2xl font-bold">
             {/* {data?.down} */} -100
