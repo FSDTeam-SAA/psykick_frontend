@@ -31,7 +31,7 @@ export function WaterBar({ totalScore }: WaterBarProps) {
 
   return (
     <div className="flex items-center gap-5">
-      <div className="relative h-[440px] w-16">
+      <div className="relative h-[435px] w-16">
         <div className="absolute inset-0 bg-black overflow-hidden border-4 border-[#605E5E]">
           <motion.div
             className="absolute bottom-0 inset-x-0"
@@ -53,10 +53,10 @@ export function WaterBar({ totalScore }: WaterBarProps) {
         </div>
 
         {/* Indicators */}
-        <div className=" absolute -left-3 top-[151px] -translate-y-1/2 w-6 h-6 bg-white rotate-45 transform" />
-        <div className="absolute -left-3 bottom-[108px] w-6 h-6 bg-white rotate-45 transform" />
-        <div className="absolute top-[151px] -translate-y-1/2 right-16 w-full border-t-2 border-dashed border-white" />
-        <div className="absolute bottom-[118px] right-16 w-full border-t-2 border-dashed border-white" />
+        <div className=" absolute -left-3 top-[150px] -translate-y-1/2 w-6 h-6 bg-white rotate-45 transform" />
+        <div className="absolute -left-3 bottom-[104px] w-6 h-6 bg-white rotate-45 transform" />
+        <div className="absolute top-[150px] -translate-y-1/2 right-16 w-full border-t-2 border-dashed border-white" />
+        <div className="absolute bottom-[115px] right-16 w-full border-t-2 border-dashed border-white" />
       </div>
       <div className="flex flex-col items-center mb-4">
         <h3 className="text-white text-xl font-bold">YOUR</h3>

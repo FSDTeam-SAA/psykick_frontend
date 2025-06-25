@@ -17,11 +17,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Navbar />
-        <div className="bg-[#371B77]">
-          <AppProvider>{children}</AppProvider>
-        </div>
-        <SiteFooter />
+        <AppProvider>
+          <Navbar />
+          <div className="bg-[#371B77]">{children}</div>
+          <SiteFooter />
+        </AppProvider>
       </body>
     </html>
   );
