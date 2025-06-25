@@ -7,6 +7,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Bell } from "lucide-react";
 import { Pagination } from "../../pagination-component";
 import { PaginationInfo } from "../../pagination-info";
+import { useChallengeStore } from "@/store/use-challenge-store";
+import { useRouter } from "next/navigation";
 
 interface NotificationItem {
   _id: string;
@@ -34,7 +36,8 @@ interface NotificationsResponse {
 const NotificationPage = () => {
   const { user } = useAuth();
   const userId = user?._id;
-
+  const { setActiveTab } = useChallengeStore();
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
@@ -67,6 +70,18 @@ const NotificationPage = () => {
   });
 
   const notifications = notificationsData?.data || [];
+  console.log(notifications);
+
+  const handelRrdc = (rdc: string) => {
+    if (rdc === "New TMC game has started") {
+      router.push("/challenges");
+      setActiveTab("tmc");
+    } else if (rdc === "New ARV game has started") {
+      router.push("/challenges");
+      setActiveTab("arv");
+    }
+  };
+
   const pagination = notificationsData?.pagination || {
     totalItems: 0,
     totalPages: 0,
@@ -138,8 +153,9 @@ const NotificationPage = () => {
             <div className="space-y-4 mb-8">
               {notifications.map((notification: NotificationItem) => (
                 <div
+                  onClick={() => handelRrdc(notification.message)}
                   key={notification._id}
-                  className="bg-white/10 border border-white/20 rounded-xl px-4 py-4 sm:px-6 sm:py-5 shadow-md backdrop-blur-sm flex flex-col sm:flex-row justify-between gap-3 items-start sm:items-center transition-all hover:bg-white/15"
+                  className="bg-white/10 cursor-pointer border border-white/20 rounded-xl px-4 py-4 sm:px-6 sm:py-5 shadow-md backdrop-blur-sm flex flex-col sm:flex-row justify-between gap-3 items-start sm:items-center transition-all hover:bg-white/15"
                 >
                   <div className="flex gap-4 items-start sm:items-center">
                     <Bell className="text-yellow-400 mt-1 sm:mt-0 shrink-0" />

@@ -44,6 +44,7 @@ export default function GameDashboard({ totalScore }: GameDashboardProps) {
       upperRank2 = tierRanks[index - 2];
     }
   }
+  console.log("upperRank1", upperRank1);
   {
     /* {upperRank2 && <p>Second highest above: {upperRank2}</p>}
             {upperRank1 && <p>Highest above: {upperRank1}</p>} */
@@ -102,17 +103,17 @@ export default function GameDashboard({ totalScore }: GameDashboardProps) {
 
             <div className="w-full border-dashed border-b-2 border-white py-8">
               <LevelIndicator
-                title={upperRank1 || ""}
-                bgColor="bg-orange-400"
-                imageSrc={upperAvatar1}
+                title={user?.tierRank || ""}
+                bgColor="bg-red-500"
+                imageSrc={avatarSrc}
               />
             </div>
 
             <div className="pt-8">
               <LevelIndicator
-                title={user?.tierRank || ""}
-                bgColor="bg-red-500"
-                imageSrc={avatarSrc}
+                title={upperRank1 || ""}
+                bgColor="bg-orange-400"
+                imageSrc={upperAvatar1}
               />
             </div>
           </div>
