@@ -52,7 +52,7 @@ export function TemperatureBar({ temperature }: TemperatureBarProps) {
         300
       </span>
       {/* <span className="text-white text-3xl font-bold mb-4">{useRank}</span> */}
-      <div className="relative h-96 flex items-center">
+      <div className="relative h-[435px] flex items-center">
         <div className="relative h-full w-16">
           <div className="absolute inset-0 bg-gradient-to-t from-red-500 via-yellow-400 to-green-500 rounded-md">
             <motion.div
@@ -95,14 +95,15 @@ export function TemperatureBar({ temperature }: TemperatureBarProps) {
           </div>
 
           {/* Indicator diamonds */}
-          <div className=" absolute -right-3 top-[96px] -translate-y-1/2 w-6 h-6 bg-white rotate-45 transform" />
-          <div className="absolute -right-3 bottom-[106px] w-6 h-6 bg-white rotate-45 transform" />
+          <div className=" absolute -right-3 top-[122px] -translate-y-1/2 w-6 h-6 bg-white rotate-45 transform" />
+          <div className="absolute -right-3 bottom-[130px] w-6 h-6 bg-white rotate-45 transform" />
         </div>
 
         {/* Dotted lines */}
-        <div className="absolute top-[97px] -translate-y-1/2 left-16 w-full border-t-2 border-dashed border-white" />
-        <div className="absolute bottom-[116px] left-16 w-full border-t-2 border-dashed border-white" />
+        <div className="absolute top-[123px] -translate-y-1/2 left-16 w-full border-t-2 border-dashed border-white" />
+        <div className="absolute bottom-[140px] left-16 w-full border-t-2 border-dashed border-white" />
       </div>
+
     </div>
   );
 }
