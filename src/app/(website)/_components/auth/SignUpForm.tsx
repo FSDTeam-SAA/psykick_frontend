@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import Image from "next/image";
+// import Image from "next/image";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -583,7 +583,7 @@ export default function SignUpForm() {
                 Log in
               </a>
             </p>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
+            {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
               <Button variant="outline" className="btn-outline bg-transparent">
                 <Image
                   src="/assets/img/google.png"
@@ -602,7 +602,7 @@ export default function SignUpForm() {
                 />
                 Continue With Facebook
               </Button>
-            </div>
+            </div> */}
           </CardFooter>
         </form>
       </Card>

@@ -38,7 +38,7 @@ export function Navbar() {
     },
     enabled: !!user?._id,
   });
-  
+
   const HIDE_ROUTES = [
     "/signUp",
     "/login",
@@ -68,10 +68,10 @@ export function Navbar() {
     router.push(path);
   };
 
-console.log(data?.tierDetails?.image)
+  console.log(data?.tierDetails?.image);
   return (
     <Hideon routes={HIDE_ROUTES}>
-      <nav className="bg-[#300070]/5 backdrop-blur-lg py-4 px-6 fixed w-full top-0 z-50">
+      <nav className="bg-[#300070]/5 backdrop-blur-lg py-4 px-6 fixed w-screen top-0 z-50">
         <div className="container mx-auto">
           <div className="flex items-center justify-between">
             {/* Logo */}
@@ -174,19 +174,19 @@ console.log(data?.tierDetails?.image)
                   <Link href="/login">
                     <Button
                       variant="ghost"
-                      className="!px-[29px] !py-[22px] text-[16px] text-white hover:bg-[#6D28D9]"
+                      className="!px-[29px] !py-[22px] text-[16px] text-white hover:bg-[#6D28D9] btn-outline"
                     >
                       Log in
                     </Button>
                   </Link>
-                  <Link href="/signUp">
+                  {/* <Link href="/signUp">
                     <Button
                       variant="outline"
-                      className="border-white text-white text-[16px] font-medium"
+                      className="border-white text-white text-[16px] font-medium iconGradient"
                     >
                       Sign Up
                     </Button>
-                  </Link>
+                  </Link> */}
                 </>
               )}
             </div>
