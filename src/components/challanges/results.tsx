@@ -35,7 +35,7 @@ export default function Results() {
   const { firstChoiceImage, secondChoiceImage, points } = results.data;
 
   return (
-    <div className="container mx-auto mt-28  ">
+    <div className="container mx-auto my-28  ">
       <h2 className="text-3xl font-semibold text-[#ECECEC] mb-8 text-center">
         Feedback for Target Code: {activeTarget?.code}
       </h2>
@@ -90,9 +90,9 @@ export default function Results() {
             <div>
               <h3 className="text-2xl font-semibold mb-4 text-red-400">
                 {points === 25 ? (
-                  <span className="text-lime-500">
-                    Congratulations! You matched the Target on your 1st choice.
-                    You received 25 points!
+                  <span className="text-green-500">
+                    Congratulations! 🎉🎊🎊 You matched the Target on your 1st
+                    choice. You received 25 points!
                   </span>
                 ) : points === 15 ? (
                   <span className="text-lime-500">
