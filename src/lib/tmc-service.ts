@@ -12,9 +12,9 @@ export interface TMCTarget {
   code: string;
   targetImage: string;
   controlImages: string[];
-  revealTime: string;
-  bufferTime: string;
-  gameTime: string;
+  revealDuration: string;
+  bufferDuration: string;
+  gameDuration: string;
   isActive: boolean;
   isQueued: boolean;
   isCompleted: boolean;

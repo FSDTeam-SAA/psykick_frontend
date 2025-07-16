@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -32,8 +31,6 @@ export default function Home() {
           // The store will handle mapping it to the correct structure
           // and will reset the game state if this is a new game
           setActiveTarget(data.data);
-
-
         } else {
           console.error("Invalid data format received:", data);
           // Set a default state or show an error message

@@ -29,7 +29,7 @@ export default function WaitingScreen() {
     <div className="max-w-2xl mx-auto p-4 text-center mt-16">
       <div className="mb-16">
         <CountdownDisplay
-          targetDate={new Date(activeTarget.revealTime)}
+          targetDate={new Date(activeTarget.revealDuration)}
           onComplete={handleCountdownComplete}
         />
       </div>
@@ -43,7 +43,7 @@ export default function WaitingScreen() {
 
       <p className="text-xl text-white mb-4">
         Target will be revealed in:{" "}
-        {new Date(activeTarget.revealTime).toLocaleString()}
+        {new Date(activeTarget.revealDuration).toLocaleString()}
       </p>
 
       <p className="text-xl text-white">Target ID: {challengeCode}</p>

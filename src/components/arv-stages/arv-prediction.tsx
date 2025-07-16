@@ -16,8 +16,8 @@ export default function ARVPrediction() {
   const [mounted, setMounted] = useState(false);
 
   const now = moment();
-  const isRevealTime = now.isSameOrAfter(activeTarget?.revealTime);
-  const isGameTime = now.isSameOrAfter(activeTarget?.gameTime);
+  // const isRevealTime = activeTarget?.revealDuration;
+  // const isGameTime = ;
 
   useEffect(() => {
     setMounted(true);
@@ -41,18 +41,18 @@ export default function ARVPrediction() {
     }
 
     // Check if we should be in reveal stage
-    if (stage === "waiting" && !isGameTime) {
+    if (stage === "waiting" && !activeTarget?.gameDuration) {
       // const gameTime = new Date(activeTarget.gameTime).getTime();
-      if (!isGameTime) {
+      if (!activeTarget?.gameDuration) {
         console.log("Game time already passed, moving to reveal stage");
         moveToReveal();
       }
     }
 
     // Check if we should be in results stage
-    if (stage === "reveal" && !isRevealTime) {
+    if (stage === "reveal" && !activeTarget.revealDuration) {
       // const revealTime = new Date(activeTarget.revealTime).getTime();
-      if (isRevealTime) {
+      if (activeTarget.revealDuration) {
         console.log("Reveal time already passed, moving to results stage");
         updatePoints();
       }
@@ -64,8 +64,8 @@ export default function ARVPrediction() {
     moveToReveal,
     updatePoints,
     now,
-    isGameTime,
-    isRevealTime,
+    activeTarget?.gameDuration,
+    activeTarget?.revealDuration,
   ]);
 
   // Continuous check for stage transitions
@@ -117,7 +117,7 @@ export default function ARVPrediction() {
 
   if (!mounted) return null;
 
-  if (isGameTime) {
+  if (activeTarget === null) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-4 text-white">
         <h1 className="text-2xl font-bold mb-4">No Active ARV Challenge</h1>

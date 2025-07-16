@@ -14,10 +14,10 @@ export default function DrawingStage() {
   });
 
   useEffect(() => {
-    if (activeTarget?.gameTime) {
+    if (activeTarget?.gameDuration) {
       const updateTimer = () => {
         const now = new Date();
-        const gameTime = new Date(activeTarget.gameTime);
+        const gameTime = new Date(activeTarget.gameDuration);
         const diff = Math.max(0, gameTime.getTime() - now.getTime());
 
         const hours = Math.floor(diff / (1000 * 60 * 60));
