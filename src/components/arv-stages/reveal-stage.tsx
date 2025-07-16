@@ -110,7 +110,7 @@ export default function RevealStage() {
 
   return (
     <div className="flex flex-col items-center text-white max-w-4xl mx-auto">
-      <div className="bg-purple-300/30 rounded-lg p-6 mb-8 w-full max-w-md text-center">
+      {/* <div className="bg-purple-300/30 rounded-lg p-6 mb-8 w-full max-w-md text-center">
         <h2 className="text-xl mb-2">Your Time ends In:</h2>
         <div className="flex justify-center">
           <div className="text-5xl font-bold">
@@ -130,11 +130,15 @@ export default function RevealStage() {
           <span className="w-16 text-center">Mins</span>
           <span className="w-16 text-center">Secs</span>
         </div>
-      </div>
+      </div> */}
 
+      <h2 className="text-2xl font-semibold mb-6 text-lime-500">
+        Congratulations on completing the round! When the Outcome image is set,
+        You will get notify.
+      </h2>
       <h2 className="text-xl mb-6">Target ID: {activeTarget?.code}</h2>
 
-      <div className="mb-6 w-full">
+      {/* <div className="mb-6 w-full">
         <Image
           src={
             activeTarget?.controlImage ||
@@ -145,7 +149,7 @@ export default function RevealStage() {
           height={300}
           className="w-full h-80 object-cover rounded-lg"
         />
-      </div>
+      </div> */}
 
       <div className="mb-6 w-full">
         <p className="mb-2">

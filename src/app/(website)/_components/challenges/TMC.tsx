@@ -29,9 +29,9 @@ export default function TargetMatchChallenge() {
     }
   }, [activeTarget, setTargetData]);
   const now = moment();
-  const isBufferTime = now.isSameOrAfter(activeTarget?.bufferTime);
-  const isGameTime = now.isSameOrAfter(activeTarget?.gameTime);
-  const isRevealTime = now.isSameOrAfter(activeTarget?.revealTime);
+  const isBufferTime = now.isSameOrAfter(activeTarget?.bufferDuration);
+  const isGameTime = now.isSameOrAfter(activeTarget?.gameDuration);
+  const isRevealTime = now.isSameOrAfter(activeTarget?.revealDuration);
 
   // console.log("Active Target:", activeTarget);
   console.log("isBufferTime:", isBufferTime);
@@ -50,7 +50,7 @@ export default function TargetMatchChallenge() {
   }
 
   // If no active target is available
-  if (isBufferTime) {
+  if (activeTarget === null) {
     return (
       // <Layout>
       <div className="flex flex-col items-center justify-center min-h-[60vh] max-w-2xl mx-auto px-4">
@@ -81,7 +81,7 @@ export default function TargetMatchChallenge() {
     );
   }
 
-  if (isRevealTime) {
+  if (!isRevealTime) {
     return <Results />;
   }
 
@@ -100,14 +100,16 @@ export default function TargetMatchChallenge() {
               </p>
               <p className="challange-subTitle mb-2">
                 Reveal Time:
-                {activeTarget?.revealTime
-                  ? new Date(activeTarget.revealTime).toLocaleString()
-                  : ""}
+                {/* {activeTarget?.revealDuration
+                  ? new Date(activeTarget.revealDuration).toLocaleString()
+                  : ""} */}
               </p>
             </div>
             <CountdownTimer
               endTime={
-                activeTarget?.gameTime ? new Date(activeTarget.gameTime) : ""
+                activeTarget?.gameDuration
+                  ? new Date(activeTarget.gameDuration)
+                  : ""
               }
               onComplete={() => {
                 toast({ title: "Time's up! Please submit your impressions." });

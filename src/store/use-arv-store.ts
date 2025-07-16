@@ -26,6 +26,8 @@ interface ImageData {
 }
 
 interface Target {
+  gameDuration: any;
+  revealDuration: any;
   targetId: string;
   code: string;
   eventName: string;

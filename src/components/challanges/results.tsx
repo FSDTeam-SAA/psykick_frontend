@@ -25,7 +25,9 @@ export default function Results() {
         <p className="mb-4">Please wait for the next Game!</p>
         <CountdownTimer
           endTime={
-            activeTarget?.bufferTime ? new Date(activeTarget.bufferTime) : ""
+            activeTarget?.bufferDuration
+              ? new Date(activeTarget.bufferDuration)
+              : ""
           }
         />
       </div>
