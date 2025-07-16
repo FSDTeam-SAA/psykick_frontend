@@ -142,7 +142,7 @@ export const useChallengeStore = create<ChallengeState & ChallengeActions>()(
       // Actions
       setTargetData: (target: TMCTarget) => {
         // Calculate time remaining from gameTime
-        const gameTimeDate = new Date(target.gameTime);
+        const gameTimeDate = new Date(target.gameDuration);
         const now = new Date();
         const diffMs = gameTimeDate.getTime() - now.getTime();
         const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
@@ -154,9 +154,9 @@ export const useChallengeStore = create<ChallengeState & ChallengeActions>()(
         set({
           targetId: target._id,
           challengeCode: target.code,
-          revealTime: target.revealTime,
-          gameTime: target.gameTime,
-          bufferTime: target.bufferTime,
+          revealTime: target.revealDuration,
+          gameTime: target.gameDuration,
+          bufferTime: target.bufferDuration,
 
           timer: {
             hours: Math.max(0, diffHours),

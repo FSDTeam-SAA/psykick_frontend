@@ -117,7 +117,7 @@ export default function ARVPrediction() {
 
   if (!mounted) return null;
 
-  if (activeTarget?.gameDuration) {
+  if (activeTarget === null) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-4 text-white">
         <h1 className="text-2xl font-bold mb-4">No Active ARV Challenge</h1>
