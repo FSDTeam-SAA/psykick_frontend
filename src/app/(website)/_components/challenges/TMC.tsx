@@ -8,10 +8,11 @@ import TMCInfoModal from "@/components/challanges/tmc-info-modal";
 import WaitingScreen from "@/components/challanges/waiting-screen";
 import { useChallengeStore } from "@/store/use-challenge-store";
 import { useActiveTMCTarget } from "@/hooks/use-tmc-queries";
-import CountdownTimer from "@/components/ui/countrdown-timer";
+// import CountdownTimer from "@/components/ui/countrdown-timer";
 import moment from "moment";
-import { toast } from "@/hooks/use-toast";
+// import { toast } from "@/hooks/use-toast";
 import Results from "@/components/challanges/results";
+import CountdownDisplay from "@/components/challanges/countdown-display";
 
 export default function TargetMatchChallenge() {
   const {
@@ -105,17 +106,9 @@ export default function TargetMatchChallenge() {
                   : ""} */}
               </p>
             </div>
-            <CountdownTimer
-              endTime={
-                activeTarget?.gameDuration
-                  ? new Date(activeTarget.gameDuration)
-                  : ""
-              }
-              onComplete={() => {
-                toast({ title: "Time's up! Please submit your impressions." });
-                // Optional: Handle timer completion
-                // For example, you could refresh the page or show a message
-              }}
+            <CountdownDisplay
+              minutes={activeTarget?.revealDuration || "0"}
+              // onComplete={handleCountdownComplete}
             />
           </div>
         </div>
