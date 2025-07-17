@@ -1,8 +1,7 @@
 "use client";
-
 import type React from "react";
 import { useRef, useEffect, useState, useCallback, useMemo } from "react";
-import { Undo2, Redo2, X, Maximize, Link2, Edit2, Trash2 } from "lucide-react";
+import { Undo2, Redo2, X, Maximize, Link2 } from "lucide-react";
 import { useChallengeStore } from "@/store/use-challenge-store";
 import { useARVStore } from "@/store/use-arv-store";
 
@@ -17,9 +16,15 @@ type TextBox = {
 
 type DrawingCanvasProps = {
   mode: "tmc" | "arv";
+  userId?: string; // Add userId prop
+  gameId?: string; // Add gameId prop
 };
 
-export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
+export default function EnhancedDrawingCanvas({
+  mode,
+  userId,
+  gameId,
+}: DrawingCanvasProps) {
   // Use the appropriate store based on mode
   const store = mode === "tmc" ? useChallengeStore : useARVStore;
 
@@ -39,12 +44,23 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
     setTool,
     setColor,
     setBrushSize,
-    clearCanvas: storeClearCanvas,
+    clearCanvas,
     updateTextBoxes,
     addTextBox,
     updateTextBox,
-    removeTextBox,
+    setCurrentUser,
+    setCurrentGame,
   } = store();
+
+  // Set user and game when component mounts or props change
+  useEffect(() => {
+    if (userId) {
+      setCurrentUser(userId);
+    }
+    if (gameId) {
+      setCurrentGame(gameId, userId);
+    }
+  }, [userId, gameId, setCurrentUser, setCurrentGame]);
 
   // Local state
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -86,7 +102,6 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
   // Initialize canvas with proper scaling for high DPI displays
   const initializeCanvas = useCallback(() => {
     if (canvasInitialized) return;
-
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -155,7 +170,6 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
   // Update canvas when drawing history changes (for undo/redo)
   useEffect(() => {
     if (!canvasInitialized || isRedrawing) return;
-
     const canvas = canvasRef.current;
     const context = contextRef.current;
     if (!canvas || !context) return;
@@ -203,7 +217,6 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
   useEffect(() => {
     const handleResize = () => {
       if (fullscreen) return; // Skip resize handling in fullscreen mode
-
       const canvas = canvasRef.current;
       const context = contextRef.current;
       if (!canvas || !context) return;
@@ -214,7 +227,6 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
       // Resize canvas with proper scaling
       const displayWidth = canvas.clientWidth;
       const displayHeight = canvas.clientHeight;
-
       canvas.width = displayWidth * canvasScale;
       canvas.height = displayHeight * canvasScale;
 
@@ -274,19 +286,6 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
     addToHistory();
   }, [updateDrawing, addToHistory]);
 
-  // Clear canvas function
-  // const clearCanvas = useCallback(() => {
-  //   if (!canvasRef.current || !contextRef.current) return;
-
-  //   contextRef.current.clearRect(
-  //     0,
-  //     0,
-  //     canvasRef.current.width / canvasScale,
-  //     canvasRef.current.height / canvasScale,
-  //   );
-  //   storeClearCanvas(); // Use the store's clearCanvas function
-  // }, [storeClearCanvas, canvasScale]);
-
   // Start drawing
   const startDrawing = useCallback(
     (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -318,7 +317,6 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
       }
 
       if (!contextRef.current) return;
-
       contextRef.current.beginPath();
       contextRef.current.moveTo(offsetX, offsetY);
       setIsDrawing(true);
@@ -362,7 +360,6 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
           canvasRef.current.width / canvasScale,
           canvasRef.current.height / canvasScale,
         );
-        storeClearCanvas(); // Use the store's clearCanvas function
 
         // Redraw the base image
         const img = new Image();
@@ -376,7 +373,6 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
               canvas.width / canvasScale,
               canvas.height / canvasScale,
             );
-
             // Draw text boxes
             updatedTextBoxes.forEach((box) => {
               context.font = `${box.fontSize}px Arial`;
@@ -386,7 +382,6 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
           }
         };
         img.src = currentDrawing;
-
         return;
       }
 
@@ -412,7 +407,6 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
       currentTool,
       canvasScale,
       updateTextBoxes,
-      storeClearCanvas,
     ],
   );
 
@@ -426,7 +420,6 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
     }
 
     if (!contextRef.current || !isDrawing) return;
-
     contextRef.current.closePath();
     setIsDrawing(false);
 
@@ -485,16 +478,16 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
   );
 
   // Handle text editing
-  const startEditingText = useCallback(
-    (id: string) => {
-      const textBox = storeTextBoxes.find((box) => box.id === id);
-      if (textBox) {
-        setEditingTextBox(id);
-        setEditingTextValue(textBox.text);
-      }
-    },
-    [storeTextBoxes],
-  );
+  // const startEditingText = useCallback(
+  //   (id: string) => {
+  //     const textBox = storeTextBoxes.find((box) => box.id === id);
+  //     if (textBox) {
+  //       setEditingTextBox(id);
+  //       setEditingTextValue(textBox.text);
+  //     }
+  //   },
+  //   [storeTextBoxes],
+  // );
 
   const saveEditedText = useCallback(() => {
     if (!editingTextBox || !editingTextValue.trim()) {
@@ -556,7 +549,6 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
       if (container) {
         container.requestFullscreen().then(() => {
           setFullscreen(true);
-
           // Resize canvas to fit fullscreen
           setTimeout(() => {
             if (canvasRef.current && contextRef.current) {
@@ -589,7 +581,6 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
                     displayWidth,
                     displayHeight,
                   );
-
                   // Calculate dimensions that preserve aspect ratio
                   const imgAspectRatio = img.width / img.height;
                   const canvasAspectRatio = displayWidth / displayHeight;
@@ -628,7 +619,6 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
     } else {
       document.exitFullscreen().then(() => {
         setFullscreen(false);
-
         // Restore canvas to original size
         setTimeout(() => {
           if (canvasRef.current && contextRef.current && canvasSize.width > 0) {
@@ -684,51 +674,51 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
   }, [redo]);
 
   // Delete text box
-  const deleteTextBox = useCallback(
-    (id: string) => {
-      removeTextBox(id);
+  // const deleteTextBox = useCallback(
+  //   (id: string) => {
+  //     removeTextBox(id);
 
-      // Redraw canvas without the deleted text box
-      const canvas = canvasRef.current;
-      const context = contextRef.current;
-      if (!canvas || !context || !currentDrawing) return;
+  //     // Redraw canvas without the deleted text box
+  //     const canvas = canvasRef.current;
+  //     const context = contextRef.current;
+  //     if (!canvas || !context || !currentDrawing) return;
 
-      // Clear canvas
-      context.clearRect(
-        0,
-        0,
-        canvas.width / canvasScale,
-        canvas.height / canvasScale,
-      );
+  //     // Clear canvas
+  //     context.clearRect(
+  //       0,
+  //       0,
+  //       canvas.width / canvasScale,
+  //       canvas.height / canvasScale,
+  //     );
 
-      // Redraw the base image
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.onload = () => {
-        if (context && canvas) {
-          context.drawImage(
-            img,
-            0,
-            0,
-            canvas.width / canvasScale,
-            canvas.height / canvasScale,
-          );
-          redrawTextBoxes();
-        }
-      };
-      img.src = currentDrawing;
+  //     // Redraw the base image
+  //     const img = new Image();
+  //     img.crossOrigin = "anonymous";
+  //     img.onload = () => {
+  //       if (context && canvas) {
+  //         context.drawImage(
+  //           img,
+  //           0,
+  //           0,
+  //           canvas.width / canvasScale,
+  //           canvas.height / canvasScale,
+  //         );
+  //         redrawTextBoxes();
+  //       }
+  //     };
+  //     img.src = currentDrawing;
 
-      // Save state
-      saveCanvasState();
-    },
-    [
-      removeTextBox,
-      currentDrawing,
-      canvasScale,
-      redrawTextBoxes,
-      saveCanvasState,
-    ],
-  );
+  //     // Save state
+  //     saveCanvasState();
+  //   },
+  //   [
+  //     removeTextBox,
+  //     currentDrawing,
+  //     canvasScale,
+  //     redrawTextBoxes,
+  //     saveCanvasState,
+  //   ],
+  // );
 
   // Define pencil sizes for the toolbar
   const pencilSizes = [
@@ -858,7 +848,6 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
                   aria-hidden="true"
                 />
               </button>
-
               {/* Modern color palette dropdown */}
               <div className="absolute left-0 mt-2 hidden group-hover:grid grid-cols-4 gap-1 bg-gray-800 p-2 rounded-lg shadow-lg z-20 w-32">
                 {colorPalette.map((color) => (
@@ -893,6 +882,44 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
                 </div>
               </div>
             </div>
+            {/* Clear Canvas Button */}
+            <button
+              onClick={() => {
+                if (
+                  window.confirm(
+                    "Are you sure you want to clear the canvas? This action cannot be undone.",
+                  )
+                ) {
+                  clearCanvas();
+                  // Also clear the visual canvas
+                  const canvas = canvasRef.current;
+                  const context = contextRef.current;
+                  if (canvas && context) {
+                    context.clearRect(
+                      0,
+                      0,
+                      canvas.width / canvasScale,
+                      canvas.height / canvasScale,
+                    );
+                  }
+                }
+              }}
+              className="p-1 text-white hover:bg-gray-800 rounded"
+              aria-label="Clear canvas"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c0-1 1-2 2-2v2" />
+                <line x1="10" y1="11" x2="10" y2="17" />
+                <line x1="14" y1="11" x2="14" y2="17" />
+              </svg>
+            </button>
           </div>
 
           {/* Brush size slider */}
@@ -929,134 +956,125 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
           <button
             onClick={toggleFullscreen}
             className="p-1 text-white hover:bg-gray-800 rounded"
-            aria-label={fullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+            aria-label="Fullscreen"
           >
             <Maximize size={18} />
           </button>
         </div>
-
-        {/* Canvas */}
-        <div className="relative">
+        {/* Canvas Container */}
+        <div className="relative bg-white border-2 border-gray-200 rounded-lg shadow-sm overflow-hidden">
           <canvas
             ref={canvasRef}
             onMouseDown={startDrawing}
             onMouseMove={draw}
             onMouseUp={endDrawing}
             onMouseLeave={endDrawing}
-            className={`w-full ${fullscreen ? "h-[calc(100vh-42px)]" : "h-[400px]"} bg-white cursor-crosshair transition-all duration-300`}
-            style={{ marginTop: "42px" }} // Add space for the toolbar
+            className={`w-full ${
+              fullscreen ? "h-[calc(100vh-42px)]" : "h-[500px]"
+            } bg-white cursor-crosshair transition-all duration-300 block`}
+            style={{
+              marginTop: "42px",
+              touchAction: "none", // Prevent scrolling on touch devices
+            }}
           />
 
-          {/* Text input overlay */}
-          {showTextInput && (
+          {/* Canvas Instructions Overlay */}
+          {!currentDrawing && !fullscreen && (
             <div
-              className="absolute bg-white border-2 border-purple-600 p-2 rounded shadow-lg z-20"
-              style={{
-                left: textInputPos.x + "px",
-                top: textInputPos.y + 42 + "px",
-                transform: "translate(-50%, -100%)",
-              }}
+              className="absolute inset-0 flex items-center justify-center pointer-events-none"
+              style={{ marginTop: "42px" }}
             >
-              <form onSubmit={handleTextSubmit} className="flex flex-col">
-                <input
-                  type="text"
-                  value={textInputValue}
-                  onChange={(e) => setTextInputValue(e.target.value)}
-                  className="border border-gray-300 p-1 mb-2"
-                  placeholder="Enter text"
-                  autoFocus
-                />
-                <div className="flex justify-between">
-                  <button
-                    type="button"
-                    onClick={() => setShowTextInput(false)}
-                    className="px-2 py-1 bg-gray-200 rounded"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-2 py-1 bg-purple-600 text-white rounded"
-                  >
-                    Add
-                  </button>
+              <div className="text-gray-400 text-center p-4">
+                <div className="text-lg font-medium mb-2">Start Drawing</div>
+                <div className="text-sm">
+                  Use the tools above to create your impression
                 </div>
-              </form>
-            </div>
-          )}
-
-          {/* Text editing overlay */}
-          {editingTextBox && (
-            <div
-              className="absolute bg-white border-2 border-purple-600 p-2 rounded shadow-lg z-20"
-              style={{
-                left: "50%",
-                top: "50%",
-                transform: "translate(-50%, -50%)",
-              }}
-            >
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  saveEditedText();
-                }}
-                className="flex flex-col"
-              >
-                <input
-                  type="text"
-                  value={editingTextValue}
-                  onChange={(e) => setEditingTextValue(e.target.value)}
-                  className="border border-gray-300 p-1 mb-2"
-                  placeholder="Edit text"
-                  autoFocus
-                />
-                <div className="flex justify-between">
-                  <button
-                    type="button"
-                    onClick={() => setEditingTextBox(null)}
-                    className="px-2 py-1 bg-gray-200 rounded"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-2 py-1 bg-purple-600 text-white rounded"
-                  >
-                    Save
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
-
-          {/* Text box controls */}
-          {activeTextBox && !isDraggingText && !editingTextBox && (
-            <div
-              className="absolute bg-white border border-gray-300 rounded shadow-lg z-20 flex"
-              style={{
-                left: "50%",
-                bottom: "10px",
-                transform: "translateX(-50%)",
-              }}
-            >
-              <button
-                onClick={() => startEditingText(activeTextBox)}
-                className="p-2 hover:bg-gray-100"
-                aria-label="Edit text"
-              >
-                <Edit2 size={16} />
-              </button>
-              <button
-                onClick={() => deleteTextBox(activeTextBox)}
-                className="p-2 hover:bg-gray-100 text-red-500"
-                aria-label="Delete text"
-              >
-                <Trash2 size={16} />
-              </button>
+              </div>
             </div>
           )}
         </div>
       </div>
+      {/* Text input overlay */}
+      {showTextInput && (
+        <div
+          className="absolute bg-white border-2 border-blue-500 p-3 rounded-lg shadow-lg z-20 min-w-[200px]"
+          style={{
+            left: Math.min(textInputPos.x, window.innerWidth - 220) + "px",
+            top: textInputPos.y + 42 + "px",
+            transform: "translate(-50%, -100%)",
+          }}
+        >
+          <form onSubmit={handleTextSubmit} className="flex flex-col space-y-2">
+            <input
+              type="text"
+              value={textInputValue}
+              onChange={(e) => setTextInputValue(e.target.value)}
+              className="border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter text"
+              autoFocus
+            />
+            <div className="flex justify-between space-x-2">
+              <button
+                type="button"
+                onClick={() => setShowTextInput(false)}
+                className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
+              >
+                Add Text
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Text editing overlay */}
+      {editingTextBox && (
+        <div
+          className="absolute bg-white border-2 border-blue-500 p-3 rounded-lg shadow-lg z-20 min-w-[200px]"
+          style={{
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              saveEditedText();
+            }}
+            className="flex flex-col space-y-2"
+          >
+            <input
+              type="text"
+              value={editingTextValue}
+              onChange={(e) => setEditingTextValue(e.target.value)}
+              className="border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Edit text"
+              autoFocus
+            />
+            <div className="flex justify-between space-x-2">
+              <button
+                type="button"
+                onClick={() => setEditingTextBox(null)}
+                className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
+              >
+                Save
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 }
