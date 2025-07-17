@@ -20,6 +20,10 @@ type TextBox = {
 };
 
 type ChallengeState = {
+  // User and game identification
+  currentUserId: string | null;
+  currentGameId: string | null;
+
   // Challenge data from API
   targetId: string | null;
   challengeCode: string;
@@ -69,6 +73,11 @@ type ChallengeState = {
 };
 
 type ChallengeActions = {
+  // User and game management
+  setCurrentUser: (userId: string) => void;
+  setCurrentGame: (gameId: string, userId?: string) => void;
+  resetCanvasForNewSession: () => void;
+
   setTargetData: (target: TMCTarget) => void;
   setTimer: (hours: number, minutes: number, seconds: number) => void;
   setSelectedChoices: (choices: {
@@ -103,10 +112,20 @@ type ChallengeActions = {
   setActiveTab: (tab: "tmc" | "arv" | "leaderboard") => void;
 };
 
+// Helper function to generate storage key
+const getStorageKey = (userId: string | null, gameId: string | null) => {
+  if (!userId || !gameId) {
+    return "psykick-challenge-storage-temp";
+  }
+  return `psykick-challenge-storage-${userId}-${gameId}`;
+};
+
 export const useChallengeStore = create<ChallengeState & ChallengeActions>()(
   persist(
     (set, get) => ({
       // Initial state
+      currentUserId: null,
+      currentGameId: null,
       targetId: null,
       challengeCode: "",
       revealTime: "",
@@ -139,8 +158,48 @@ export const useChallengeStore = create<ChallengeState & ChallengeActions>()(
       targetImage: null,
       activeTab: "tmc",
 
+      // User and game management actions
+      setCurrentUser: (userId: string) => {
+        const currentState = get();
+        if (currentState.currentUserId !== userId) {
+          // User changed, reset canvas state
+          set({
+            currentUserId: userId,
+            currentGameId: null,
+            ...getInitialCanvasState(),
+          });
+        }
+      },
+
+      setCurrentGame: (gameId: string, userId?: string) => {
+        const currentState = get();
+        const newUserId = userId || currentState.currentUserId;
+
+        if (
+          currentState.currentGameId !== gameId ||
+          currentState.currentUserId !== newUserId
+        ) {
+          // Game or user changed, reset canvas state
+          set({
+            currentUserId: newUserId,
+            currentGameId: gameId,
+            ...getInitialCanvasState(),
+          });
+        }
+      },
+
+      resetCanvasForNewSession: () => {
+        set(getInitialCanvasState());
+      },
+
       // Actions
       setTargetData: (target: TMCTarget) => {
+        // Set the current game when target data is loaded
+        const currentState = get();
+        if (currentState.currentGameId !== target._id) {
+          get().setCurrentGame(target._id, currentState.currentUserId || "");
+        }
+
         // Calculate time remaining from gameTime
         const gameTimeDate = new Date(target.gameDuration);
         const now = new Date();
@@ -370,16 +429,16 @@ export const useChallengeStore = create<ChallengeState & ChallengeActions>()(
         })),
 
       resetCanvasState: () => {
-        set({
-          currentDrawing: null,
-          drawingHistory: [],
-          currentStep: -1,
-          textBoxes: [],
-        });
-        localStorage.removeItem("psykick-challenge-storage");
+        set(getInitialCanvasState());
       },
 
-      setActiveChallenge: (code, revealTime, targetId) =>
+      setActiveChallenge: (code, revealTime, targetId) => {
+        // Set current game when challenge is activated
+        const currentState = get();
+        if (currentState.currentGameId !== targetId) {
+          get().setCurrentGame(targetId, currentState.currentUserId|| "");
+        }
+
         set({
           challengeCode: code,
           revealTime: revealTime,
@@ -387,7 +446,8 @@ export const useChallengeStore = create<ChallengeState & ChallengeActions>()(
           submitted: false,
           showImageSelection: false,
           imageChoices: [],
-        }),
+        });
+      },
 
       setActiveTab: (tab) => set({ activeTab: tab }),
     }),
@@ -400,7 +460,48 @@ export const useChallengeStore = create<ChallengeState & ChallengeActions>()(
         currentStep: state.currentStep,
         textBoxes: state.textBoxes,
         activeTab: state.activeTab,
+        currentUserId: state.currentUserId,
+        currentGameId: state.currentGameId,
       }),
+      // Dynamic storage key based on user and game
+      storage: {
+        getItem: () => {
+          const state = useChallengeStore.getState();
+          const key = getStorageKey(state.currentUserId, state.currentGameId);
+          const item = localStorage.getItem(key);
+          return item ? JSON.parse(item) : null;
+        },
+        setItem: ( value) => {
+          const state = useChallengeStore.getState();
+          const key = getStorageKey(state.currentUserId, state.currentGameId);
+          localStorage.setItem(key, JSON.stringify(value));
+        },
+        removeItem: () => {
+          const state = useChallengeStore.getState();
+          const key = getStorageKey(state.currentUserId, state.currentGameId);
+          localStorage.removeItem(key);
+        },
+      },
     },
   ),
 );
+
+// Helper function to get initial canvas state
+function getInitialCanvasState() {
+  return {
+    currentDrawing: null,
+    drawingHistory: [],
+    currentStep: -1,
+    textBoxes: [],
+    currentTool: "pencil" as const,
+    currentColor: "#000000",
+    brushSize: 5,
+    submitted: false,
+    showImageSelection: false,
+    imageChoices: [],
+    selectedChoices: {
+      firstChoice: null,
+      secondChoice: null,
+    },
+  };
+}

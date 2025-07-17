@@ -43,6 +43,10 @@ interface Target {
 }
 
 interface ARVState {
+  // User and game identification
+  currentUserId: string | null;
+  currentGameId: string | null;
+
   // Canvas state
   currentTool: "pencil" | "text" | "eraser";
   currentColor: string;
@@ -61,10 +65,14 @@ interface ARVState {
   hasSubmitted: boolean;
   isLoading: boolean;
   error: string | null;
-  currentGameId: string | null;
 }
 
 interface ARVActions {
+  // User and game management
+  setCurrentUser: (userId: string) => void;
+  setCurrentGame: (gameId: string, userId?: string) => void;
+  resetCanvasForNewSession: () => void;
+
   updateDrawing: (drawing: string) => void;
   addToHistory: () => void;
   undo: () => void;
@@ -95,9 +103,39 @@ interface ARVActions {
   checkAndResetForNewGame: (newTargetId: string) => void;
 }
 
+// Helper function to generate storage key
+const getStorageKey = (userId: string | null, gameId: string | null) => {
+  if (!userId || !gameId) {
+    return "arv-prediction-storage-temp";
+  }
+  return `arv-prediction-storage-${userId}-${gameId}`;
+};
+
+// Helper function to get initial canvas state
+function getInitialCanvasState() {
+  return {
+    currentDrawing: null,
+    drawingHistory: [],
+    currentStep: -1,
+    textBoxes: [],
+    currentTool: "pencil" as const,
+    currentColor: "#000000",
+    brushSize: 2,
+    stage: "drawing" as const,
+    imageChoices: [],
+    selectedImageId: null,
+    submissionId: null,
+    hasSubmitted: false,
+  };
+}
+
 export const useARVStore = create<ARVState & ARVActions>()(
   persist(
     (set, get) => ({
+      // Initial state
+      currentUserId: null,
+      currentGameId: null,
+
       // Initial canvas state
       currentTool: "pencil",
       currentColor: "#000000",
@@ -116,7 +154,40 @@ export const useARVStore = create<ARVState & ARVActions>()(
       hasSubmitted: false,
       isLoading: false,
       error: null,
-      currentGameId: null,
+
+      // User and game management actions
+      setCurrentUser: (userId: string) => {
+        const currentState = get();
+        if (currentState.currentUserId !== userId) {
+          // User changed, reset canvas state
+          set({
+            currentUserId: userId,
+            currentGameId: null,
+            ...getInitialCanvasState(),
+          });
+        }
+      },
+
+      setCurrentGame: (gameId: string, userId?: string) => {
+        const currentState = get();
+        const newUserId = userId || currentState.currentUserId;
+
+        if (
+          currentState.currentGameId !== gameId ||
+          currentState.currentUserId !== newUserId
+        ) {
+          // Game or user changed, reset canvas state
+          set({
+            currentUserId: newUserId,
+            currentGameId: gameId,
+            ...getInitialCanvasState(),
+          });
+        }
+      },
+
+      resetCanvasForNewSession: () => {
+        set(getInitialCanvasState());
+      },
 
       // Actions implementation
       updateDrawing: (drawing) => set({ currentDrawing: drawing }),
@@ -208,8 +279,11 @@ export const useARVStore = create<ARVState & ARVActions>()(
         })),
 
       setActiveTarget: (targetData) => {
-        // Check if this is a new game and reset if needed
-        get().checkAndResetForNewGame(targetData._id);
+        // Set the current game when target data is loaded
+        const currentState = get();
+        if (currentState.currentGameId !== targetData._id) {
+          get().setCurrentGame(targetData._id, currentState.currentUserId);
+        }
 
         // Map the API response to our Target interface
         const target: Target = {
@@ -341,20 +415,7 @@ export const useARVStore = create<ARVState & ARVActions>()(
 
       resetGameState: () => {
         console.log("Resetting game state for new game");
-        set({
-          // Reset canvas state
-          currentDrawing: null,
-          drawingHistory: [],
-          currentStep: -1,
-          textBoxes: [],
-
-          // Reset game state
-          stage: "drawing",
-          imageChoices: [],
-          selectedImageId: null,
-          submissionId: null,
-          hasSubmitted: false,
-        });
+        set(getInitialCanvasState());
       },
 
       checkAndResetForNewGame: (newTargetId: string) => {
@@ -386,8 +447,28 @@ export const useARVStore = create<ARVState & ARVActions>()(
         hasSubmitted: state.hasSubmitted,
         stage: state.stage,
         currentGameId: state.currentGameId,
+        currentUserId: state.currentUserId,
         selectedImageId: state.selectedImageId,
       }),
+      // Dynamic storage key based on user and game
+      storage: {
+        getItem: (name) => {
+          const state = useARVStore.getState();
+          const key = getStorageKey(state.currentUserId, state.currentGameId);
+          const item = localStorage.getItem(key);
+          return item ? JSON.parse(item) : null;
+        },
+        setItem: (name, value) => {
+          const state = useARVStore.getState();
+          const key = getStorageKey(state.currentUserId, state.currentGameId);
+          localStorage.setItem(key, JSON.stringify(value));
+        },
+        removeItem: (name) => {
+          const state = useARVStore.getState();
+          const key = getStorageKey(state.currentUserId, state.currentGameId);
+          localStorage.removeItem(key);
+        },
+      },
     },
   ),
 );

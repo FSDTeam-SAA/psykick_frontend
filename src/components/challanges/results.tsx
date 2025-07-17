@@ -7,7 +7,6 @@ import Image from "next/image";
 import { useChallengeStore } from "@/store/use-challenge-store";
 import { useTMCResult, useActiveTMCTarget } from "@/hooks/use-tmc-queries";
 import { Button } from "../ui/button";
-import CountdownTimer from "../ui/countrdown-timer";
 
 export default function Results() {
   const { setActiveTab } = useChallengeStore();
@@ -18,18 +17,18 @@ export default function Results() {
 
   if (isLoading || !results?.data) {
     return (
-      <div className="max-w-4xl mx-auto p-4 flex flex-col items-center justify-center text-[#ECECEC]">
-        <h2 className="text-3xl text-center font-semibold  mb-8">
+      <div className="max-w-4xl mx-auto p-4 flex flex-col items-center justify-center text-[#ECECEC] h-screen">
+        <h2 className="md:text-3xl text-xl lg:text-5xl text-center font-semibold  mb-8 ">
           Game has been Finished!
         </h2>
         <p className="mb-4">Please wait for the next Game!</p>
-        <CountdownTimer
+        {/* <CountdownTimer
           endTime={
             activeTarget?.bufferDuration
               ? new Date(activeTarget.bufferDuration)
               : ""
           }
-        />
+        /> */}
       </div>
     );
   }
