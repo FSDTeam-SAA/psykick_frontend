@@ -30,14 +30,14 @@ export default function TargetMatchChallenge() {
     }
   }, [activeTarget, setTargetData]);
   const now = moment();
-  const isBufferTime = now.isSameOrAfter(activeTarget?.bufferDuration);
-  const isGameTime = now.isSameOrAfter(activeTarget?.gameDuration);
+  // const isBufferTime = now.isSameOrAfter(activeTarget?.bufferDuration);
+  // const isGameTime = now.isSameOrAfter(activeTarget?.gameDuration);
   const isRevealTime = now.isSameOrAfter(activeTarget?.revealDuration);
 
   // console.log("Active Target:", activeTarget);
-  console.log("isBufferTime:", isBufferTime);
-  console.log("isgameTime:", isGameTime);
-  console.log("isRevealTime:", isRevealTime);
+  // console.log("isBufferTime:", isBufferTime);
+  // console.log("isgameTime:", isGameTime);
+  // console.log("isRevealTime:", isRevealTime);
 
   if (isLoading) {
     // Show loading state
@@ -86,6 +86,22 @@ export default function TargetMatchChallenge() {
     return <Results />;
   }
 
+  // if (!isBufferTime) {
+  //   return (
+  //     // <Layout>
+  //     <div className="flex items-center justify-center min-h-[60vh]">
+  //       <div className="text-white text-xl">
+  //         Waiting for the new game to start...
+  //       </div>
+  //       <CountdownDisplay
+  //         minutes={activeTarget?.bufferDuration || "0"}
+  //         // onComplete={handleCountdownComplete}
+  //       />
+  //     </div>
+  //     // </Layout>
+  //   );
+  // }
+
   return (
     <div>
       <div className="container mx-auto p-4">
@@ -108,6 +124,7 @@ export default function TargetMatchChallenge() {
             </div>
             <CountdownDisplay
               minutes={activeTarget?.revealDuration || "0"}
+              // startTime={activeTarget?.revealTime} // Pass the reveal start time
               // onComplete={handleCountdownComplete}
             />
           </div>

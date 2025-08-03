@@ -29,7 +29,9 @@ export default function WaitingScreen() {
     <div className="max-w-2xl mx-auto p-4 text-center mt-16">
       <div className="mb-16">
         <CountdownDisplay
-          minutes={activeTarget?.revealDuration || "0"}
+          minutes={
+            activeTarget?.revealDuration + activeTarget?.gameDuration || "0"
+          }
           onComplete={handleCountdownComplete}
         />
       </div>

@@ -8,6 +8,7 @@ const getAuthHeader = () => {
 };
 
 export interface TMCTarget {
+  status: string;
   _id: string;
   code: string;
   targetImage: string;

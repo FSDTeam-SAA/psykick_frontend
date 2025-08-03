@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 
 interface CountdownDisplayProps {
   minutes: string;
+  startTime?: string; // Add startTime prop to know when the countdown actually started
   onComplete?: () => void;
 }
 
 export default function CountdownDisplay({
   minutes,
+  startTime,
   onComplete,
 }: CountdownDisplayProps) {
   const [timeLeft, setTimeLeft] = useState<{
@@ -29,9 +31,18 @@ export default function CountdownDisplay({
       return;
     }
 
-    // Calculate target date from minutes
-    const targetDate = new Date();
-    targetDate.setMinutes(targetDate.getMinutes() + totalMinutes);
+    // Calculate target date based on startTime and duration
+    let targetDate: Date;
+
+    if (startTime) {
+      // If startTime is provided, calculate target based on when it actually started
+      const start = new Date(startTime);
+      targetDate = new Date(start.getTime() + totalMinutes * 60 * 1000);
+    } else {
+      // Fallback: calculate target date from current time + minutes
+      targetDate = new Date();
+      targetDate.setMinutes(targetDate.getMinutes() + totalMinutes);
+    }
 
     const calculateTimeLeft = () => {
       const now = new Date();
