@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useChallengeStore } from "@/store/use-challenge-store";
 import { useTMCSubmission } from "@/hooks/use-tmc-queries";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function ImageSelection() {
   const router = useRouter();
@@ -57,6 +58,12 @@ export default function ImageSelection() {
           }
         },
         onError: (error: any) => {
+          router.push(`/challenges/tmc/waiting?id=${targetId}`);
+
+          toast.error(
+            error?.response?.data?.message ||
+              "An error occurred while submitting your choices. Please try again.",
+          );
           // Handle cycle complete error
           if (error?.response?.data?.cycleComplete) {
             router.push("/challenges/tmc"); // This will show the cycle complete message
