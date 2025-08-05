@@ -18,6 +18,7 @@ export interface TMCTarget {
   isActive: boolean;
   isQueued: boolean;
   isCompleted: boolean;
+  startTime: string;
 }
 
 export interface TMCSubmission {
