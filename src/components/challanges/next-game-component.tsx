@@ -39,7 +39,7 @@ export default function NextGameMessage({
   const [bufferEndTime, setBufferEndTime] = useState<moment.Moment | null>(
     null,
   );
-//   const [queuedGames, setQueuedGames] = useState<QueuedGame[]>([]);
+  //   const [queuedGames, setQueuedGames] = useState<QueuedGame[]>([]);
   const [isLoadingQueue, setIsLoadingQueue] = useState(true);
   const [hasQueuedGames, setHasQueuedGames] = useState(false);
 
@@ -72,7 +72,7 @@ export default function NextGameMessage({
         const data: QueuedGamesResponse = await response.json();
 
         if (data.status && data.data && data.data.length > 0) {
-        //   setQueuedGames(data.data);
+          //   setQueuedGames(data.data);
           setHasQueuedGames(true);
         } else {
           setHasQueuedGames(false);
@@ -184,7 +184,7 @@ export default function NextGameMessage({
         )}
 
         <div className="text-center">
-          <div className="inline-flex items-center space-x-2 bg-green-800/30 px-6 py-3 rounded-full mb-6">
+          {/* <div className="inline-flex items-center space-x-2 bg-green-800/30 px-6 py-3 rounded-full mb-6">
             <div className="w-3 h-3 bg-green-500 rounded-full"></div>
             <span className="text-green-300 font-medium text-lg">
               Results Submitted Successfully
@@ -206,12 +206,12 @@ export default function NextGameMessage({
               </li>
               <li>• Thank you for participating!</li>
             </ul>
-          </div>
+          </div> */}
 
-          <div className="space-y-4">
+          <div className="space-y-4 flex items-center justify-center gap-4">
             <button
               onClick={() => (window.location.href = "/challenges")}
-              className="px-8 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-bold text-lg"
+              className="px-8 py-3 bg-gradient text-white rounded-lg hover:bg-purple-700 transition-colors font-bold text-lg"
             >
               Back to Challenges
             </button>
@@ -219,7 +219,7 @@ export default function NextGameMessage({
             {!hasQueuedGames && (
               <button
                 onClick={() => window.location.reload()}
-                className="block mx-auto px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium"
+                className="block mx-auto px-6 py-2 hover:bg-blue-700 text-white rounded-lg border border-black/30 transition-colors font-bold text-lg"
               >
                 Check for New Games
               </button>
@@ -289,9 +289,11 @@ function BufferCountdown({
 
   return (
     <div className="text-center">
-      <div className="mb-4 p-3 rounded-lg bg-yellow-800/30 border border-yellow-600/50">
-        <h3 className="text-lg font-bold text-white">Buffer Phase Ending</h3>
-        <p className="text-sm text-gray-300">Time remaining in buffer phase</p>
+      <div className="mb-4 p-3 rounded-lg bg-gray-800/30 border border-yellow-600/50">
+        <h3 className="text-lg font-bold text-white">Buffer Phase Ending 🎮</h3>
+        <p className="text-sm text-gray-300">
+          Time remaining to start New Game
+        </p>
       </div>
 
       <div className="grid grid-cols-4 gap-4">
