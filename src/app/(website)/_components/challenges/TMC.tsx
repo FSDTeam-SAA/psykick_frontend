@@ -174,26 +174,25 @@ export default function TargetMatchChallenge() {
               Clear your thoughts, tune in, and let your perception guide you.
             </h1>
 
-            <div className="flex flex-col md:flex-row gap-[58px] mb-10">
-              <div className="flex justify-center items-center w-full md:w-1/2 gap-6">
-                <div>
-                  <p className="challange-subTitle mb-2">
-                    Code: {activeTarget.code}
-                  </p>
-                  <p className="challange-subTitle mb-2">
-                    Start Time: {startTime?.format("MMM DD, YYYY HH:mm")}
-                  </p>
-                </div>
-                <CountdownDisplay
-                  startTime={activeTarget.startTime}
-                  gameDuration={Number(activeTarget?.gameDuration)}
-                  revealDuration={Number(activeTarget?.revealDuration)}
-                  bufferDuration={Number(activeTarget?.bufferDuration)}
-                  onComplete={handleCountdownComplete}
-                  onPhaseChange={handlePhaseChange}
-                  mode="game-only"
-                />
+            {/* Event Details  */}
+            <div className="flex justify-between items-center w-full md:w-1/2 gap-6 my-12">
+              <div>
+                <p className="challange-subTitle mb-2">
+                  Code: {activeTarget.code}
+                </p>
+                <p className="challange-subTitle mb-2">
+                  Start Time: {startTime?.format("MMM DD, YYYY HH:mm")}
+                </p>
               </div>
+              <CountdownDisplay
+                startTime={activeTarget.startTime}
+                gameDuration={Number(activeTarget?.gameDuration)}
+                revealDuration={Number(activeTarget?.revealDuration)}
+                bufferDuration={Number(activeTarget?.bufferDuration)}
+                onComplete={handleCountdownComplete}
+                onPhaseChange={handlePhaseChange}
+                mode="game-only"
+              />
             </div>
 
             {/* Game Phase Content - Drawing and Image Selection */}

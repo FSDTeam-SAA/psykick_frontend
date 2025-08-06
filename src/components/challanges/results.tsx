@@ -117,7 +117,7 @@ export default function Results() {
             startTime={activeTarget.startTime}
             gameDuration={Number(activeTarget?.gameDuration)}
             revealDuration={Number(activeTarget?.revealDuration)}
-            bufferDuration={Number(activeTarget?.bufferDuration)}
+            bufferDuration={0}
             onComplete={handleCountdownComplete}
             onPhaseChange={handlePhaseChange}
             mode="full"
@@ -205,7 +205,7 @@ export default function Results() {
       </div>
 
       {/* Time remaining notification */}
-      <div className="text-center mt-8">
+      {/* <div className="text-center mt-8">
         <div className="bg-blue-900/20 p-4 rounded-lg max-w-md mx-auto">
           <p className="text-blue-300 font-medium mb-2">Results Phase Active</p>
           <p className="text-gray-300 text-sm">
@@ -213,7 +213,7 @@ export default function Results() {
             challenge information will be available after this phase ends.
           </p>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
