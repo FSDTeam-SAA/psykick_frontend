@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import ARVPrediction from "@/components/arv-stages/arv-prediction";
 import { useARVStore } from "@/store/use-arv-store";
 
-export default function Home() {
+export default function ArvTarget() {
   const [isLoading, setIsLoading] = useState(true);
   const { setActiveTarget } = useARVStore();
 

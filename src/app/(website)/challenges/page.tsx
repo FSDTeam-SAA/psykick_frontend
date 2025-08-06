@@ -4,7 +4,7 @@ import Layout from "@/components/challanges/layout";
 import Leaderboard from "@/components/challanges/leaderboard";
 import TargetMatchChallenge from "../_components/challenges/TMC";
 import { useChallengeStore } from "@/store/use-challenge-store";
-import Home from "./arv/page";
+import ArvTarget from "../_components/challenges/arv-target";
 
 export default function ChallengesPage() {
   const { activeTab } = useChallengeStore();
@@ -18,7 +18,7 @@ export default function ChallengesPage() {
         {activeTab === "tmc" && <TargetMatchChallenge />}
 
         {/* ARV Prediction Mode Content */}
-        {activeTab === "arv" && <Home />}
+        {activeTab === "arv" && <ArvTarget />}
 
         {/* Leaderboard Content */}
         {activeTab === "leaderboard" && (
