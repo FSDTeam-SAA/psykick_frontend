@@ -10,16 +10,13 @@ import { useActiveTMCTarget } from "@/hooks/use-tmc-queries";
 import moment from "moment";
 import Results from "@/components/challanges/results";
 import CountdownDisplay from "@/components/challanges/countdown-display";
+import NextGameMessage from "@/components/challanges/next-game-component";
 
 type GamePhase = "waiting" | "game" | "reveal" | "buffer" | "completed";
 
 export default function TargetMatchChallenge() {
-  const {
-    submitted,
-    clearCanvas,
-    submitImpression,
-    setTargetData,
-  } = useChallengeStore();
+  const { submitted, clearCanvas, submitImpression, setTargetData } =
+    useChallengeStore();
 
   const [currentPhase, setCurrentPhase] = useState<GamePhase>("waiting");
   const [phaseTransitioning, setPhaseTransitioning] = useState(false);
@@ -153,6 +150,7 @@ export default function TargetMatchChallenge() {
                   bufferDuration={Number(activeTarget?.bufferDuration)}
                   onComplete={handleCountdownComplete}
                   onPhaseChange={handlePhaseChange}
+                  mode="full"
                 />
               </div>
               <div className="text-center text-gray-300">
@@ -165,42 +163,9 @@ export default function TargetMatchChallenge() {
         );
 
       case "game":
-        // If user has submitted, show waiting screen even during game phase
+        // If user has submitted, show waiting screen during game phase
         if (submitted) {
-          return (
-            <div className="container mx-auto p-4">
-              <div className="flex flex-col items-center justify-center min-h-[60vh]">
-                <h1 className="text-white text-3xl mb-6 text-center">
-                  Submission Complete
-                </h1>
-                <div className="text-purple-300 text-center mb-8">
-                  Code: <span className="font-bold">{activeTarget.code}</span>
-                </div>
-                <div className="mb-8">
-                  <CountdownDisplay
-                    startTime={activeTarget.startTime}
-                    gameDuration={Number(activeTarget?.gameDuration)}
-                    revealDuration={Number(activeTarget?.revealDuration)}
-                    bufferDuration={Number(activeTarget?.bufferDuration)}
-                    onComplete={handleCountdownComplete}
-                    onPhaseChange={handlePhaseChange}
-                  />
-                </div>
-                <div className="text-center">
-                  <div className="inline-flex items-center space-x-2 bg-blue-800/30 px-6 py-3 rounded-full mb-4">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                    <span className="text-blue-300 font-medium">
-                      Waiting for Results
-                    </span>
-                  </div>
-                  <p className="text-gray-300">
-                    Your submission has been recorded. Please wait for the
-                    reveal phase to complete.
-                  </p>
-                </div>
-              </div>
-            </div>
-          );
+          return <WaitingScreen />;
         }
 
         return (
@@ -226,6 +191,7 @@ export default function TargetMatchChallenge() {
                   bufferDuration={Number(activeTarget?.bufferDuration)}
                   onComplete={handleCountdownComplete}
                   onPhaseChange={handlePhaseChange}
+                  mode="game-only"
                 />
               </div>
             </div>
@@ -280,70 +246,12 @@ export default function TargetMatchChallenge() {
         );
 
       case "reveal":
-        return (
-          <div className="container mx-auto p-4">
-            <div className="flex flex-col items-center justify-center min-h-[60vh]">
-              <h1 className="text-white text-3xl mb-6 text-center">
-                Processing Submissions
-              </h1>
-              <div className="text-purple-300 text-center mb-8">
-                Code: <span className="font-bold">{activeTarget.code}</span>
-              </div>
-              <div className="mb-8">
-                <CountdownDisplay
-                  startTime={activeTarget.startTime}
-                  gameDuration={Number(activeTarget?.gameDuration)}
-                  revealDuration={Number(activeTarget?.revealDuration)}
-                  bufferDuration={Number(activeTarget?.bufferDuration)}
-                  onComplete={handleCountdownComplete}
-                  onPhaseChange={handlePhaseChange}
-                />
-              </div>
-              <div className="text-center">
-                <div className="inline-flex items-center space-x-2 bg-blue-800/30 px-6 py-3 rounded-full mb-4">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                  <span className="text-blue-300 font-medium">
-                    Processing Phase
-                  </span>
-                </div>
-                <p className="text-gray-300 mb-4">
-                  All submissions are being processed. Results will be available
-                  during the buffer phase.
-                </p>
-                <WaitingScreen />
-              </div>
-            </div>
-          </div>
-        );
+        // Show results immediately after game phase ends
+        return <Results />;
 
       case "buffer":
-        return (
-          <div className="container mx-auto p-4">
-            <div className="mb-8 text-center">
-              <h1 className="text-white text-3xl mb-6">
-                Challenge Results Available
-              </h1>
-              <div className="text-purple-300 mb-4">
-                Code: <span className="font-bold">{activeTarget.code}</span>
-              </div>
-              <div className="inline-flex items-center space-x-2 bg-yellow-800/30 px-6 py-3 rounded-full mb-6">
-                <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
-                <span className="text-yellow-300 font-medium">
-                  Results Phase Active
-                </span>
-              </div>
-              <CountdownDisplay
-                startTime={activeTarget.startTime}
-                gameDuration={Number(activeTarget?.gameDuration)}
-                revealDuration={Number(activeTarget?.revealDuration)}
-                bufferDuration={Number(activeTarget?.bufferDuration)}
-                onComplete={handleCountdownComplete}
-                onPhaseChange={handlePhaseChange}
-              />
-            </div>
-            <Results />
-          </div>
-        );
+        // Show next game message during buffer phase
+        return <NextGameMessage activeTarget={activeTarget} />;
 
       case "completed":
         return (

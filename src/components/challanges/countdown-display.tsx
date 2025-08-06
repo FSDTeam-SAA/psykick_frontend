@@ -12,6 +12,7 @@ interface CountdownDisplayProps {
   onPhaseChange?: (
     phase: "waiting" | "game" | "reveal" | "buffer" | "completed",
   ) => void;
+  mode?: "full" | "game-only" | "buffer-only"; // New prop to control what to count
 }
 
 export default function CountdownDisplay({
@@ -21,6 +22,7 @@ export default function CountdownDisplay({
   bufferDuration,
   onComplete,
   onPhaseChange,
+  mode = "full",
 }: CountdownDisplayProps) {
   const [timeLeft, setTimeLeft] = useState<{
     days: number;
@@ -47,26 +49,64 @@ export default function CountdownDisplay({
       let phase: "waiting" | "game" | "reveal" | "buffer" | "completed";
       let label: string;
 
-      // Determine current phase and target time
+      // Determine current phase and target time based on mode
       if (now.isBefore(start)) {
         phase = "waiting";
         label = "Challenge Starting Soon";
         targetTime = start;
       } else if (now.isBefore(gameEnd)) {
         phase = "game";
-        label = "Game Phase - Draw & Select";
-        targetTime = gameEnd;
+        if (mode === "game-only") {
+          label = "Game Time Remaining";
+          targetTime = gameEnd;
+        } else {
+          label = "Game Phase - Draw & Select";
+          targetTime = mode === "full" ? bufferEnd : gameEnd;
+        }
       } else if (now.isBefore(revealEnd)) {
         phase = "reveal";
-        label = "Processing Results";
-        targetTime = revealEnd;
+        if (mode === "game-only") {
+          // Game is over, show completed
+          label = "Game Phase Completed";
+          onComplete?.();
+          return {
+            days: 0,
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+            phase,
+            label,
+          };
+        } else {
+          label = "Processing Results";
+          targetTime = mode === "full" ? bufferEnd : revealEnd;
+        }
       } else if (now.isBefore(bufferEnd)) {
         phase = "buffer";
-        label = "Viewing Results";
-        targetTime = bufferEnd;
+        if (mode === "buffer-only") {
+          label = "Next Game Available In";
+          targetTime = bufferEnd;
+        } else if (mode === "game-only") {
+          label = "Game Phase Completed";
+          onComplete?.();
+          return {
+            days: 0,
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+            phase,
+            label,
+          };
+        } else {
+          label = "Viewing Results";
+          targetTime = bufferEnd;
+        }
       } else {
         phase = "completed";
-        label = "Challenge Completed";
+        label =
+          mode === "buffer-only"
+            ? "Next Game Starting Soon"
+            : "Challenge Completed";
         onComplete?.();
         return {
           days: 0,
@@ -127,7 +167,10 @@ export default function CountdownDisplay({
         seconds: newResult.seconds,
       });
 
-      if (newResult.phase === "completed") {
+      if (
+        newResult.phase === "completed" ||
+        (mode === "game-only" && newResult.phase === "reveal")
+      ) {
         clearInterval(timer);
       }
     }, 1000);
@@ -141,6 +184,7 @@ export default function CountdownDisplay({
     onComplete,
     onPhaseChange,
     currentPhase,
+    mode,
   ]);
 
   const formatNumber = (num: number) => String(num).padStart(2, "0");
@@ -168,8 +212,10 @@ export default function CountdownDisplay({
         <h3 className="text-lg font-bold text-white">{phaseLabel}</h3>
         <p className="text-sm text-gray-300">
           {currentPhase === "completed"
-            ? "All phases completed"
-            : `Time remaining in ${phaseLabel.toLowerCase()}`}
+            ? mode === "buffer-only"
+              ? "Preparing next challenge..."
+              : "All phases completed"
+            : `Time remaining: ${phaseLabel.toLowerCase()}`}
         </p>
       </div>
 
