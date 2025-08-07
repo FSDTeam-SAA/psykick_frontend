@@ -58,6 +58,8 @@ export default function ImageSelection() {
           }
         },
         onError: (error: any) => {
+          router.push(`/challenges/tmc/waiting?id=${targetId}`);
+
           toast.error(
             error?.response?.data?.message ||
               "An error occurred while submitting your choices. Please try again.",

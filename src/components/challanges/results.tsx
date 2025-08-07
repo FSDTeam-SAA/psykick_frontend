@@ -1,39 +1,101 @@
 "use client";
 
-// import { useEffect } from "react";
-// import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-// import moment from "moment";
+import moment from "moment";
 import { useChallengeStore } from "@/store/use-challenge-store";
 import { useTMCResult, useActiveTMCTarget } from "@/hooks/use-tmc-queries";
 import { Button } from "../ui/button";
 import CountdownDisplay from "./countdown-display";
-import { useRouter } from "next/navigation";
+import NextGameMessage from "./next-game-component";
 
 export default function Results() {
-  const { setActiveTab } = useChallengeStore();
-  // const router = useRouter();
-  const { targetId } = useChallengeStore();
+  const { setActiveTab, targetId } = useChallengeStore();
   const { data: results, isLoading } = useTMCResult(targetId || "");
   const { data: activeTarget } = useActiveTMCTarget();
+  const [shouldRedirect, setShouldRedirect] = useState(false);
 
-  const router = useRouter();
+  // Calculate phase times
+  const startTime = activeTarget?.startTime
+    ? moment(activeTarget.startTime)
+    : null;
+  const gameEnd = startTime
+    ?.clone()
+    .add(activeTarget?.gameDuration || 0, "minutes");
+  const revealEnd = gameEnd
+    ?.clone()
+    .add(activeTarget?.revealDuration || 0, "minutes");
+
+  // Check if we should redirect to buffer phase
+  useEffect(() => {
+    if (!startTime || !revealEnd) return;
+
+    const checkPhaseEnd = () => {
+      const now = moment();
+      if (now.isSameOrAfter(revealEnd)) {
+        setShouldRedirect(true);
+      }
+    };
+
+    checkPhaseEnd();
+    const interval = setInterval(checkPhaseEnd, 1000);
+    return () => clearInterval(interval);
+  }, [startTime, revealEnd]);
 
   const handleCountdownComplete = () => {
-    router.push(`/challenges/tmc/results?id=${targetId}`);
+    // When reveal phase ends, redirect to buffer phase (handled by parent component)
+    setShouldRedirect(true);
   };
+
+  const handlePhaseChange = (
+    phase: "waiting" | "game" | "reveal" | "buffer" | "completed",
+  ) => {
+    // When buffer phase starts, trigger redirect
+    if (phase === "buffer") {
+      setShouldRedirect(true);
+    }
+  };
+
+  // If should redirect, let parent component handle it
+  if (shouldRedirect) {
+    return <NextGameMessage activeTarget={activeTarget} />;
+  }
 
   if (isLoading || !results?.data) {
     return (
-      <div className="max-w-4xl mx-auto p-4 flex flex-col items-center justify-center text-[#ECECEC] h-screen">
-        <h2 className="md:text-3xl text-xl lg:text-5xl text-center font-semibold  mb-8 ">
-          Game has been Finished!
+      <div className="max-w-4xl mx-auto p-4 flex flex-col items-center justify-center text-[#ECECEC] min-h-[60vh]">
+        <h2 className="md:text-3xl text-xl lg:text-5xl text-center font-semibold mb-8">
+          Loading Results...
         </h2>
-        <p className="text-lg mb-4">Please wait for the next Game</p>
-        <CountdownDisplay
-          minutes={activeTarget?.bufferDuration || "0"}
-          onComplete={handleCountdownComplete}
-        />
+        <p className="text-lg mb-8">
+          Please wait while we process your results
+        </p>
+
+        {activeTarget && (
+          <div className="mb-8">
+            <CountdownDisplay
+              startTime={activeTarget.startTime}
+              gameDuration={Number(activeTarget?.gameDuration)}
+              revealDuration={Number(activeTarget?.revealDuration)}
+              bufferDuration={Number(activeTarget?.bufferDuration)}
+              onComplete={handleCountdownComplete}
+              onPhaseChange={handlePhaseChange}
+              mode="full"
+            />
+          </div>
+        )}
+
+        <div className="flex justify-center items-center space-x-2">
+          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+          <div
+            className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+            style={{ animationDelay: "0.1s" }}
+          ></div>
+          <div
+            className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+            style={{ animationDelay: "0.2s" }}
+          ></div>
+        </div>
       </div>
     );
   }
@@ -41,7 +103,28 @@ export default function Results() {
   const { firstChoiceImage, secondChoiceImage, points } = results.data;
 
   return (
-    <div className="container mx-auto my-28  ">
+    <div className="container mx-auto p-4">
+      {/* Reveal Phase Countdown */}
+      {activeTarget && (
+        <div className="mb-8 text-center">
+          <div className="inline-flex items-center space-x-2 bg-blue-800/30 px-6 py-3 rounded-full mb-6">
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+            <span className="text-blue-300 font-medium">
+              Results Phase Active
+            </span>
+          </div>
+          <CountdownDisplay
+            startTime={activeTarget.startTime}
+            gameDuration={Number(activeTarget?.gameDuration)}
+            revealDuration={Number(activeTarget?.revealDuration)}
+            bufferDuration={0}
+            onComplete={handleCountdownComplete}
+            onPhaseChange={handlePhaseChange}
+            mode="full"
+          />
+        </div>
+      )}
+
       <h2 className="text-3xl font-semibold text-[#ECECEC] mb-8 text-center">
         Feedback for Target Code: {activeTarget?.code}
       </h2>
@@ -120,6 +203,17 @@ export default function Results() {
           </div>
         </div>
       </div>
+
+      {/* Time remaining notification */}
+      {/* <div className="text-center mt-8">
+        <div className="bg-blue-900/20 p-4 rounded-lg max-w-md mx-auto">
+          <p className="text-blue-300 font-medium mb-2">Results Phase Active</p>
+          <p className="text-gray-300 text-sm">
+            You can view your results until the buffer phase begins. The next
+            challenge information will be available after this phase ends.
+          </p>
+        </div>
+      </div> */}
     </div>
   );
 }
