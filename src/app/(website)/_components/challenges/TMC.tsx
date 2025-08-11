@@ -20,6 +20,7 @@ export default function TargetMatchChallenge() {
 
   const [currentPhase, setCurrentPhase] = useState<GamePhase>("waiting");
   const [phaseTransitioning, setPhaseTransitioning] = useState(false);
+  const [drawingSubmitted, setDrawingSubmitted] = useState(false); // New state for drawing submission
   const { data: activeTarget, isLoading } = useActiveTMCTarget();
 
   // Set target data when it's loaded
@@ -68,6 +69,11 @@ export default function TargetMatchChallenge() {
         setTimeout(() => {
           setCurrentPhase(newPhase);
           setPhaseTransitioning(false);
+
+          // Reset drawing submission state when phase changes
+          if (newPhase !== "game") {
+            setDrawingSubmitted(false);
+          }
         }, 500); // Smooth transition delay
       }
     };
@@ -87,12 +93,29 @@ export default function TargetMatchChallenge() {
       setTimeout(() => {
         setCurrentPhase(phase);
         setPhaseTransitioning(false);
+
+        // Reset drawing submission state when phase changes
+        if (phase !== "game") {
+          setDrawingSubmitted(false);
+        }
       }, 300);
     }
   };
 
   const handleCountdownComplete = () => {
     console.log("Countdown completed");
+  };
+
+  // Modified submit impression handler
+  const handleSubmitDrawing = () => {
+    submitImpression(); // Call the original submit function
+    setDrawingSubmitted(true); // Set local state to show image selection
+  };
+
+  // Modified clear canvas handler
+  const handleClearCanvas = () => {
+    clearCanvas(); // Call the original clear function
+    setDrawingSubmitted(false); // Reset drawing submission state
   };
 
   // Loading state
@@ -163,7 +186,7 @@ export default function TargetMatchChallenge() {
         );
 
       case "game":
-        // If user has submitted, show waiting screen during game phase
+        // If user has completed both steps (drawing + image selection), show waiting screen
         if (submitted) {
           return <WaitingScreen />;
         }
@@ -175,29 +198,57 @@ export default function TargetMatchChallenge() {
             </h1>
 
             {/* Event Details  */}
-            <div className="flex justify-between items-center w-full md:w-1/2 gap-6 my-12">
-              <div>
-                <p className="challange-subTitle mb-2">
-                  Code: {activeTarget.code}
-                </p>
-                <p className="challange-subTitle mb-2">
-                  Start Time: {startTime?.format("MMM DD, YYYY HH:mm")}
-                </p>
+            <div className="bg-gradient-to-r from-purple-800/30 to-blue-800/30 rounded-lg p-6 my-12 border border-purple-500/20">
+              <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mr-3 animate-pulse"></div>
+                    Challenge Details
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
+                    <div className="bg-black/20 rounded-lg p-3 border border-purple-500/10">
+                      <p className="text-purple-300 text-sm uppercase tracking-wide mb-1">
+                        Session Code
+                      </p>
+                      <p className="text-white font-bold text-lg font-mono">
+                        {activeTarget.code}
+                      </p>
+                    </div>
+                    <div className="bg-black/20 rounded-lg p-3 border border-purple-500/10">
+                      <p className="text-purple-300 text-sm uppercase tracking-wide mb-1">
+                        Started At
+                      </p>
+                      <p className="text-white font-medium">
+                        {startTime?.format("MMM DD, HH:mm")}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex-shrink-0">
+                  <div className="text-center mb-2">
+                    <p className="text-purple-300 text-sm uppercase tracking-wide">
+                      Time Remaining
+                    </p>
+                  </div>
+                  <div className="bg-black/30 rounded-lg p-4 border border-purple-500/20">
+                    <CountdownDisplay
+                      startTime={activeTarget.startTime}
+                      gameDuration={Number(activeTarget?.gameDuration)}
+                      revealDuration={Number(activeTarget?.revealDuration)}
+                      bufferDuration={Number(activeTarget?.bufferDuration)}
+                      onComplete={handleCountdownComplete}
+                      onPhaseChange={handlePhaseChange}
+                      mode="game-only"
+                    />
+                  </div>
+                </div>
               </div>
-              <CountdownDisplay
-                startTime={activeTarget.startTime}
-                gameDuration={Number(activeTarget?.gameDuration)}
-                revealDuration={Number(activeTarget?.revealDuration)}
-                bufferDuration={Number(activeTarget?.bufferDuration)}
-                onComplete={handleCountdownComplete}
-                onPhaseChange={handlePhaseChange}
-                mode="game-only"
-              />
             </div>
 
-            {/* Game Phase Content - Drawing and Image Selection */}
+            {/* Game Phase Content - Sequential Steps */}
             <div className="space-y-8">
-              {/* Drawing Section */}
+              {/* Drawing Section - Always visible during game phase */}
               <div className="mb-8">
                 <h2 className="text-xl font-bold text-white mb-4">
                   Step 1: Draw Your Impressions
@@ -206,38 +257,80 @@ export default function TargetMatchChallenge() {
                   <EnhancedDrawingCanvas mode="tmc" />
                   <div className="flex space-x-4 mt-4">
                     <button
-                      onClick={clearCanvas}
+                      onClick={handleClearCanvas}
                       className="px-4 py-2 bg-purple-900 text-white rounded-lg hover:bg-purple-800 transition-colors"
                     >
                       Clear Canvas
                     </button>
                     <button
-                      onClick={submitImpression}
-                      className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                      onClick={handleSubmitDrawing}
+                      disabled={drawingSubmitted}
+                      className={`px-4 py-2 rounded-lg transition-colors ${
+                        drawingSubmitted
+                          ? "bg-green-600 text-white cursor-default"
+                          : "bg-purple-600 text-white hover:bg-purple-700"
+                      }`}
                     >
-                      Submit Drawing
+                      {drawingSubmitted
+                        ? "Drawing Submitted ✓"
+                        : "Submit Drawing"}
                     </button>
                   </div>
                 </div>
               </div>
 
-              {/* Image Selection Section */}
-              <div className="mb-8">
-                <h2 className="text-xl font-bold text-white mb-4">
-                  Step 2: Select Matching Images
-                </h2>
-                <div className="bg-purple-900/20 p-6 rounded-lg">
-                  <ImageSelection />
+              {/* Image Selection Section - Only visible after drawing submission */}
+              {drawingSubmitted && (
+                <div className="mb-8">
+                  <h2 className="text-xl font-bold text-white mb-4">
+                    Step 2: Select Matching Images
+                  </h2>
+                  <div className="bg-purple-900/20 p-6 rounded-lg">
+                    <ImageSelection />
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Progress Indicator */}
               <div className="text-center py-4">
                 <div className="inline-flex items-center space-x-2 bg-green-800/30 px-4 py-2 rounded-full">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                   <span className="text-green-300 font-medium">
-                    Game Phase Active
+                    {drawingSubmitted
+                      ? "Image Selection Phase"
+                      : "Drawing Phase"}{" "}
+                    Active
                   </span>
+                </div>
+              </div>
+
+              {/* Step indicator */}
+              <div className="flex justify-center space-x-4 py-4">
+                <div
+                  className={`flex items-center space-x-2 ${drawingSubmitted ? "text-green-400" : "text-purple-400"}`}
+                >
+                  <div
+                    className={`w-3 h-3 rounded-full ${drawingSubmitted ? "bg-green-500" : "bg-purple-500"}`}
+                  ></div>
+                  <span>Draw</span>
+                </div>
+                <div className="text-gray-500">→</div>
+                <div
+                  className={`flex items-center space-x-2 ${drawingSubmitted ? "text-purple-400" : "text-gray-500"}`}
+                >
+                  <div
+                    className={`w-3 h-3 rounded-full ${drawingSubmitted ? "bg-purple-500" : "bg-gray-500"}`}
+                  ></div>
+                  <span>Select Images</span>
+                </div>
+                <div className="text-gray-500">→</div>
+                <div
+                  className={`flex items-center space-x-2 ${submitted ? "text-green-400" : "text-gray-500"}`}
+                >
+                  <div
+                    className={`w-3 h-3 rounded-full ${submitted ? "bg-green-500" : "bg-gray-500"}`}
+                  ></div>
+                  <span>Complete</span>
                 </div>
               </div>
             </div>
