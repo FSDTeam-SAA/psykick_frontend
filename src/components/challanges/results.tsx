@@ -107,11 +107,9 @@ export default function Results() {
       {/* Reveal Phase Countdown */}
       {activeTarget && (
         <div className="mb-8 text-center">
-          <div className="inline-flex items-center space-x-2 bg-blue-800/30 px-6 py-3 rounded-full mb-6">
-            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-            <span className="text-blue-300 font-medium">
-              Results Phase Active
-            </span>
+          <div className="inline-flex items-center space-x-2 bg-gradient px-6 py-3 rounded-full mb-6">
+            <div className="w-2 h-2  bg-green-500 rounded-full animate-pulse"></div>
+            <span className="text-white font-medium">Reveal Phase Active</span>
           </div>
           <CountdownDisplay
             startTime={activeTarget.startTime}
