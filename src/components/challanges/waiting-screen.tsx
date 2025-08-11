@@ -92,10 +92,10 @@ export default function WaitingScreen() {
 
       {/* Status Indicator */}
       <div className="mb-8">
-        <div className="inline-flex items-center space-x-2 bg-green-800/30 px-6 py-3 rounded-full mb-4">
+        <div className="inline-flex items-center space-x-2 bg-gradient px-6 py-3 rounded-full mb-4">
           <div className="w-3 h-3 rounded-full bg-green-500"></div>
-          <span className="font-medium text-green-400">
-            Results will be available in the next phase
+          <span className="font-black  text-white">
+            Reveal phase will be available when the game time ends!
           </span>
         </div>
         <p className="text-gray-300 text-lg mb-6">

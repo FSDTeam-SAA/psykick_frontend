@@ -391,6 +391,7 @@ export const useChallengeStore = create<ChallengeState & ChallengeActions>()(
         } else {
           set({ showImageSelection: true });
         }
+        
       },
 
       submitChoices: () => {
