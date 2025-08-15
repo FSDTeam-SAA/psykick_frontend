@@ -1,13 +1,8 @@
-/* eslint-disable */
-// @ts-nocheck
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import type React from "react";
-
 import { useRef, useEffect, useState, useCallback } from "react";
 import { Undo2, Redo2, X, Maximize } from "lucide-react";
-import { useARVStore } from "@/store/use-arv-store";
 
 type TextBox = {
   id: string;
@@ -19,51 +14,37 @@ type TextBox = {
 };
 
 type DrawingCanvasProps = {
-  mode: "arv";
+  onDrawingChange?: (drawing: string) => void;
+  disabled?: boolean;
 };
 
-export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
-  // Get state and actions from the store
-  const {
-    currentTool,
-    currentColor,
-    brushSize,
-    currentDrawing,
-    drawingHistory,
-    currentStep,
-    textBoxes,
-    updateDrawing,
-    addToHistory,
-    undo,
-    redo,
-    setTool,
-    setColor,
-    setBrushSize,
-    clearCanvas,
-    updateTextBoxes,
-    addTextBox,
-    updateTextBox,
-    removeTextBox,
-  } = useARVStore();
-
-  // Local state
+export function EnhancedDrawingCanvas({
+  onDrawingChange,
+  disabled = false,
+}: DrawingCanvasProps) {
+  // Local state for drawing functionality
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const [currentTool, setCurrentTool] = useState<"pencil" | "eraser" | "text">(
+    "pencil",
+  );
+  const [currentColor, setCurrentColor] = useState("#000000");
+  const [brushSize, setBrushSize] = useState(4);
   const [isDrawing, setIsDrawing] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
+  const [textBoxes, setTextBoxes] = useState<TextBox[]>([]);
   const [activeTextBox, setActiveTextBox] = useState<string | null>(null);
-  const [editingTextBox, setEditingTextBox] = useState<string | null>(null);
-  const [editingTextValue, setEditingTextValue] = useState("");
   const [isDraggingText, setIsDraggingText] = useState(false);
   const [dragStartPos, setDragStartPos] = useState({ x: 0, y: 0 });
   const [showTextInput, setShowTextInput] = useState(false);
   const [textInputPos, setTextInputPos] = useState({ x: 0, y: 0 });
   const [textInputValue, setTextInputValue] = useState("");
-  const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
   const [canvasInitialized, setCanvasInitialized] = useState(false);
-  const [isRedrawing, setIsRedrawing] = useState(false);
-  const [canvasScale, setCanvasScale] = useState(2); // For high DPI screens
+  const [canvasScale, setCanvasScale] = useState(2);
+  const [drawingHistory, setDrawingHistory] = useState<string[]>([]);
+  const [currentStep, setCurrentStep] = useState(-1);
 
   // Function to redraw all text boxes
   const redrawTextBoxes = useCallback(() => {
@@ -95,12 +76,6 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
     canvas.width = displayWidth * scale;
     canvas.height = displayHeight * scale;
 
-    // Store canvas size
-    setCanvasSize({
-      width: canvas.width,
-      height: canvas.height,
-    });
-
     const context = canvas.getContext("2d", { alpha: true });
     if (!context) return;
 
@@ -111,86 +86,13 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
     context.lineWidth = brushSize;
     contextRef.current = context;
 
-    // Restore previous drawing if available
-    if (currentDrawing) {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.onload = () => {
-        if (context && canvas) {
-          context.clearRect(0, 0, canvas.width / scale, canvas.height / scale);
-          context.drawImage(
-            img,
-            0,
-            0,
-            canvas.width / scale,
-            canvas.height / scale,
-          );
-          redrawTextBoxes();
-        }
-      };
-      img.src = currentDrawing;
-    }
-
     setCanvasInitialized(true);
-  }, [
-    canvasInitialized,
-    currentColor,
-    brushSize,
-    currentDrawing,
-    redrawTextBoxes,
-  ]);
+  }, [canvasInitialized, currentColor, brushSize]);
 
   // Initialize canvas on component mount
   useEffect(() => {
     initializeCanvas();
   }, [initializeCanvas]);
-
-  // Update canvas when drawing history changes (for undo/redo)
-  useEffect(() => {
-    if (!canvasInitialized || isRedrawing) return;
-
-    const canvas = canvasRef.current;
-    const context = contextRef.current;
-    if (!canvas || !context) return;
-
-    // If we have a current drawing from history, redraw it
-    if (
-      drawingHistory.length > 0 &&
-      currentStep >= 0 &&
-      drawingHistory[currentStep]
-    ) {
-      setIsRedrawing(true);
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.onload = () => {
-        if (context && canvas) {
-          context.clearRect(
-            0,
-            0,
-            canvas.width / canvasScale,
-            canvas.height / canvasScale,
-          );
-          context.drawImage(
-            img,
-            0,
-            0,
-            canvas.width / canvasScale,
-            canvas.height / canvasScale,
-          );
-          redrawTextBoxes();
-          setIsRedrawing(false);
-        }
-      };
-      img.src = drawingHistory[currentStep];
-    }
-  }, [
-    drawingHistory,
-    currentStep,
-    canvasInitialized,
-    isRedrawing,
-    canvasScale,
-    redrawTextBoxes,
-  ]);
 
   // Update context when tool or color changes
   useEffect(() => {
@@ -199,17 +101,92 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
     contextRef.current.lineWidth = brushSize;
   }, [currentColor, brushSize, canvasInitialized]);
 
-  // Save canvas state
+  // Save canvas state and notify parent
   const saveCanvasState = useCallback(() => {
     if (!canvasRef.current) return;
     const imageData = canvasRef.current.toDataURL();
-    updateDrawing(imageData);
-    addToHistory();
-  }, [updateDrawing, addToHistory]);
+
+    // Add to history
+    const newHistory = drawingHistory.slice(0, currentStep + 1);
+    newHistory.push(imageData);
+    setDrawingHistory(newHistory);
+    setCurrentStep(newHistory.length - 1);
+
+    // Notify parent component
+    if (onDrawingChange) {
+      onDrawingChange(imageData);
+    }
+  }, [drawingHistory, currentStep, onDrawingChange]);
+
+  // Undo function
+  const undo = useCallback(() => {
+    if (currentStep > 0) {
+      const newStep = currentStep - 1;
+      setCurrentStep(newStep);
+
+      const canvas = canvasRef.current;
+      const context = contextRef.current;
+      if (!canvas || !context) return;
+
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        context.clearRect(
+          0,
+          0,
+          canvas.width / canvasScale,
+          canvas.height / canvasScale,
+        );
+        context.drawImage(
+          img,
+          0,
+          0,
+          canvas.width / canvasScale,
+          canvas.height / canvasScale,
+        );
+        redrawTextBoxes();
+      };
+      img.src = drawingHistory[newStep];
+    }
+  }, [currentStep, drawingHistory, canvasScale, redrawTextBoxes]);
+
+  // Redo function
+  const redo = useCallback(() => {
+    if (currentStep < drawingHistory.length - 1) {
+      const newStep = currentStep + 1;
+      setCurrentStep(newStep);
+
+      const canvas = canvasRef.current;
+      const context = contextRef.current;
+      if (!canvas || !context) return;
+
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        context.clearRect(
+          0,
+          0,
+          canvas.width / canvasScale,
+          canvas.height / canvasScale,
+        );
+        context.drawImage(
+          img,
+          0,
+          0,
+          canvas.width / canvasScale,
+          canvas.height / canvasScale,
+        );
+        redrawTextBoxes();
+      };
+      img.src = drawingHistory[newStep];
+    }
+  }, [currentStep, drawingHistory, canvasScale, redrawTextBoxes]);
 
   // Start drawing
   const startDrawing = useCallback(
     (e: React.MouseEvent<HTMLCanvasElement>) => {
+      if (disabled) return;
+
       const { offsetX, offsetY } = e.nativeEvent;
 
       // If text tool is active, place text input at click position
@@ -243,12 +220,14 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
       contextRef.current.moveTo(offsetX, offsetY);
       setIsDrawing(true);
     },
-    [currentTool, textBoxes],
+    [currentTool, textBoxes, disabled],
   );
 
   // Draw
   const draw = useCallback(
     (e: React.MouseEvent<HTMLCanvasElement>) => {
+      if (disabled) return;
+
       const { offsetX, offsetY } = e.nativeEvent;
 
       // Handle text dragging
@@ -267,45 +246,8 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
           return box;
         });
 
-        updateTextBoxes(updatedTextBoxes);
+        setTextBoxes(updatedTextBoxes);
         setDragStartPos({ x: offsetX, y: offsetY });
-
-        // Redraw canvas with updated text positions
-        const canvas = canvasRef.current;
-        const context = contextRef.current;
-        if (!canvas || !context || !currentDrawing) return;
-
-        // Clear canvas
-        context.clearRect(
-          0,
-          0,
-          canvas.width / canvasScale,
-          canvas.height / canvasScale,
-        );
-
-        // Redraw the base image
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.onload = () => {
-          if (context && canvas) {
-            context.drawImage(
-              img,
-              0,
-              0,
-              canvas.width / canvasScale,
-              canvas.height / canvasScale,
-            );
-
-            // Draw text boxes
-            updatedTextBoxes.forEach((box) => {
-              context.font = `${box.fontSize}px Arial`;
-              context.fillStyle = box.color;
-              context.fillText(box.text, box.x, box.y);
-            });
-          }
-        };
-        img.src = currentDrawing;
-
         return;
       }
 
@@ -326,16 +268,16 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
       activeTextBox,
       textBoxes,
       dragStartPos,
-      currentDrawing,
       isDrawing,
       currentTool,
-      canvasScale,
-      updateTextBoxes,
+      disabled,
     ],
   );
 
   // End drawing
   const endDrawing = useCallback(() => {
+    if (disabled) return;
+
     if (isDraggingText) {
       setIsDraggingText(false);
       setActiveTextBox(null);
@@ -353,13 +295,18 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
 
     // Save current state to history
     saveCanvasState();
-  }, [isDraggingText, isDrawing, saveCanvasState]);
+  }, [isDraggingText, isDrawing, saveCanvasState, disabled]);
 
   // Handle text submission
   const handleTextSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      if (!contextRef.current || !canvasRef.current || !textInputValue.trim()) {
+      if (
+        disabled ||
+        !contextRef.current ||
+        !canvasRef.current ||
+        !textInputValue.trim()
+      ) {
         setShowTextInput(false);
         return;
       }
@@ -374,7 +321,7 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
         fontSize: brushSize * 2,
       };
 
-      addTextBox(newTextBox);
+      setTextBoxes((prev) => [...prev, newTextBox]);
 
       // Draw text
       contextRef.current.font = `${newTextBox.fontSize}px Arial`;
@@ -397,8 +344,8 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
       textInputPos,
       currentColor,
       brushSize,
-      addTextBox,
       saveCanvasState,
+      disabled,
     ],
   );
 
@@ -448,14 +395,16 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
             <div className="flex items-center space-x-2">
               <button
                 onClick={undo}
-                className="p-1 text-white hover:bg-gray-800 rounded"
+                disabled={disabled || currentStep <= 0}
+                className="p-1 text-white hover:bg-gray-800 rounded disabled:opacity-50"
                 aria-label="Undo"
               >
                 <Undo2 size={18} />
               </button>
               <button
                 onClick={redo}
-                className="p-1 text-white hover:bg-gray-800 rounded"
+                disabled={disabled || currentStep >= drawingHistory.length - 1}
+                className="p-1 text-white hover:bg-gray-800 rounded disabled:opacity-50"
                 aria-label="Redo"
               >
                 <Redo2 size={18} />
@@ -464,10 +413,9 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
 
             {/* Text tool */}
             <button
-              onClick={() => {
-                setTool("text");
-              }}
-              className={`p-1 text-white hover:bg-gray-800 rounded ${currentTool === "text" ? "bg-gray-700" : ""}`}
+              onClick={() => setCurrentTool("text")}
+              disabled={disabled}
+              className={`p-1 text-white hover:bg-gray-800 rounded disabled:opacity-50 ${currentTool === "text" ? "bg-gray-700" : ""}`}
               aria-label="Text tool"
               aria-pressed={currentTool === "text"}
             >
@@ -478,8 +426,9 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
 
             {/* Eraser */}
             <button
-              onClick={() => setTool("eraser")}
-              className={`p-1 text-white hover:bg-gray-800 rounded ${currentTool === "eraser" ? "bg-gray-700" : ""}`}
+              onClick={() => setCurrentTool("eraser")}
+              disabled={disabled}
+              className={`p-1 text-white hover:bg-gray-800 rounded disabled:opacity-50 ${currentTool === "eraser" ? "bg-gray-700" : ""}`}
               aria-label="Eraser tool"
               aria-pressed={currentTool === "eraser"}
             >
@@ -492,10 +441,11 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
                 <button
                   key={pencil.size}
                   onClick={() => {
-                    setTool("pencil");
+                    setCurrentTool("pencil");
                     setBrushSize(pencil.size);
                   }}
-                  className={`${pencil.width} ${pencil.height} flex items-center justify-center ${
+                  disabled={disabled}
+                  className={`${pencil.width} ${pencil.height} flex items-center justify-center disabled:opacity-50 ${
                     currentTool === "pencil" && brushSize === pencil.size
                       ? "border border-white"
                       : ""
@@ -510,10 +460,11 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
               ))}
             </div>
 
-            {/* Color selection with modern color picker */}
+            {/* Color selection */}
             <div className="relative group">
               <button
-                className="flex items-center justify-center p-1 text-white hover:bg-gray-800 rounded"
+                className="flex items-center justify-center p-1 text-white hover:bg-gray-800 rounded disabled:opacity-50"
+                disabled={disabled}
                 onClick={() => {
                   const colorPicker = document.getElementById("color-picker");
                   if (colorPicker) {
@@ -531,24 +482,26 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
                   type="color"
                   value={currentColor}
                   onChange={(e) => {
-                    setColor(e.target.value);
-                    setTool("pencil");
+                    setCurrentColor(e.target.value);
+                    setCurrentTool("pencil");
                   }}
+                  disabled={disabled}
                   className="absolute opacity-0 w-0 h-0"
                   aria-hidden="true"
                 />
               </button>
 
-              {/* Modern color palette dropdown */}
+              {/* Color palette dropdown */}
               <div className="absolute left-0 mt-2 hidden group-hover:grid grid-cols-4 gap-1 bg-gray-800 p-2 rounded-lg shadow-lg z-20 w-32">
                 {colorPalette.map((color) => (
                   <button
                     key={color}
                     onClick={() => {
-                      setColor(color);
-                      setTool("pencil");
+                      setCurrentColor(color);
+                      setCurrentTool("pencil");
                     }}
-                    className="w-6 h-6 rounded-full hover:scale-110 transition-transform"
+                    disabled={disabled}
+                    className="w-6 h-6 rounded-full hover:scale-110 transition-transform disabled:opacity-50"
                     style={{
                       backgroundColor: color,
                       boxShadow:
@@ -569,7 +522,8 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
               max="20"
               value={brushSize}
               onChange={(e) => setBrushSize(Number(e.target.value))}
-              className="flex-1 accent-purple-600"
+              disabled={disabled}
+              className="flex-1 accent-purple-600 disabled:opacity-50"
               aria-label="Brush size"
             />
           </div>
@@ -592,12 +546,28 @@ export default function EnhancedDrawingCanvas({ mode }: DrawingCanvasProps) {
             onMouseMove={draw}
             onMouseUp={endDrawing}
             onMouseLeave={endDrawing}
-            className={`w-full ${fullscreen ? "h-[calc(100vh-42px)]" : "h-[400px]"} bg-white cursor-crosshair transition-all duration-300`}
-            style={{ marginTop: "42px" }} // Add space for the toolbar
+            className={`w-full ${fullscreen ? "h-[calc(100vh-42px)]" : "h-[400px]"} bg-white transition-all duration-300 ${
+              disabled ? "cursor-not-allowed opacity-50" : "cursor-crosshair"
+            }`}
+            style={{ marginTop: "42px" }}
           />
 
+          {/* Disabled overlay */}
+          {disabled && (
+            <div
+              className="absolute inset-0 bg-gray-500/20 flex items-center justify-center"
+              style={{ marginTop: "42px" }}
+            >
+              <div className="bg-white/90 px-4 py-2 rounded-lg shadow-lg">
+                <p className="text-gray-700 font-medium">
+                  Drawing disabled outside game time
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Text input overlay */}
-          {showTextInput && (
+          {showTextInput && !disabled && (
             <div
               className="absolute bg-white border-2 border-purple-600 p-2 rounded shadow-lg z-20"
               style={{
