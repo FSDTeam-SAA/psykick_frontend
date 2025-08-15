@@ -1,141 +1,105 @@
-/* eslint-disable */
-// @ts-nocheck
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState } from "react";
 import { useARVStore } from "@/store/use-arv-store";
+import { Clock, Trophy } from "lucide-react";
 import Image from "next/image";
-// import { getAuthToken } from "@/utils/auth";
 
-export default function ResultsStage() {
-  const { activeTarget, selectedImageId, imageChoices } = useARVStore();
-  const [result, setResult] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
+export function ResultsStage() {
+  const { currentEvent, selectedImage } = useARVStore();
 
-  useEffect(() => {
-    const fetchResult = async () => {
-      try {
-        setIsLoading(true);
-        const { submissionId, activeTarget } = useARVStore.getState();
-        if (!submissionId || !activeTarget) return;
+  if (!currentEvent) return null;
 
-        console.log("Fetching result with submission ID:", submissionId);
-        console.log("Active target ID:", activeTarget.targetId);
-
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/userSubmission/get-ARVResult/${submissionId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-            },
-          },
-        );
-        const data = await response.json();
-
-        if (data.status) {
-          console.log("Result data:", data.data);
-          setResult(data.data);
-        } else {
-          console.error("Error in result data:", data);
-        }
-      } catch (error) {
-        console.error("Error fetching result:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchResult();
-  }, []);
-
-  const selectedImage = imageChoices.find((img) => img.id === selectedImageId);
-  const isCorrect = result?.isCorrect || false;
-  const pointsEarned = result?.pointsEarned || 30; // Default to 30 for the example
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[70vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
-      </div>
-    );
-  }
+  const hasOutcomeImage = !!currentEvent.resultImage;
 
   return (
-    <div className="flex flex-col items-center text-white max-w-4xl mx-auto">
-      <h1 className="text-2xl font-semibold mb-6">
-        Feedback for Target ID: {activeTarget?.code}
-      </h1>
+    <div className="min-h-screen flex flex-col items-center justify-center p-8">
+      <div className="text-center space-y-8 max-w-4xl">
+        <h1 className="text-3xl font-bold text-white">
+          {hasOutcomeImage ? "Challenge Results" : "Outcome Phase"}
+        </h1>
 
-      <div className="w-full mb-6">
-        <h2 className="text-xl mb-2">Event Name</h2>
-        <p className="text-yellow-300 font-medium mb-4">
-          {activeTarget?.eventDescription}
-        </p>
-
-        {result?.targetImage ? (
-          <Image
-            src={result.targetImage || "/placeholder.svg"}
-            alt="Target Image"
-            width={500}
-            height={300}
-            className="w-full h-auto rounded-lg mb-6"
-          />
-        ) : activeTarget?.resultImage ? (
-          <Image
-            src={activeTarget.resultImage || "/placeholder.svg"}
-            alt="Target Image"
-            width={500}
-            height={300}
-            className="w-full h-80 object-cover rounded-lg mb-6"
-          />
+        {!hasOutcomeImage ? (
+          <div className="space-y-6">
+            <div className="flex justify-center">
+              <Clock className="h-20 w-20 text-yellow-500" />
+            </div>
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold text-yellow-400">
+                Please wait for the Admin to set Outcome image
+              </h2>
+              <p className="text-gray-300">
+                The results will be displayed once the admin uploads the outcome
+                image.
+              </p>
+            </div>
+          </div>
         ) : (
-          <div className="w-full h-48 bg-gray-700 rounded-lg flex items-center justify-center mb-6">
-            <p>No target image available</p>
+          /* Show results when outcome image is available */
+          <div className="space-y-8">
+            <div className="text-center">
+              <div className="flex justify-center mb-6">
+                <Trophy className="h-20 w-20 text-yellow-500" />
+              </div>
+              <h2 className="text-3xl font-bold text-white">
+                Challenge Complete!
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Your Selection */}
+              {selectedImage && (
+                <div>
+                  <h3 className="text-2xl font-semibold text-white text-center mb-6">
+                    Your Selection
+                  </h3>
+                  <div className="border border-gray-700 rounded-lg p-4 bg-gray-900/50">
+                    <div className="aspect-square relative mb-4 rounded-lg overflow-hidden">
+                      <Image
+                        src={selectedImage.url || "/placeholder.svg"}
+                        alt={selectedImage.description}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <p className="text-sm text-gray-400 text-center">
+                      {selectedImage.description}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Actual Outcome */}
+              <div>
+                <h3 className="text-2xl font-semibold text-white text-center mb-6">
+                  Actual Outcome
+                </h3>
+                <div className="border border-gray-700 rounded-lg p-4 bg-gray-900/50">
+                  <div className="aspect-square relative mb-4 rounded-lg overflow-hidden">
+                    <Image
+                      src={currentEvent.resultImage || "/placeholder.svg"}
+                      alt="Actual outcome"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <p className="text-sm text-gray-400 text-center">
+                    Actual outcome image
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Result Analysis */}
+            <div className="text-center p-6 border border-gray-700 rounded-lg bg-gray-900/50">
+              <p className="text-xl text-white">
+                {selectedImage?.url === currentEvent.resultImage
+                  ? "🎉 Congratulations! Your prediction was correct!"
+                  : "Thanks for participating! Better luck next time."}
+              </p>
+            </div>
           </div>
         )}
       </div>
-
-      <div className="w-full mb-6">
-        <h2 className="text-xl mb-2">Outcome Event</h2>
-        <p className="text-yellow-300 font-medium mb-4">
-          {selectedImage?.description || activeTarget?.eventDescription}
-        </p>
-
-        {selectedImage ? (
-          <Image
-            src={selectedImage.src || "/placeholder.svg"}
-            alt="Selected Image"
-            width={500}
-            height={300}
-            className="w-full h-80 object-cover rounded-lg mb-6"
-          />
-        ) : (
-          <div className="w-full h-48 bg-gray-700 rounded-lg flex items-center justify-center mb-6">
-            <p>No selection image available</p>
-          </div>
-        )}
-      </div>
-
-      <div className="w-full text-center mb-8">
-        <h2
-          className={`text-4xl font-bold mb-2 ${isCorrect ? "text-green-500" : "text-red-500"}`}
-        >
-          {isCorrect ? "Congratulations!" : "Better luck next time!"}
-        </h2>
-        <p className="text-xl">
-          {isCorrect
-            ? `You have successfully predicted the outcome for this event. You received ${pointsEarned} points!`
-            : "Your prediction did not match the outcome for this event."}
-        </p>
-      </div>
-
-      <button
-        className="px-6 py-3 bg-purple-600 hover:bg-purple-500 rounded-lg transition text-white font-medium"
-        onClick={() => (window.location.href = "/leaderboard")}
-      >
-        See Leaderboard
-      </button>
     </div>
   );
 }

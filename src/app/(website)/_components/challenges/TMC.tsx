@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import EnhancedDrawingCanvas from "@/components/challanges/EnhancedDrawingCanvas";
+// import EnhancedDrawingCanvas from "@/components/challanges/EnhancedDrawingCanvas";
 import ImageSelection from "@/components/challanges/image-selection";
 import TMCInfoModal from "@/components/challanges/tmc-info-modal";
 import WaitingScreen from "@/components/challanges/waiting-screen";
@@ -11,6 +11,7 @@ import moment from "moment";
 import Results from "@/components/challanges/results";
 import CountdownDisplay from "@/components/challanges/countdown-display";
 import NextGameMessage from "@/components/challanges/next-game-component";
+import { EnhancedDrawingCanvas } from "@/components/arv-stages/enhanced-drawing-canvas";
 
 type GamePhase = "waiting" | "game" | "reveal" | "buffer" | "completed";
 
@@ -254,7 +255,7 @@ export default function TargetMatchChallenge() {
                   Step 1: Draw Your Impressions
                 </h2>
                 <div className="bg-purple-900/20 p-6 rounded-lg">
-                  <EnhancedDrawingCanvas mode="tmc" />
+                  <EnhancedDrawingCanvas />
                   <div className="flex space-x-4 mt-4">
                     <button
                       onClick={handleClearCanvas}
