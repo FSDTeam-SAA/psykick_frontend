@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import ARVPrediction from "@/components/arv-stages/arv-prediction";
 import { useARVStore } from "@/store/use-arv-store";
+import { ARVPrediction } from "@/components/arv-stages/arv-prediction";
 
 export default function ArvTarget() {
   const [isLoading, setIsLoading] = useState(true);

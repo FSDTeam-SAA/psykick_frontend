@@ -1,90 +1,96 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useARVStore } from "@/store/use-arv-store";
-import EnhancedDrawingCanvas from "./enhanced-drawing-canvas";
-import CountdownTimer from "./countdown-timer";
+import { EnhancedDrawingCanvas } from "./enhanced-drawing-canvas";
+import { CountdownTimer } from "./countdown-timer";
+import { Button } from "@/components/ui/button";
 
-export default function DrawingStage() {
-  const { activeTarget, submitImpression } = useARVStore();
-  const [timeRemaining, setTimeRemaining] = useState({
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
+export function DrawingStage() {
+  const {
+    currentEvent,
+    setCurrentStage,
+    setUserDrawing,
+    isGameTimeActive,
+    getGameTimeRemaining,
+  } = useARVStore();
 
-  useEffect(() => {
-    if (activeTarget?.gameDuration) {
-      const updateTimer = () => {
-        const now = new Date();
-        const gameTime = new Date(activeTarget.gameDuration);
-        const diff = Math.max(0, gameTime.getTime() - now.getTime());
+  const [drawing, setDrawing] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-        const hours = Math.floor(diff / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-        setTimeRemaining({ hours, minutes, seconds });
-      };
-
-      updateTimer();
-      const interval = setInterval(updateTimer, 1000);
-      return () => clearInterval(interval);
+  const handleSubmit = async () => {
+    if (!isGameTimeActive()) {
+      alert("Drawing is only allowed during game time!");
+      return;
     }
-  }, [activeTarget]);
 
-  const handleSubmitImpression = () => {
-    console.log("Submit impression button clicked");
-    submitImpression();
+    if (!drawing) {
+      alert("Please draw something before submitting!");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      setUserDrawing(drawing);
+      setCurrentStage("select");
+    } catch (error) {
+      console.error("Error submitting drawing:", error);
+      alert("Failed to submit drawing. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
+  if (!currentEvent) return null;
+
+  const canDraw = isGameTimeActive();
+
   return (
-    <div className="flex flex-col items-center text-white">
-      <h1 className="text-xl font-semibold mb-4">
-        Step inside, trust your senses, and begin your journey into the unseen.
-      </h1>
+    <div className="min-h-screen flex flex-col items-center justify-center p-8">
+      <div className="text-center space-y-8 max-w-4xl">
+        <h1 className="text-3xl font-bold text-white">
+          {currentEvent.eventName}
+        </h1>
+        <p className="text-gray-300 text-lg">{currentEvent.eventDescription}</p>
 
-      <div className="flex flex-col sm:flex-row justify-between w-full mb-4">
-        <div>
-          <p>Code: {activeTarget?.code}</p>
-          <p>
-            Reveal Time:{" "}
-            {new Date(activeTarget?.gameTime || "").toLocaleDateString()}
+        <div className="space-y-4">
+          <p className="text-sm font-medium text-gray-400">
+            Game Time Remaining:
           </p>
-        </div>
-
-        <div className="bg-purple-800 rounded-lg p-2 text-center">
-          <p className="text-xs mb-1">Your Time ends in:</p>
           <CountdownTimer
-            hours={timeRemaining.hours}
-            minutes={timeRemaining.minutes}
-            seconds={timeRemaining.seconds}
+            targetTime={new Date(
+              Date.now() + getGameTimeRemaining(),
+            ).toISOString()}
+            className="text-blue-400 text-2xl font-mono"
           />
         </div>
-      </div>
 
-      <h2 className="text-lg mb-4">Draw Your Impressions:</h2>
+        {!canDraw && (
+          <div className="p-4 border border-red-500/50 rounded-lg bg-red-900/20">
+            <p className="text-red-400 font-medium">
+              Drawing is only allowed during game time!
+            </p>
+          </div>
+        )}
 
-      <div className="w-full bg-white rounded-lg overflow-hidden">
-        <EnhancedDrawingCanvas mode="arv" />
-      </div>
+        <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-900/50">
+          <EnhancedDrawingCanvas
+            onDrawingChange={setDrawing}
+            disabled={!canDraw}
+          />
+        </div>
 
-      <div className="flex space-x-4 mt-4">
-        <button
-          className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition"
-          onClick={() => {
-            // Clear canvas functionality is handled in the canvas component
-          }}
-        >
-          Clear Canvas
-        </button>
-
-        <button
-          className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-500 transition"
-          onClick={handleSubmitImpression}
-        >
-          Submit Impression
-        </button>
+        <div className="flex justify-center">
+          <Button
+            onClick={handleSubmit}
+            disabled={!drawing || isSubmitting || !canDraw}
+            size="lg"
+            className="px-8"
+          >
+            {isSubmitting ? "Submitting..." : "Submit Drawing"}
+          </Button>
+        </div>
       </div>
     </div>
   );

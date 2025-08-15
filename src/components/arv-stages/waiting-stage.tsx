@@ -1,100 +1,55 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useARVStore } from "@/store/use-arv-store";
+import { CountdownTimer } from "./countdown-timer";
+import { CheckCircle } from "lucide-react";
 
-export default function WaitingStage() {
-  const { activeTarget, moveToReveal } = useARVStore();
-  const [timeRemaining, setTimeRemaining] = useState({
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
+export function WaitingStage() {
+  const { currentEvent, getGameTimeRemaining } = useARVStore();
 
-  useEffect(() => {
-    if (activeTarget?.gameTime) {
-      const updateTimer = () => {
-        const now = new Date();
-        const gameTime = new Date(activeTarget.gameTime);
-        const diff = Math.max(0, gameTime.getTime() - now.getTime());
-
-        const hours = Math.floor(diff / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-        setTimeRemaining({ hours, minutes, seconds });
-
-        // If time is up, move to reveal stage
-        if (diff <= 0) {
-          console.log(
-            "Game time reached in waiting stage, moving to reveal stage",
-          );
-          moveToReveal();
-        }
-      };
-
-      updateTimer();
-      const interval = setInterval(updateTimer, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [activeTarget, moveToReveal]);
-
-  // Check if we should immediately move to reveal stage
-  useEffect(() => {
-    if (activeTarget?.gameTime) {
-      const now = new Date().getTime();
-      const gameTime = new Date(activeTarget.gameTime).getTime();
-
-      if (now >= gameTime) {
-        console.log(
-          "Game time already passed, immediately moving to reveal stage",
-        );
-        moveToReveal();
-      }
-    }
-  }, [activeTarget, moveToReveal]);
-
-  const formattedGameDate = activeTarget?.gameTime
-    ? new Date(activeTarget.gameTime).toLocaleDateString()
-    : "";
-  const formattedGameTime = activeTarget?.gameTime
-    ? new Date(activeTarget.gameTime).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    : "";
+  if (!currentEvent) return null;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[70vh] text-white">
-      <div className="bg-purple-300/30 rounded-lg p-6 mb-8 w-full max-w-md text-center">
-        <h2 className="text-xl mb-2">Results reveal in:</h2>
-        <div className="flex justify-center">
-          <div className="text-5xl font-bold">
-            <span>{timeRemaining.hours.toString().padStart(2, "0")}</span>
-            <span className="mx-2">:</span>
-            <span>{timeRemaining.minutes.toString().padStart(2, "0")}</span>
-            <span className="mx-2">:</span>
-            <span>{timeRemaining.seconds.toString().padStart(2, "0")}</span>
-          </div>
+    <div className="min-h-screen flex flex-col items-center justify-center p-8">
+      <div className="text-center space-y-8 max-w-2xl">
+        <div className="flex justify-center mb-6">
+          <CheckCircle className="h-20 w-20 text-green-500" />
         </div>
-        <div className="flex justify-center mt-2 text-sm">
-          <span className="w-16 text-center">Hours</span>
-          <span className="w-16 text-center">Mins</span>
-          <span className="w-16 text-center">Secs</span>
+
+        <h1 className="text-3xl font-bold text-green-400">
+          Congratulations on completing the ARV challenge!
+        </h1>
+
+        <p className="text-lg text-gray-300">
+          You have successfully submitted your drawing and image selection.
+          Please wait for the reveal phase to begin.
+        </p>
+
+        <div className="space-y-4">
+          <p className="text-sm font-medium text-gray-400">
+            Game Time Remaining:
+          </p>
+          <CountdownTimer
+            targetTime={new Date(
+              Date.now() + getGameTimeRemaining(),
+            ).toISOString()}
+            className="text-blue-400 text-2xl font-mono"
+          />
+        </div>
+
+        <div className="mt-8 p-6 border border-gray-700 rounded-lg bg-gray-900/50">
+          <p className="text-sm font-medium mb-2 text-gray-400">
+            Reveal Phase Starts:
+          </p>
+          <p className="text-xl font-mono text-white">
+            {new Date(currentEvent.revealTime).toLocaleString()}
+          </p>
+        </div>
+
+        <div className="text-sm text-gray-500">
+          The page will automatically redirect when the reveal phase begins.
         </div>
       </div>
-
-      <p className="text-center text-lg mb-2">
-        Congratulations on completing the target. Please wait for the result.
-      </p>
-      <p className="text-center mb-4">
-        This target will be revealed on {formattedGameDate} at{" "}
-        {formattedGameTime}.
-      </p>
-      <p className="text-center">Game Code: {activeTarget?.code}</p>
-      {activeTarget?.eventName && (
-        <p className="text-center mt-2">Event: {activeTarget.eventName}</p>
-      )}
     </div>
   );
 }
