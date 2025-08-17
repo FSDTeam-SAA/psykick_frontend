@@ -7,7 +7,7 @@ import { toast } from "sonner";
 const Toastbynotification = () => {
   const lastToastTimestamp = useRef<number | null>(null);
 
-  const { data, refetch } = useQuery({
+  const { data } = useQuery({
     queryKey: ["getarvtarget"],
     queryFn: async () => {
       const res = await fetch(
@@ -27,9 +27,9 @@ const Toastbynotification = () => {
     },
   });
 
-  setInterval(() => {
-    refetch();
-  }, 2000);
+  // setInterval(() => {
+  //   refetch();
+  // }, 2000);
 
   useEffect(() => {
     const revealTimeStr = data?.data?.revealTime;
@@ -43,7 +43,7 @@ const Toastbynotification = () => {
     if (diffInMinutes > 0 && diffInMinutes <= 60) {
       const nowSeconds = Math.floor(now / 1000);
 
-      console.log(lastToastTimestamp)
+      console.log(lastToastTimestamp);
       // Immediately show the toast if no toast has been shown before
       if (!lastToastTimestamp.current) {
         toast.info("⏳ Reveal is happening within 1 hour! Stay ready!");
