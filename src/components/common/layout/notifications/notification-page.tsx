@@ -3,20 +3,76 @@
 import type React from "react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { useQuery } from "@tanstack/react-query";
-import { Bell } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  Bell,
+  Trash2,
+  Loader2,
+  Eye,
+  Award,
+  Calendar,
+  Image as ImageIcon,
+} from "lucide-react";
 import { Pagination } from "../../pagination-component";
 import { PaginationInfo } from "../../pagination-info";
 import { useChallengeStore } from "@/store/use-challenge-store";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface NotificationItem {
   _id: string;
   userId: string | null;
   message: string;
+  targetCode?: string;
   createdAt: string;
   updatedAt: string;
   __v: number;
+}
+
+interface ARVTarget {
+  _id: string;
+  code: string;
+  eventName: string;
+  eventDescription: string;
+  revealTime: string;
+  outcomeTime: string;
+  gameTime: string;
+  image1: {
+    url: string;
+    description: string;
+  };
+  image2: {
+    url: string;
+    description: string;
+  };
+  image3: {
+    url: string;
+    description: string;
+  };
+  controlImage: string;
+  resultImage: string;
+  isActive: boolean;
+  isPartiallyActive: boolean;
+  isQueued: boolean;
+  isCompleted: boolean;
+  status: string;
+  isResultRevealed: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface ARVResult {
+  ARVId: string;
+  submittedImage: string;
+  points: number;
+  submissionTime: string;
+  resultImage: string;
+}
+
+interface ARVResultResponse {
+  status: boolean;
+  message: string;
+  data: ARVResult;
 }
 
 interface PaginationData {
@@ -38,8 +94,41 @@ const NotificationPage = () => {
   const userId = user?._id;
   const { setActiveTab } = useChallengeStore();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    notificationId: string | null;
+    notificationMessage: string;
+  }>({
+    isOpen: false,
+    notificationId: null,
+    notificationMessage: "",
+  });
+
+  const [arvResultModal, setArvResultModal] = useState<{
+    isOpen: boolean;
+    targetCode: string | null;
+    arvId: string | null;
+  }>({
+    isOpen: false,
+    targetCode: null,
+    arvId: null,
+  });
+
+  const [arvResultData, setArvResultData] = useState<{
+    target: ARVTarget | null;
+    result: ARVResult | null;
+    isLoading: boolean;
+    error: string | null;
+  }>({
+    target: null,
+    result: null,
+    isLoading: false,
+    error: null,
+  });
 
   const {
     data: notificationsData,
@@ -69,8 +158,172 @@ const NotificationPage = () => {
     },
   });
 
+  // Delete mutation
+  const deleteNotificationMutation = useMutation({
+    mutationFn: async (notificationId: string) => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/notifications/delete-notification/${notificationId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        },
+      );
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to delete notification");
+      }
+
+      return res.json();
+    },
+    onMutate: (notificationId: string) => {
+      // Add to deleting set to show loading state
+      setDeletingIds((prev) => new Set(prev).add(notificationId));
+    },
+    onSuccess: () => {
+      // Invalidate and refetch notifications
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    },
+    onError: (error: Error) => {
+      console.error("Delete notification error:", error);
+      // You can add toast notification here if you have a toast system
+      alert(`Failed to delete notification: ${error.message}`);
+    },
+    onSettled: (_, __, notificationId: string) => {
+      // Remove from deleting set
+      setDeletingIds((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(notificationId);
+        return newSet;
+      });
+    },
+  });
+
   const notifications = notificationsData?.data || [];
-  console.log(notifications);
+
+  const handleDelete = (
+    e: React.MouseEvent,
+    notificationId: string,
+    notificationMessage: string,
+  ) => {
+    e.stopPropagation(); // Prevent triggering the notification click
+
+    setDeleteModal({
+      isOpen: true,
+      notificationId,
+      notificationMessage,
+    });
+  };
+
+  const confirmDelete = () => {
+    if (deleteModal.notificationId) {
+      deleteNotificationMutation.mutate(deleteModal.notificationId);
+    }
+    closeDeleteModal();
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModal({
+      isOpen: false,
+      notificationId: null,
+      notificationMessage: "",
+    });
+  };
+
+  const handleViewResult = async (e: React.MouseEvent, targetCode: string) => {
+    e.stopPropagation();
+    // console.log("Handling view result for target code:", targetCode);
+
+    setArvResultModal({
+      isOpen: true,
+      targetCode,
+      arvId: targetCode, // Using targetCode as the ID directly
+    });
+
+    setArvResultData({
+      target: null,
+      result: null,
+      isLoading: true,
+      error: null,
+    });
+
+    try {
+      // First API call - Get ARV Target by ID (not code)
+      const targetRes = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/ARVTarget/get-ARVTarget/${targetCode}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        },
+      );
+
+      if (!targetRes.ok) {
+        throw new Error("Failed to fetch ARV target data");
+      }
+
+      const targetData: ARVTarget = await targetRes.json();
+
+      // Second API call - Get ARV Result using the same ID
+      const resultRes = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/userSubmission/get-ARVResult/${targetCode}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        },
+      );
+
+      if (!resultRes.ok) {
+        throw new Error("Failed to fetch ARV result data");
+      }
+
+      const resultResponse: ARVResultResponse = await resultRes.json();
+
+      setArvResultData({
+        target: targetData,
+        result: resultResponse.data,
+        isLoading: false,
+        error: null,
+      });
+    } catch (error) {
+      console.error("Error fetching ARV result:", error);
+      setArvResultData({
+        target: null,
+        result: null,
+        isLoading: false,
+        error: error instanceof Error ? error.message : "Failed to fetch data",
+      });
+    }
+  };
+
+  const closeArvResultModal = () => {
+    setArvResultModal({
+      isOpen: false,
+      targetCode: null,
+      arvId: null,
+    });
+    setArvResultData({
+      target: null,
+      result: null,
+      isLoading: false,
+      error: null,
+    });
+  };
+
+  const isARVNotification = (message: string) => {
+    return (
+      message.includes("ARV") &&
+      (message.includes("expired") || message.includes("result"))
+    );
+  };
 
   const handelRrdc = (rdc: string) => {
     if (rdc === "New TMC game has started") {
@@ -155,23 +408,63 @@ const NotificationPage = () => {
                 <div
                   onClick={() => handelRrdc(notification.message)}
                   key={notification._id}
-                  className="bg-white/10 cursor-pointer border border-white/20 rounded-xl px-4 py-4 sm:px-6 sm:py-5 shadow-md backdrop-blur-sm flex flex-col sm:flex-row justify-between gap-3 items-start sm:items-center transition-all hover:bg-white/15"
+                  className="bg-white/10 cursor-pointer border border-white/20 rounded-xl px-4 py-4 sm:px-6 sm:py-5 shadow-md backdrop-blur-sm flex flex-col sm:flex-row justify-between gap-3 items-start sm:items-center transition-all hover:bg-white/15 group"
                 >
-                  <div className="flex gap-4 items-start sm:items-center">
+                  <div className="flex gap-4 items-start sm:items-center flex-1">
                     <Bell className="text-yellow-400 mt-1 sm:mt-0 shrink-0" />
                     <h2 className="text-white font-medium text-sm sm:text-base">
                       {notification.message}
                     </h2>
                   </div>
-                  <p className="text-gray-300 text-xs sm:text-sm sm:whitespace-nowrap">
-                    {new Date(notification.updatedAt).toLocaleString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                      hour: "numeric",
-                      minute: "2-digit",
-                    })}
-                  </p>
+
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <p className="text-gray-300 text-xs sm:text-sm sm:whitespace-nowrap">
+                      {new Date(notification.updatedAt).toLocaleString(
+                        "en-US",
+                        {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                          hour: "numeric",
+                          minute: "2-digit",
+                        },
+                      )}
+                    </p>
+
+                    <div className="flex items-center gap-2">
+                      {isARVNotification(notification.message) &&
+                        notification.targetCode && (
+                          <button
+                            onClick={(e) =>
+                              handleViewResult(e, notification._id)
+                            }
+                            className="p-2 rounded-lg bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 hover:text-blue-300 transition-colors opacity-0 group-hover:opacity-100 sm:opacity-100"
+                            title="View ARV Result"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </button>
+                        )}
+
+                      <button
+                        onClick={(e) =>
+                          handleDelete(
+                            e,
+                            notification._id,
+                            notification.message,
+                          )
+                        }
+                        disabled={deletingIds.has(notification._id)}
+                        className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed opacity-0 group-hover:opacity-100 sm:opacity-100"
+                        title="Delete notification"
+                      >
+                        {deletingIds.has(notification._id) ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -191,6 +484,266 @@ const NotificationPage = () => {
               />
             </div>
           </>
+        )}
+
+        {/* Delete Confirmation Modal */}
+        {deleteModal.isOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl max-w-md w-full mx-4 shadow-2xl">
+              <div className="p-6">
+                <div className="flex items-center gap-3 mb-4 bg-gradient rounded-lg">
+                  <div className="p-2 bg-red-500/20 rounded-full">
+                    <Trash2 className="h-6 w-6 text-red-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-white">
+                    Delete Notification
+                  </h3>
+                </div>
+
+                <p className="text-gray-300 mb-2">
+                  Are you sure you want to delete this notification?
+                </p>
+
+                <div className="bg-white/5 border border-white/10 rounded-lg p-3 mb-6">
+                  <p className="text-sm text-gray-200 line-clamp-3">
+                    &apos;{deleteModal.notificationMessage}&apos;
+                  </p>
+                </div>
+
+                <p className="text-sm text-gray-400 mb-6">
+                  This action cannot be undone.
+                </p>
+
+                <div className="flex gap-3 justify-end">
+                  <button
+                    onClick={closeDeleteModal}
+                    className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors border border-white/20"
+                    disabled={deleteNotificationMutation.isPending}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={confirmDelete}
+                    disabled={deleteNotificationMutation.isPending}
+                    className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    {deleteNotificationMutation.isPending ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Deleting...
+                      </>
+                    ) : (
+                      <>
+                        <Trash2 className="h-4 w-4" />
+                        Delete
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ARV Result Modal */}
+        {arvResultModal.isOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl max-w-4xl w-full mx-4 shadow-2xl my-8 max-h-[90vh] overflow-y-auto">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-500/20 rounded-full">
+                      <Award className="h-6 w-6 text-blue-400" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-white">
+                      ARV Result Details
+                    </h3>
+                  </div>
+                  <button
+                    onClick={closeArvResultModal}
+                    className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                {arvResultData.isLoading && (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="flex flex-col items-center gap-4">
+                      <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
+                      <p className="text-gray-300">Loading ARV result...</p>
+                    </div>
+                  </div>
+                )}
+
+                {arvResultData.error && (
+                  <div className="bg-red-500/20 border border-red-500 rounded-lg p-4 mb-4">
+                    <p className="text-red-300 font-medium">
+                      Error loading data
+                    </p>
+                    <p className="text-red-200 text-sm mt-1">
+                      {arvResultData.error}
+                    </p>
+                  </div>
+                )}
+
+                {arvResultData.target && arvResultData.result && (
+                  <div className="space-y-6">
+                    {/* Event Information */}
+                    <div className="bg-white/5 border border-white/10 rounded-lg p-4">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Calendar className="h-5 w-5 text-blue-400" />
+                        <h4 className="text-lg font-semibold text-white">
+                          Event Information
+                        </h4>
+                      </div>
+                      <div className="space-y-2">
+                        <div>
+                          <span className="text-gray-400 text-sm">
+                            Event Name:
+                          </span>
+                          <p className="text-white font-medium">
+                            {arvResultData.target.eventName}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-gray-400 text-sm">
+                            Event Code:
+                          </span>
+                          <p className="text-white font-medium">
+                            {arvResultData.target.code}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-gray-400 text-sm">
+                            Description:
+                          </span>
+                          <p className="text-gray-200">
+                            {arvResultData.target.eventDescription}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-gray-400 text-sm">
+                            Game Time:
+                          </span>
+                          <p className="text-gray-200">
+                            {new Date(
+                              arvResultData.target.gameTime,
+                            ).toLocaleString("en-US", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                              hour: "numeric",
+                              minute: "2-digit",
+                            })}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Points Section */}
+                    <div className="bg-white/5 border border-white/10 rounded-lg p-4">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Award className="h-5 w-5 text-yellow-400" />
+                        <h4 className="text-lg font-semibold text-white">
+                          Your Score
+                        </h4>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`text-2xl font-bold ${
+                            arvResultData.result.points > 0
+                              ? "text-green-400"
+                              : "text-red-400"
+                          }`}
+                        >
+                          {arvResultData.result.points > 0 ? "+" : ""}
+                          {arvResultData.result.points}
+                        </span>
+                        <span className="text-gray-400">points</span>
+                      </div>
+                      <p className="text-sm text-gray-400 mt-1">
+                        Submitted on:{" "}
+                        {new Date(
+                          arvResultData.result.submissionTime,
+                        ).toLocaleString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                          hour: "numeric",
+                          minute: "2-digit",
+                        })}
+                      </p>
+                    </div>
+
+                    {/* Images Section */}
+                    <div className="bg-white/5 border border-white/10 rounded-lg p-4">
+                      <div className="flex items-center gap-2 mb-4">
+                        <ImageIcon className="h-5 w-5 text-purple-400" />
+                        <h4 className="text-lg font-semibold text-white">
+                          Images
+                        </h4>
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-6">
+                        {/* Submitted Image */}
+                        <div>
+                          <h5 className="text-white font-medium mb-2">
+                            Your Submission
+                          </h5>
+                          <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                            <Image
+                              height={192}
+                              width={192}
+                              src={arvResultData.result.submittedImage}
+                              alt="Your submitted image"
+                              className="w-full h-48 object-cover rounded-lg mb-2"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src =
+                                  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTkgMTJMMTEgMTRMMTUgMTBNMjEgMTJDMjEgMTYuOTcwNiAxNi45NzA2IDIxIDEyIDIxQzcuMDI5NCAyMSAzIDE2Ljk3MDYgMyAxMkMzIDcuMDI5NCA3LjAyOTQgMyAxMiAzQzE2Ljk3MDYgMyAyMSA3LjAyOTQgMjEgMTJaIiBzdHJva2U9IiM2Mzc1OTEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=";
+                              }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Result Image */}
+                        <div>
+                          <h5 className="text-white font-medium mb-2">
+                            Actual Result
+                          </h5>
+                          <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                            <Image
+                              height={192}
+                              width={192}
+                              src={arvResultData.result.resultImage}
+                              alt="Actual result image"
+                              className="w-full h-48 object-cover rounded-lg mb-2"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src =
+                                  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTkgMTJMMTEgMTRMMTUgMTBNMjEgMTJDMjEgMTYuOTcwNiAxNi45NzA2IDIxIDEyIDIxQzcuMDI5NCAyMSAzIDE2Ljk3MDYgMyAxMkMzIDcuMDI5NCA3LjAyOTQgMyAxMiAzQzE2Ljk3MDYgMyAyMSA3LjAyOTQgMjEgMTJaIiBzdHJva2U9IiM2Mzc1OTEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=";
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Action Button */}
+                    <div className="flex justify-end pt-4">
+                      <button
+                        onClick={closeArvResultModal}
+                        className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>
