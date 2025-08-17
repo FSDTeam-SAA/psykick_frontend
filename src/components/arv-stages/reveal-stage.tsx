@@ -10,8 +10,8 @@ export function RevealStage() {
   if (!currentEvent) return null;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8">
-      <div className="text-center space-y-8 max-w-4xl">
+    <div className="min-h-screen flex flex-col items-center">
+      <div className="text-center space-y-8">
         <h1 className="text-3xl font-bold text-white">Event Reveal</h1>
 
         <div className="space-y-4">
@@ -28,14 +28,14 @@ export function RevealStage() {
 
         <div className="space-y-6">
           <h2 className="text-4xl font-bold text-white">
-            {currentEvent.eventName}
+            Event Name: {currentEvent.eventName}
           </h2>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            {currentEvent.eventDescription}
+          <p className="text-xl text-gray-300 mx-auto">
+            Event Description: {currentEvent.eventDescription}
           </p>
         </div>
 
-        {selectedImage && (
+        {selectedImage ? (
           <div className="max-w-md mx-auto">
             <h3 className="text-2xl font-semibold text-white mb-6">
               Your Selected Image
@@ -53,6 +53,12 @@ export function RevealStage() {
                 {selectedImage.description}
               </p>
             </div>
+          </div>
+        ) : (
+          <div className="p-4 border border-red-500/50 rounded-lg bg-red-900/20">
+            <p className="text-red-400 font-medium">
+              You have not selected an image yet!
+            </p>
           </div>
         )}
 

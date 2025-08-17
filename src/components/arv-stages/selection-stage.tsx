@@ -57,7 +57,7 @@ export function SelectionStage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-8">
-      <div className="text-center space-y-8 max-w-4xl">
+      <div className="text-center space-y-8">
         <h1 className="text-3xl font-bold text-white">
           Select Your Prediction Image
         </h1>
@@ -85,7 +85,7 @@ export function SelectionStage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 w-full gap-6">
           {images.map((image, index) => (
             <div
               key={index}
