@@ -55,7 +55,7 @@ export function DrawingStage() {
         <p className="text-gray-300 text-lg">{currentEvent.eventDescription}</p>
 
         <div className="space-y-4">
-          <p className="text-sm font-medium text-gray-400">
+          <p className="text-sm font-medium text-gray-400 ">
             Game Time Remaining:
           </p>
           <CountdownTimer

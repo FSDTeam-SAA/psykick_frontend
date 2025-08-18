@@ -227,11 +227,11 @@ export default function TargetMatchChallenge() {
                 </div>
 
                 <div className="flex-shrink-0">
-                  <div className="text-center mb-2">
+                  {/* <div className="text-center mb-2">
                     <p className="text-purple-300 text-sm uppercase tracking-wide">
                       Time Remaining
                     </p>
-                  </div>
+                  </div> */}
                   <div className="bg-black/30 rounded-lg p-4 border border-purple-500/20">
                     <CountdownDisplay
                       startTime={activeTarget.startTime}

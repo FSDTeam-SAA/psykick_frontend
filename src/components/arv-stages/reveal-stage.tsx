@@ -12,7 +12,9 @@ export function RevealStage() {
   return (
     <div className="min-h-screen flex flex-col items-center">
       <div className="text-center space-y-8">
-        <h1 className="text-3xl font-bold text-white">Event Reveal</h1>
+        <h1 className="text-lg font-semibold text-white bg-gradient inline-block px-8 py-1 rounded-full">
+          Reveal Phase
+        </h1>
 
         <div className="space-y-4">
           <p className="text-sm font-medium text-gray-400">

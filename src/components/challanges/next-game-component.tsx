@@ -122,7 +122,7 @@ export default function NextGameMessage({
     <div className="container mx-auto p-4">
       <div className="flex flex-col items-center justify-center min-h-[60vh] max-w-4xl mx-auto">
         <h1 className="text-white text-4xl mb-6 text-center font-bold">
-          Challenge Complete! 🎉
+          Challenge Finished! 🎉
         </h1>
 
         <div className="text-purple-300 text-center mb-8 text-xl">
@@ -219,7 +219,7 @@ export default function NextGameMessage({
             {!hasQueuedGames && (
               <button
                 onClick={() => window.location.reload()}
-                className="block mx-auto px-6 py-2 hover:bg-blue-700 text-white rounded-lg border border-black/30 transition-colors font-bold text-lg"
+                className="block mx-auto px-8 py-3 hover:bg-blue-700 text-white rounded-lg border border-black/30 transition-colors font-bold text-lg"
               >
                 Check for New Games
               </button>

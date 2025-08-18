@@ -209,8 +209,8 @@ export default function CountdownDisplay({
   return (
     <div className="text-center">
       <div className={`mb-4 p-3 rounded-lg ${getPhaseColor()}`}>
-        <h3 className="text-lg font-bold text-white">{phaseLabel}</h3>
-        <p className="text-sm text-gray-300">
+        {/* <h3 className="text-lg font-bold text-white">{phaseLabel}</h3> */}
+        <p className="text-lg font-bold text-gray-100">
           {currentPhase === "completed"
             ? mode === "buffer-only"
               ? "Preparing next challenge..."
