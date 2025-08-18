@@ -52,9 +52,21 @@ export function CountdownTimer({
 
   return (
     <div className={`text-center ${className}`}>
-      <div className="text-3xl font-bold font-mono">
-        {formatTime(timeLeft.hours)}:{formatTime(timeLeft.minutes)}:
-        {formatTime(timeLeft.seconds)}
+      <div className="flex gap-2 text-white justify-center items-center">
+        <div className="bg-[#170a2c42] px-4 py-2 rounded">
+          <span className="text-lg">{formatTime(timeLeft.hours)}</span>
+          <span className="text-xs block">Hours</span>
+        </div>
+        <span className="text-lg">:</span>
+        <div className="bg-[#170a2c42] px-4 py-2 rounded">
+          <span className="text-lg">{formatTime(timeLeft.minutes)}</span>
+          <span className="text-xs block">Mins</span>
+        </div>
+        <span className="text-lg">:</span>
+        <div className="bg-[#170a2c42] px-4 py-2 rounded">
+          <span className="text-lg">{formatTime(timeLeft.seconds)}</span>
+          <span className="text-xs block">Secs</span>
+        </div>
       </div>
     </div>
   );

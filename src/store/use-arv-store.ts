@@ -1,6 +1,5 @@
 import { create } from "zustand";
 
-// Updated interface to match your real API response
 export interface ARVEvent {
   _id: string;
   code: string;
@@ -188,6 +187,26 @@ export const useARVStore = create<ARVStore>((set, get) => ({
       currentEvent.image1,
       currentEvent.image2,
       currentEvent.image3,
-    ].filter(Boolean);
+      currentEvent.controlImage,
+    ]
+      .filter(Boolean)
+      .map((image) => {
+        // If image is already in correct format, return as is
+        if (typeof image === "object" && image.url && image.description) {
+          return image;
+        }
+        // If image is a string, convert to required format
+        if (typeof image === "string") {
+          return {
+            url: image,
+            description: "", // provide a default empty description
+          };
+        }
+        // If neither, return null and filter it out
+        return null;
+      })
+      .filter(
+        (image): image is { url: string; description: string } => image !== null
+      );
   },
 }));

@@ -15,6 +15,7 @@ export function ARVPrediction() {
     setCurrentStage,
     getCurrentPhase,
     shouldForceExit,
+    selectedImage,
   } = useARVStore();
 
   useEffect(() => {
@@ -24,10 +25,10 @@ export function ARVPrediction() {
       const currentPhase = getCurrentPhase();
 
       // Force exit users who didn't participate
-      if (shouldForceExit()) {
-        alert("You did not participate in the game time. Exiting...");
-        return;
-      }
+      // if (shouldForceExit()) {
+      //   alert("You did not participate in the game time. Exiting...");
+      //   return;
+      // }
 
       // Auto-transition stages based on current phase
       switch (currentPhase) {
@@ -63,12 +64,29 @@ export function ARVPrediction() {
 
   if (!currentEvent) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
-        <div className="text-center text-white">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white mx-auto mb-4"></div>
-          <h2 className="text-2xl font-bold mb-4">Loading ARV Challenge...</h2>
-          <p className="text-purple-200">Connecting to server...</p>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] max-w-2xl mx-auto px-4">
+        <div className="text-white text-xl text-center mb-4">
+          No active challenges available at the moment.
         </div>
+        <div className="text-purple-300 text-center">
+          You have no active targets at the moment. Please check back later or
+          contact support if you believe this is an error.
+        </div>
+      </div>
+    );
+  }
+
+  const currentPhase = getCurrentPhase();
+
+  if (currentPhase !== "game" && !selectedImage) {
+    return (
+      <div className="flex flex-col items-center justify-cente gap-4">
+        <h1 className="text-yellow-400 md:text-4xl text-xl font-black">
+          You didn&apos; participate the current game!
+        </h1>
+        <p className="text-white ml-4">
+          Please wait for the next game or check back later!
+        </p>
       </div>
     );
   }
