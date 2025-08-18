@@ -56,8 +56,8 @@ export function SelectionStage() {
   const images = getImages();
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8">
-      <div className="text-center space-y-8">
+    <div className="min-h-[50vh] flex flex-col items-center justify-center p-8 container mx-auto">
+      <div className="text-center space-y-8 w-full">
         <h1 className="text-3xl font-bold text-white">
           Select Your Prediction Image
         </h1>
@@ -85,7 +85,7 @@ export function SelectionStage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 w-full gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 w-full gap-6">
           {images.map((image, index) => (
             <div
               key={index}
@@ -101,7 +101,7 @@ export function SelectionStage() {
                   src={image.url || "/placeholder.svg"}
                   alt={image.description}
                   fill
-                  className="object-cover"
+                  className="object-cover max-h-[500px] w-[500px]"
                 />
               </div>
               <p className="text-sm text-gray-400 text-center">

@@ -12,7 +12,7 @@ export function ResultsStage() {
   const hasOutcomeImage = !!currentEvent.resultImage;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8">
+    <div className="min-h-[50vh] flex flex-col items-center justify-center p-8">
       <div className="text-center space-y-8 max-w-4xl">
         <h1 className="text-3xl font-bold text-white">
           {hasOutcomeImage ? "Challenge Results" : "Outcome Phase"}
@@ -28,8 +28,8 @@ export function ResultsStage() {
                 Please wait for the Admin to set Outcome image
               </h2>
               <p className="text-gray-300">
-                The results will be displayed once the admin uploads the outcome
-                image.
+                The results will be displayed or notified, once the admin
+                uploads the outcome image!
               </p>
             </div>
           </div>

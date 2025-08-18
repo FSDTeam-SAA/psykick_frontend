@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 interface NotificationItem {
+  code: string;
   _id: string;
   userId: string | null;
   message: string;
@@ -436,7 +437,7 @@ const NotificationPage = () => {
                         notification.targetCode && (
                           <button
                             onClick={(e) =>
-                              handleViewResult(e, notification._id)
+                              handleViewResult(e, notification.code)
                             }
                             className="p-2 rounded-lg bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 hover:text-blue-300 transition-colors opacity-0 group-hover:opacity-100 sm:opacity-100"
                             title="View ARV Result"
@@ -491,7 +492,7 @@ const NotificationPage = () => {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
             <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl max-w-md w-full mx-4 shadow-2xl">
               <div className="p-6">
-                <div className="flex items-center gap-3 mb-4 bg-gradient rounded-lg">
+                <div className="flex items-center gap-3 mb-4rounded-lg">
                   <div className="p-2 bg-red-500/20 rounded-full">
                     <Trash2 className="h-6 w-6 text-red-400" />
                   </div>
@@ -504,8 +505,8 @@ const NotificationPage = () => {
                   Are you sure you want to delete this notification?
                 </p>
 
-                <div className="bg-white/5 border border-white/10 rounded-lg p-3 mb-6">
-                  <p className="text-sm text-gray-200 line-clamp-3">
+                <div className="bg-white/5 border border-white/10 rounded-lg p-3 mb-6  bg-gradient ">
+                  <p className="text-sm font-bold text-gray-100 line-clamp-3">
                     &apos;{deleteModal.notificationMessage}&apos;
                   </p>
                 </div>

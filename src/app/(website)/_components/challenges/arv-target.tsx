@@ -5,8 +5,11 @@ import { useARVStore } from "@/store/use-arv-store";
 import { ARVPrediction } from "@/components/arv-stages/arv-prediction";
 
 export default function ArvTarget() {
+  // const { selectedImage, currentEvent, getCurrentPhase } = useARVStore();
   const [isLoading, setIsLoading] = useState(true);
   const { setActiveTarget } = useARVStore();
+
+  // const currentPhase = getCurrentPhase();
 
   useEffect(() => {
     const fetchActiveARVTarget = async () => {
@@ -48,11 +51,24 @@ export default function ArvTarget() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-purple-900">
+        <p className="text-white ml-4">Loading ARV Target...</p>
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
       </div>
     );
   }
 
+  // if (currentPhase !== "game" && !selectedImage) {
+  //   return (
+  //     <div className="flex flex-col items-center justify-cente gap-4">
+  //       <h1 className="text-yellow-400 md:text-4xl text-xl font-black">
+  //         You didn&apos; participate the current game!
+  //       </h1>
+  //       <p className="text-white ml-4">
+  //         Please wait for the next game or check back later!
+  //       </p>
+  //     </div>
+  //   );
+  // }
   return (
     <main className="min-h-screen">
       <ARVPrediction />

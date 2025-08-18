@@ -8,13 +8,14 @@ import { useTMCResult, useActiveTMCTarget } from "@/hooks/use-tmc-queries";
 import { Button } from "../ui/button";
 import CountdownDisplay from "./countdown-display";
 import NextGameMessage from "./next-game-component";
+import { useRouter } from "next/navigation";
 
 export default function Results() {
   const { setActiveTab, targetId } = useChallengeStore();
   const { data: results, isLoading } = useTMCResult(targetId || "");
   const { data: activeTarget } = useActiveTMCTarget();
   const [shouldRedirect, setShouldRedirect] = useState(false);
-
+  const router = useRouter();
   // Calculate phase times
   const startTime = activeTarget?.startTime
     ? moment(activeTarget.startTime)
@@ -193,7 +194,11 @@ export default function Results() {
             </div>
 
             <Button
-              onClick={() => setActiveTab("leaderboard")}
+              onClick={() => {
+                setActiveTab("leaderboard");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                router.push("/challenges");
+              }}
               className="inline-flex justify-center items-center px-6 py-4 bg-[#8F37FF] text-white rounded-xl hover:bg-[#7B2CE0] transition-colors w-[270px] font-medium text-xl"
             >
               See Leaderboard
