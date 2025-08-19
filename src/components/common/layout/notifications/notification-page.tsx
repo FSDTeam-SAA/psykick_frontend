@@ -20,6 +20,7 @@ import { Pagination } from "../../pagination-component";
 import { PaginationInfo } from "../../pagination-info";
 import { useChallengeStore } from "@/store/use-challenge-store";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface NotificationItem {
   code: string;
@@ -180,6 +181,9 @@ const NotificationPage = () => {
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.message || "Failed to delete notification");
+      }
+      if (res.ok) {
+        toast.success("Notification deleted successfully");
       }
 
       return res.json();
