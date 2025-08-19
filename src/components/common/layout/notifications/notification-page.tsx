@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import type React from "react";
@@ -31,6 +32,7 @@ interface NotificationItem {
 }
 
 interface ARVTarget {
+  data: any;
   _id: string;
   code: string;
   eventName: string;
@@ -252,9 +254,9 @@ const NotificationPage = () => {
     });
 
     try {
-      // First API call - Get ARV Target by ID (not code)
+      // First API call - Get ARV Target by code
       const targetRes = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/ARVTarget/get-ARVTarget/${targetCode}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/ARVTarget/getARVGame/${targetCode}`,
         {
           method: "GET",
           headers: {
@@ -270,9 +272,9 @@ const NotificationPage = () => {
 
       const targetData: ARVTarget = await targetRes.json();
 
-      // Second API call - Get ARV Result using the same ID
+      // Second API call - Get ARV Result using the game ID and current user's results
       const resultRes = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/userSubmission/get-ARVResult/${targetCode}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/userSubmission/get-ARVResult/${targetData.data._id}`,
         {
           method: "GET",
           headers: {
@@ -437,7 +439,8 @@ const NotificationPage = () => {
                         notification.targetCode && (
                           <button
                             onClick={(e) =>
-                              handleViewResult(e, notification.code)
+                              notification.targetCode &&
+                              handleViewResult(e, notification.targetCode)
                             }
                             className="p-2 rounded-lg bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 hover:text-blue-300 transition-colors opacity-0 group-hover:opacity-100 sm:opacity-100"
                             title="View ARV Result"
