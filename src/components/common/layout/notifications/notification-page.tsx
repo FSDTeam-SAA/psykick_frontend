@@ -182,9 +182,6 @@ const NotificationPage = () => {
         const errorData = await res.json();
         throw new Error(errorData.message || "Failed to delete notification");
       }
-      if (res.ok) {
-        toast.success("Notification deleted successfully");
-      }
 
       return res.json();
     },
@@ -195,6 +192,7 @@ const NotificationPage = () => {
     onSuccess: () => {
       // Invalidate and refetch notifications
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      toast.success("Notification deleted successfully");
     },
     onError: (error: Error) => {
       console.error("Delete notification error:", error);
