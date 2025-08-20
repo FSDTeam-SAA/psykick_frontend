@@ -49,10 +49,12 @@ export function DrawingStage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-8">
       <div className="text-center space-y-8 max-w-4xl">
-        <h1 className="text-3xl font-bold text-white">
-          {currentEvent.eventName}
-        </h1>
-        <p className="text-gray-300 text-lg">{currentEvent.eventDescription}</p>
+        <div className="flex items-center justify-center space-x-4">
+          {" "}
+          <p className="text-xl text-white font-medium">Game Code:</p>
+          <h1 className="text-3xl font-bold text-white">{currentEvent.code}</h1>
+        </div>
+        {/* <p className="text-gray-300 text-lg">{currentEvent.eventDescription}</p> */}
 
         <div className="space-y-4">
           <p className="text-sm font-medium text-gray-400 ">

@@ -71,6 +71,15 @@ export default function TargetMatchChallenge() {
           setCurrentPhase(newPhase);
           setPhaseTransitioning(false);
 
+          // Show TMC info modal when game phase starts
+          if (newPhase === "game" && !drawingSubmitted) {
+            const { showTMCInfo, dontShowTMCAgain } =
+              useChallengeStore.getState();
+            if (!dontShowTMCAgain && !showTMCInfo) {
+              useChallengeStore.getState().toggleTMCInfo();
+            }
+          }
+
           // Reset drawing submission state when phase changes
           if (newPhase !== "game") {
             setDrawingSubmitted(false);
@@ -85,7 +94,14 @@ export default function TargetMatchChallenge() {
     // Set up interval to check phase changes
     const interval = setInterval(updatePhase, 1000);
     return () => clearInterval(interval);
-  }, [startTime, gameEnd, revealEnd, bufferEnd, currentPhase]);
+  }, [
+    startTime,
+    gameEnd,
+    revealEnd,
+    bufferEnd,
+    currentPhase,
+    drawingSubmitted,
+  ]);
 
   const handlePhaseChange = (phase: GamePhase) => {
     console.log("Phase changing to:", phase);
@@ -369,8 +385,8 @@ export default function TargetMatchChallenge() {
 
   return (
     <>
-      {renderPhaseContent()}
       <TMCInfoModal />
+      {renderPhaseContent()}
     </>
   );
 }
