@@ -80,9 +80,9 @@ export function ARVPrediction() {
 
   if (currentPhase !== "game" && !selectedImage) {
     return (
-      <div className="flex flex-col items-center justify-cente gap-4">
+      <div className="flex flex-col items-center justify-center gap-8">
         <h1 className="text-yellow-400 md:text-4xl text-xl font-black">
-          You didn&apos; participate the current game!
+          You didn&apos;t participate in the current game!
         </h1>
         <p className="text-white ml-4">
           Please wait for the next game or check back later!
