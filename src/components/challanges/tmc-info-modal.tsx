@@ -78,7 +78,3 @@ export default function TMCInfoModal() {
     </div>
   );
 }
-
-
-
-

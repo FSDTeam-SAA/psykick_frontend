@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { useARVStore } from "@/store/use-arv-store";
 import { CountdownTimer } from "./countdown-timer";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { useSubmitARVTarget } from "@/hooks/use-arv-queries";
 
 export function SelectionStage() {
   const {
@@ -17,7 +17,7 @@ export function SelectionStage() {
     getImages,
   } = useARVStore();
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { mutate: submitARV, isPending } = useSubmitARVTarget();
 
   const handleImageSelect = (image: { url: string; description: string }) => {
     if (!isGameTimeActive()) {
@@ -38,15 +38,20 @@ export function SelectionStage() {
       return;
     }
 
-    setIsSubmitting(true);
+    if (!currentEvent) {
+      alert("No active event found!");
+      return;
+    }
 
     try {
+      await submitARV({
+        submittedImage: selectedImage.url,
+        ARVTargetId: currentEvent._id,
+      });
       setCurrentStage("waiting");
     } catch (error) {
       console.error("Error submitting selection:", error);
       alert("Failed to submit selection. Please try again.");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -114,11 +119,11 @@ export function SelectionStage() {
         <div className="flex justify-center">
           <Button
             onClick={handleSubmit}
-            disabled={!selectedImage || isSubmitting || !canSelect}
+            disabled={!selectedImage || isPending || !canSelect}
             size="lg"
             className="px-8"
           >
-            {isSubmitting ? "Submitting..." : "Submit Selection"}
+            {isPending ? "Submitting..." : "Submit Selection"}
           </Button>
         </div>
       </div>

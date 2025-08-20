@@ -29,12 +29,20 @@ export function RevealStage() {
         </div>
 
         <div className="space-y-6">
-          <h2 className="text-4xl font-bold text-white">
-            Event Name: {currentEvent.eventName}
-          </h2>
-          <p className="text-xl text-gray-300 mx-auto">
-            Event Description: {currentEvent.eventDescription}
-          </p>
+          <div className="flex items-center justify-center space-x-4">
+            <span className="text-xl font-bold text-white/80">Event Name:</span>
+            <h2 className="text-3xl font-bold text-white">
+              {currentEvent.eventName}
+            </h2>
+          </div>
+          <div className="flex items-center justify-center space-x-4">
+            <span className="text-xl font-bold text-white/80">
+              Event Description:
+            </span>
+            <h2 className="text-3xl font-bold text-white">
+              {currentEvent.eventDescription || "No description provided"}
+            </h2>
+          </div>
         </div>
 
         {selectedImage ? (

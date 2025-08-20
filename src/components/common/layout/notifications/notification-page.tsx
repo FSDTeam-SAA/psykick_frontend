@@ -2,9 +2,6 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Bell,
   Trash2,
@@ -13,12 +10,17 @@ import {
   Award,
   Calendar,
   Image as ImageIcon,
+  X,
 } from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Pagination } from "../../pagination-component";
 import { PaginationInfo } from "../../pagination-info";
 import { useChallengeStore } from "@/store/use-challenge-store";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
+import { toast } from "sonner";
 
 interface NotificationItem {
   code: string;
@@ -132,6 +134,7 @@ const NotificationPage = () => {
     isLoading: false,
     error: null,
   });
+  console.log(arvResultData?.target?.data, "arvResultData");
 
   const {
     data: notificationsData,
@@ -189,6 +192,7 @@ const NotificationPage = () => {
     onSuccess: () => {
       // Invalidate and refetch notifications
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      toast.success("Notification deleted successfully");
     },
     onError: (error: Error) => {
       console.error("Delete notification error:", error);
@@ -323,8 +327,8 @@ const NotificationPage = () => {
 
   const isARVNotification = (message: string) => {
     return (
-      message.includes("ARV") &&
-      (message.includes("expired") || message.includes("result"))
+      message.includes("Result") &&
+      (message.includes("points") || message.includes("ARV"))
     );
   };
 
@@ -551,11 +555,11 @@ const NotificationPage = () => {
 
         {/* ARV Result Modal */}
         {arvResultModal.isOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl max-w-4xl w-full mx-4 shadow-2xl my-8 max-h-[90vh] overflow-y-auto">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm overflow-y-auto">
+            <div className="bg-purple-500/20 backdrop-blur-2xl border border-purple-500/80 rounded-xl max-w-4xl w-full mx-4 shadow-2xl my-8 max-h-[90vh] overflow-y-auto">
               <div className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center mb-6 relative">
+                  <div className="flex items-center justify-center gap-3">
                     <div className="p-2 bg-blue-500/20 rounded-full">
                       <Award className="h-6 w-6 text-blue-400" />
                     </div>
@@ -565,9 +569,9 @@ const NotificationPage = () => {
                   </div>
                   <button
                     onClick={closeArvResultModal}
-                    className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white"
+                    className="p-2 absolute h-5 w-5  right-0 top-0 rounded-lg transition-colors text-red-600 hover:text-red-400"
                   >
-                    ✕
+                    <X className="h-5 w-5 " />
                   </button>
                 </div>
 
@@ -602,37 +606,37 @@ const NotificationPage = () => {
                         </h4>
                       </div>
                       <div className="space-y-2">
-                        <div>
+                        <div className="flex flex-col sm:flex-row gap-2">
                           <span className="text-gray-400 text-sm">
                             Event Name:
                           </span>
                           <p className="text-white font-medium">
-                            {arvResultData.target.eventName}
+                            {arvResultData?.target?.data.eventName}
                           </p>
                         </div>
-                        <div>
+                        <div className="flex flex-col sm:flex-row gap-2">
                           <span className="text-gray-400 text-sm">
                             Event Code:
                           </span>
                           <p className="text-white font-medium">
-                            {arvResultData.target.code}
+                            {arvResultData?.target?.data.code}
                           </p>
                         </div>
-                        <div>
+                        <div className="flex flex-col sm:flex-row gap-2">
                           <span className="text-gray-400 text-sm">
                             Description:
                           </span>
                           <p className="text-gray-200">
-                            {arvResultData.target.eventDescription}
+                            {arvResultData?.target?.data.eventDescription}
                           </p>
                         </div>
-                        <div>
+                        <div className="flex flex-col sm:flex-row gap-2">
                           <span className="text-gray-400 text-sm">
                             Game Time:
                           </span>
                           <p className="text-gray-200">
                             {new Date(
-                              arvResultData.target.gameTime,
+                              arvResultData?.target?.data.gameTime,
                             ).toLocaleString("en-US", {
                               year: "numeric",
                               month: "long",
@@ -695,13 +699,13 @@ const NotificationPage = () => {
                           <h5 className="text-white font-medium mb-2">
                             Your Submission
                           </h5>
-                          <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                          <div className="bg-white/5 border border-white/10 rounded-lg p-1">
                             <Image
                               height={192}
                               width={192}
                               src={arvResultData.result.submittedImage}
                               alt="Your submitted image"
-                              className="w-full h-48 object-cover rounded-lg mb-2"
+                              className="w-full h-48 object-cover rounded-lg"
                               onError={(e) => {
                                 const target = e.target as HTMLImageElement;
                                 target.src =
@@ -709,6 +713,11 @@ const NotificationPage = () => {
                               }}
                             />
                           </div>
+                          {/* <p className="text-sm text-gray-400 text-center mt-2">
+                            {arvResultData.result.submittedImage
+                              ? "Your submitted image"
+                              : "No image submitted"}
+                          </p> */}
                         </div>
 
                         {/* Result Image */}
@@ -716,13 +725,13 @@ const NotificationPage = () => {
                           <h5 className="text-white font-medium mb-2">
                             Actual Result
                           </h5>
-                          <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                          <div className="bg-white/5 border-2 border-red-500/40 rounded-lg p-1">
                             <Image
                               height={192}
                               width={192}
                               src={arvResultData.result.resultImage}
                               alt="Actual result image"
-                              className="w-full h-48 object-cover rounded-lg mb-2"
+                              className="w-full h-48 object-cover rounded-lg "
                               onError={(e) => {
                                 const target = e.target as HTMLImageElement;
                                 target.src =
