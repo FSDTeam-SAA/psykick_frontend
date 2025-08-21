@@ -563,7 +563,7 @@ const NotificationPage = () => {
                     <div className="p-2 bg-blue-500/20 rounded-full">
                       <Award className="h-6 w-6 text-blue-400" />
                     </div>
-                    <h3 className="text-xl font-semibold text-white">
+                    <h3 className="text-xl font-semibold text-white smallShadow">
                       ARV Result Details
                     </h3>
                   </div>
