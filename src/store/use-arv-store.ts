@@ -38,7 +38,7 @@ interface ARVStore {
   currentEvent: ARVEvent | null;
   currentStage: GameStage;
   userDrawing: string | null;
-  selectedImage: { url: string; description: string } | null;
+  selectedImage: { url: string; description: string; points: number } | null;
   hasParticipated: boolean;
 
   // Actions
@@ -87,7 +87,7 @@ export const useARVStore = create<ARVStore>((set, get) => ({
     set({ userDrawing: drawing, hasParticipated: true });
   },
   setSelectedImage: (image) => {
-    set({ selectedImage: image, hasParticipated: true });
+    set({ selectedImage: { ...image, points: 0 }, hasParticipated: true });
   },
   setHasParticipated: (participated) => set({ hasParticipated: participated }),
 
@@ -206,7 +206,8 @@ export const useARVStore = create<ARVStore>((set, get) => ({
         return null;
       })
       .filter(
-        (image): image is { url: string; description: string } => image !== null
+        (image): image is { url: string; description: string } =>
+          image !== null,
       );
   },
 }));
