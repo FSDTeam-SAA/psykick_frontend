@@ -59,7 +59,7 @@ export function RevealStage() {
                   className="object-cover"
                 />
               </div>
-              <p className="text-sm text-gray-400 text-center">
+              <p className="text-sm text-gray-400 text-center smallShadow">
                 {selectedImage.description}
               </p>
             </div>
