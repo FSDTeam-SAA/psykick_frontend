@@ -89,13 +89,14 @@ export default function NextGameMessage({
   }, []);
 
   const handleCountdownComplete = () => {
-    if (hasQueuedGames) {
-      // Redirect to challenges page for new game
-      window.location.href = "/challenges";
-    } else {
-      // Refresh to check for new games
-      window.location.reload();
-    }
+    window.location.href = "/challenges";
+
+    // if (hasQueuedGames) {
+    //   // Redirect to challenges page for new game
+    // } else {
+    //   // Refresh to check for new games
+    //   window.location.reload();
+    // }
   };
 
   if (!bufferEndTime) {

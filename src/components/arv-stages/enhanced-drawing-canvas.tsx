@@ -16,11 +16,13 @@ type TextBox = {
 type DrawingCanvasProps = {
   onDrawingChange?: (drawing: string) => void;
   disabled?: boolean;
+  clearTrigger?: number; // Add a prop to trigger canvas clear
 };
 
 export function EnhancedDrawingCanvas({
   onDrawingChange,
   disabled = false,
+  clearTrigger,
 }: DrawingCanvasProps) {
   // Local state for drawing functionality
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -93,6 +95,28 @@ export function EnhancedDrawingCanvas({
   useEffect(() => {
     initializeCanvas();
   }, [initializeCanvas]);
+
+  // Effect to clear the canvas when clearTrigger changes
+  useEffect(() => {
+    if (!canvasRef.current || !contextRef.current) return;
+    // Clear the canvas
+    const canvas = canvasRef.current;
+    const context = contextRef.current;
+    context.clearRect(
+      0,
+      0,
+      canvas.width / canvasScale,
+      canvas.height / canvasScale,
+    );
+    // Reset text boxes and history
+    setTextBoxes([]);
+    setDrawingHistory([]);
+    setCurrentStep(-1);
+    // Optionally notify parent
+    if (onDrawingChange) {
+      onDrawingChange("");
+    }
+  }, [clearTrigger, canvasScale, onDrawingChange]);
 
   // Update context when tool or color changes
   useEffect(() => {
