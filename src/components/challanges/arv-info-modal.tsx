@@ -13,16 +13,13 @@ export default function ARVInfoModal() {
     closeARVInfo,
     dontShowARVAgain,
     setDontShowARVAgain,
-    stage,
+    currentStage,
   } = useARVStore();
 
   if (!showARVInfo) return null;
 
   const handleClose = () => {
     closeARVInfo();
-    if (stage === "drawing") {
-      useARVStore.getState().submitImpression();
-    }
   };
 
   return (

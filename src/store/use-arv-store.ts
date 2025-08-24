@@ -40,9 +40,14 @@ interface ARVStore {
   userDrawing: string | null;
   selectedImage: { url: string; description: string; points: number } | null;
   hasParticipated: boolean;
+  showARVInfo: boolean;
+  dontShowARVAgain: boolean;
 
   // Actions
   setActiveTarget: (event: ARVEvent) => void;
+  openARVInfo: () => void;
+  closeARVInfo: () => void;
+  setDontShowARVAgain: (value: boolean) => void;
   setCurrentStage: (stage: GameStage) => void;
   setUserDrawing: (drawing: string) => void;
   setSelectedImage: (image: { url: string; description: string }) => void;
@@ -65,6 +70,8 @@ export const useARVStore = create<ARVStore>((set, get) => ({
   userDrawing: null,
   selectedImage: null,
   hasParticipated: false,
+  showARVInfo: false,
+  dontShowARVAgain: false,
 
   setActiveTarget: (event) => {
     // Reset game state if this is a new event
@@ -90,6 +97,11 @@ export const useARVStore = create<ARVStore>((set, get) => ({
     set({ selectedImage: { ...image, points: 0 }, hasParticipated: true });
   },
   setHasParticipated: (participated) => set({ hasParticipated: participated }),
+
+  // ARV Info Modal actions
+  openARVInfo: () => set({ showARVInfo: true }),
+  closeARVInfo: () => set({ showARVInfo: false }),
+  setDontShowARVAgain: (value) => set({ dontShowARVAgain: value }),
 
   getCurrentPhase: () => {
     const { currentEvent } = get();

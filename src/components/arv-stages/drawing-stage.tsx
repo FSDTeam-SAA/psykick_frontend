@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useARVStore } from "@/store/use-arv-store";
 import { EnhancedDrawingCanvas } from "./enhanced-drawing-canvas";
 import { CountdownTimer } from "./countdown-timer";
 import { Button } from "@/components/ui/button";
-
+import ARVInfoModal from "@/components/challanges/arv-info-modal";
 export function DrawingStage() {
   const {
     currentEvent,
@@ -17,6 +17,13 @@ export function DrawingStage() {
 
   const [drawing, setDrawing] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    // Show the ARV info modal when the drawing stage mounts
+    if (currentEvent) {
+      useARVStore.getState().openARVInfo();
+    }
+  }, [currentEvent]);
 
   const handleSubmit = async () => {
     if (!isGameTimeActive()) {
@@ -48,6 +55,7 @@ export function DrawingStage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-8">
+      <ARVInfoModal />
       <div className="text-center space-y-8 max-w-4xl">
         <div className="flex items-center justify-center space-x-4">
           {" "}

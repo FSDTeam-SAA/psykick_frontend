@@ -109,9 +109,9 @@ export function SelectionStage() {
                   className="object-cover max-h-[500px] w-[500px]"
                 />
               </div>
-              <p className="text-sm text-gray-400 text-center">
+              {/* <p className="text-sm text-gray-400 text-center">
                 {image.description}
-              </p>
+              </p> */}
             </div>
           ))}
         </div>

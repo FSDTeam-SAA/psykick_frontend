@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 // import EnhancedDrawingCanvas from "@/components/challanges/EnhancedDrawingCanvas";
 import ImageSelection from "@/components/challanges/image-selection";
-import TMCInfoModal from "@/components/challanges/tmc-info-modal";
+// import TMCInfoModal from "@/components/challanges/tmc-info-modal";
 import WaitingScreen from "@/components/challanges/waiting-screen";
 import { useChallengeStore } from "@/store/use-challenge-store";
 import { useActiveTMCTarget } from "@/hooks/use-tmc-queries";
@@ -12,6 +12,7 @@ import Results from "@/components/challanges/results";
 import CountdownDisplay from "@/components/challanges/countdown-display";
 import NextGameMessage from "@/components/challanges/next-game-component";
 import { EnhancedDrawingCanvas } from "@/components/arv-stages/enhanced-drawing-canvas";
+import TMCInfoModal from "@/components/challanges/tmc-info-modal";
 
 type GamePhase = "waiting" | "game" | "reveal" | "buffer" | "completed";
 
@@ -23,6 +24,9 @@ export default function TargetMatchChallenge() {
   const [phaseTransitioning, setPhaseTransitioning] = useState(false);
   const [drawingSubmitted, setDrawingSubmitted] = useState(false); // New state for drawing submission
   const { data: activeTarget, isLoading } = useActiveTMCTarget();
+
+  // State to trigger canvas clear
+  const [canvasClearTrigger, setCanvasClearTrigger] = useState(0);
 
   // Set target data when it's loaded
   useEffect(() => {
@@ -131,8 +135,9 @@ export default function TargetMatchChallenge() {
 
   // Modified clear canvas handler
   const handleClearCanvas = () => {
-    clearCanvas(); // Call the original clear function
+    clearCanvas(); // Call the original clear function (if needed for store logic)
     setDrawingSubmitted(false); // Reset drawing submission state
+    setCanvasClearTrigger((prev) => prev + 1); // Trigger canvas clear in EnhancedDrawingCanvas
   };
 
   // Loading state
@@ -265,13 +270,14 @@ export default function TargetMatchChallenge() {
 
             {/* Game Phase Content - Sequential Steps */}
             <div className="space-y-8">
+              <TMCInfoModal />
               {/* Drawing Section - Always visible during game phase */}
               <div className="mb-8">
                 <h2 className="text-xl font-bold text-white mb-4">
                   Step 1: Draw Your Impressions
                 </h2>
                 <div className="bg-purple-900/20 p-6 rounded-lg">
-                  <EnhancedDrawingCanvas />
+                  <EnhancedDrawingCanvas clearTrigger={canvasClearTrigger} />
                   <div className="flex space-x-4 mt-4">
                     <button
                       onClick={handleClearCanvas}
@@ -383,10 +389,5 @@ export default function TargetMatchChallenge() {
     }
   };
 
-  return (
-    <>
-      <TMCInfoModal />
-      {renderPhaseContent()}
-    </>
-  );
+  return <>{renderPhaseContent()}</>;
 }
