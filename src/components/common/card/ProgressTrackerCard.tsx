@@ -289,7 +289,7 @@ export default function ProgressTrackerCard({
           <text
             x={paddingLeft}
             y={graphHeight - 1}
-            fill="#fff"
+            fill="#cc00ff"
             fontSize="13"
             fontWeight="700"
             className="uppercase tracking-wider"

@@ -62,9 +62,9 @@ export default function GamifiedProfile() {
     "/assets/img/placeholder.png";
 
   return (
-    <div className="w-full max-w-6xl mx-auto pt-[80px] p-6 rounded-lg h-screen text-white">
+    <div className="w-full max-w-6xl mx-auto pt-[80px] p-6 rounded-lg h-screen flex flex-col  text-white">
       {/* Top badges row */}
-      <div className="flex flex-wrap gap-4 mb-8 justify-between">
+      <div className="flex flex-wrap gap-4 mb-8 justify-between items-baseline">
         <div className="border border-green-400 rounded-full px-4 py-1">
           @{profileData.screenName}
         </div>
@@ -83,9 +83,9 @@ export default function GamifiedProfile() {
       </div>
 
       {/* Main content */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-8 items-end justify-between ">
         {/* Left side - Progress meter */}
-        <div className="md:col-span-3">
+        <div className="md:col-span-3 ">
           {/* <GameDashboard totalScore={profileData.totalPoints} /> */}
           <ProgressTrackerCard
             up={Math.abs(tierData?.tierThresholds.down ?? 0)} //TODO: need to work on this, ensure it's positive
