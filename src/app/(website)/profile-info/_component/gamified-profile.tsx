@@ -5,10 +5,11 @@ import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import GameDashboard from "./GameDashboard";
 import Link from "next/link";
 import axios from "axios";
 import { useAuth } from "@/hooks/useAuth";
+import ProgressTrackerCard from "@/components/common/card/ProgressTrackerCard";
+import { useTierInfoData } from "@/hooks/useTierInfo";
 
 const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -41,6 +42,10 @@ export default function GamifiedProfile() {
     queryFn: () => fetchUserProfile(userId!),
     enabled: !!userId,
   });
+
+  const { tierData } = useTierInfoData("68c1486a3205fbc9bc3cb447");
+
+  console.log(tierData);
 
   // useEffect(() => {
   //   if (profileData) {
@@ -81,7 +86,14 @@ export default function GamifiedProfile() {
       <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
         {/* Left side - Progress meter */}
         <div className="md:col-span-3">
-          <GameDashboard totalScore={profileData.totalPoints} />
+          {/* <GameDashboard totalScore={profileData.totalPoints} /> */}
+          <ProgressTrackerCard
+            up={Math.abs(tierData?.tierThresholds.down ?? 0)} //TODO: need to work on this, ensure it's positive
+            down={tierData?.tierThresholds.up ?? 0}
+            currentScore={tierData?.currentScore ?? 0}
+            completedChallenges={tierData?.completedChallenges ?? 0}
+            tierImages={tierData?.tierImages as object}
+          />
         </div>
 
         {/* Right side - Stats */}
