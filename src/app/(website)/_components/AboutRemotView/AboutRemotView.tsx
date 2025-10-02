@@ -1,48 +1,52 @@
-"use client"
-import Image from "next/image"
-import { ArrowRight } from "lucide-react"
-import Link from "next/link"
-import { useQuery } from "@tanstack/react-query"
-import { useEffect, useState } from "react"
+"use client";
+import Image from "next/image";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 interface HomeCounts {
-  activeUsers: number
-  runningEvents: number
-  totalParticipation: number
+  activeUsers: number;
+  runningEvents: number;
+  totalParticipation: number;
 }
 
 // API fetcher function
 async function fetchHomeCounts(): Promise<HomeCounts> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/home/counts`, {
-    headers: {
-      "Content-Type": "application/json",
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/home/counts`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("authToken") || ""}`,
+      },
     },
-  })
+  );
 
-  if (!res.ok) throw new Error("Failed to fetch home counts")
+  if (!res.ok) throw new Error("Failed to fetch home counts");
 
-  const json = await res.json()
-  if (!json.success) throw new Error(json.message || "API error")
+  const json = await res.json();
+  if (!json.success) throw new Error(json.message || "API error");
 
-  return json.data
+  return json.data;
 }
 
 export default function AboutRemotView() {
-  const [isClient, setIsClient] = useState(false)
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true)
-  }, [])
+    setIsClient(true);
+  }, []);
 
   const { data, isLoading } = useQuery({
     queryKey: ["homeCounts"],
     queryFn: fetchHomeCounts,
     enabled: isClient,
-  })
+  });
 
-  const totalParticipants = data?.totalParticipation ?? 0
-  const activeUsers = data?.activeUsers ?? 0
-  const runningEvents = data?.runningEvents ?? 0
+  const totalParticipants = data?.totalParticipation ?? 0;
+  const activeUsers = data?.activeUsers ?? 0;
+  const runningEvents = data?.runningEvents ?? 0;
 
   return (
     <div className="text-white p-4 md:p-8 lg:p-12">
@@ -115,5 +119,5 @@ export default function AboutRemotView() {
         </div>
       </div>
     </div>
-  )
+  );
 }

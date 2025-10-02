@@ -52,19 +52,19 @@ export default function ProgressTrackerCard({
   // Map tier images to data points
   const dataPoints = [
     {
-      x: 2,
-      y: 0,
+      x: 3.3,
+      y: 25,
       color: "#D84315",
       tier: tierImages?.current?.image,
     },
     {
-      x: 5,
-      y: 30,
+      x: 6.67,
+      y: 150,
       color: "#FF6F00",
       tier: tierImages?.next[0]?.image,
     },
     {
-      x: 7,
+      x: 10,
       y: 275,
       color: "#9CCC65",
       tier: tierImages?.next[1]?.image,
@@ -188,9 +188,11 @@ export default function ProgressTrackerCard({
 
           {/* Progress line with gradient */}
           <path
-            d={`M ${getX(dataPoints[0].x)} ${getY(dataPoints[0].y)} 
+            d={`M ${getX(0)} ${getY(-100)} 
+                L ${getX(dataPoints[0].x)} ${getY(dataPoints[0].y)} 
                 L ${getX(dataPoints[1].x)} ${getY(dataPoints[1].y)} 
-                L ${getX(dataPoints[2].x)} ${getY(dataPoints[2].y)}`}
+                L ${getX(dataPoints[2].x)} ${getY(dataPoints[2].y)}
+              `}
             stroke="url(#lineGradient)"
             strokeWidth="5"
             fill="none"
