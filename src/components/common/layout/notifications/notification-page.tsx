@@ -405,7 +405,7 @@ const NotificationPage = () => {
           most of your Psykick experience!
         </p>
 
-        {notifications.notifications.length === 0 ? (
+        {notifications?.notifications?.length === 0 ? (
           <div className="bg-white/10 border border-white/20 rounded-xl p-8 text-center backdrop-blur-sm">
             <Bell className="text-yellow-400 mx-auto mb-4 h-12 w-12 opacity-50" />
             <p className="text-gray-300 text-lg">No notifications available.</p>

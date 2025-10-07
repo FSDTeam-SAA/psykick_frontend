@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { TIER_CONFIG, type TierConfig } from "@/lib/tier-config";
+
 interface ProgressTrackerProps {
   up: number;
   down: number;
   currentScore: number;
   completedChallenges: number;
   tierImages: any;
+  currentTierName: string;
 }
 
 export default function ProgressTrackerCard({
@@ -15,15 +18,112 @@ export default function ProgressTrackerCard({
   currentScore,
   completedChallenges,
   tierImages,
+  currentTierName,
 }: ProgressTrackerProps) {
-  // Y-axis configuration: -100, 0, 30, 275
+  const currentTierConfig = TIER_CONFIG.find((t) => t.name === currentTierName);
+  console.log(
+    up,
+    down,
+    currentScore,
+    completedChallenges,
+    tierImages,
+    currentTierName,
+  );
+  if (!currentTierConfig) {
+    console.error(`Tier "${currentTierName}" not found in configuration`);
+    return null;
+  }
+
+  const currentTierIndex = TIER_CONFIG.indexOf(currentTierConfig);
+  const isLowestTier = currentTierIndex === 0;
+  const isHighestTier = currentTierIndex === TIER_CONFIG.length - 1;
+
+  const previousTier: TierConfig | null = !isLowestTier
+    ? TIER_CONFIG[currentTierIndex - 1]
+    : null;
+  const nextTier: TierConfig | null = !isHighestTier
+    ? TIER_CONFIG[currentTierIndex + 1]
+    : null;
+
+  const getXFromY = (y: number) => {
+    const slope = (275 - -100) / (10 - 1); // 375 / 9 ≈ 41.67
+    return 1 + (y - -100) / slope;
+  };
+
+  const dataPoints: Array<{
+    x: number;
+    y: number;
+    color: string;
+    tier: string;
+    label: string;
+  }> = [];
+
+  // Bottom image (previous tier) - only if not lowest tier
+  if (previousTier && !isLowestTier) {
+    const yPos = -100;
+    dataPoints.push({
+      x: getXFromY(yPos),
+      y: yPos,
+      color: "#D84315",
+      tier: tierImages?.current?.image || "/placeholder.svg?height=40&width=40",
+      label: previousTier.name,
+    });
+  }
+
+  // Current tier image (middle position)
+  if (isHighestTier) {
+    const yPos = currentTierConfig.retainsTierMin;
+    dataPoints.push({
+      x: getXFromY(yPos),
+      y: yPos,
+      color: "#9CCC65",
+      tier: tierImages?.current?.image || "/placeholder.svg?height=40&width=40",
+      label: currentTierConfig.name,
+    });
+  } else {
+    const yPos = currentTierConfig.retainsTierMin;
+    dataPoints.push({
+      x: getXFromY(yPos),
+      y: yPos,
+      color: "#FF6F00",
+      tier: tierImages?.current?.image || "/placeholder.svg?height=40&width=40",
+      label: currentTierConfig.name,
+    });
+  }
+
+  // Top image (next tier) - only if not highest tier
+  if (nextTier && !isHighestTier) {
+    const yPos = currentTierConfig.levelsUp;
+    dataPoints.push({
+      x: getXFromY(yPos),
+      y: yPos,
+      color: "#9CCC65",
+      tier: tierImages?.next[1]?.image || "/placeholder.svg?height=40&width=40",
+      label: nextTier.name,
+    });
+  } else if (isHighestTier && previousTier) {
+    const yPos = -100;
+    dataPoints.push({
+      x: getXFromY(yPos),
+      y: yPos,
+      color: "#D84315",
+      tier: tierImages?.next[0]?.image || "/placeholder.svg?height=40&width=40",
+      label: previousTier.name,
+    });
+  }
+
+  dataPoints.sort((a, b) => a.y - b.y);
+
+  // Y-axis configuration
   const yAxisValues = [-100, down, up, 275];
   const yMin = -100;
   const yMax = 275;
-  const yRange = yMax - yMin; // 375
+  const yRange = yMax - yMin;
 
-  // X-axis: 1 to 10
-  const xAxisValues = Array.from({ length: 10 }, (_, i) => i + 1);
+  const xMin = 1;
+  const xMax = 10;
+  const xRange = xMax - xMin;
+  const xAxisValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   // Graph dimensions
   const graphWidth = 540;
@@ -37,7 +137,8 @@ export default function ProgressTrackerCard({
 
   // Helper function to convert data coordinates to SVG coordinates
   const getX = (value: number) => {
-    return paddingLeft + (value / 10) * plotWidth;
+    const normalized = (value - xMin) / xRange;
+    return paddingLeft + normalized * plotWidth;
   };
 
   const getY = (value: number) => {
@@ -45,32 +146,14 @@ export default function ProgressTrackerCard({
     return paddingTop + plotHeight - normalized * plotHeight;
   };
 
-  // Calculate cyan rectangle dimensions
-  const rectWidth = (completedChallenges / 10) * plotWidth;
-  const rectHeight = plotHeight - (getY(currentScore) - paddingTop);
-  console.log(tierImages);
-  // Map tier images to data points
-  const dataPoints = [
-    {
-      x: 3.3,
-      y: 25,
-      color: "#D84315",
-      tier: tierImages?.current?.image,
-    },
-    {
-      x: 6.67,
-      y: 150,
-      color: "#FF6F00",
-      tier: tierImages?.next[0]?.image,
-    },
-    {
-      x: 10,
-      y: 275,
-      color: "#9CCC65",
-      tier: tierImages?.next[1]?.image,
-    },
-  ];
-  console.log(dataPoints);
+  // const currentX = getXFromY(currentScore);
+  const areaPath = `
+    M ${getX(1)} ${getY(-100)}
+    L ${getX(completedChallenges)} ${getY(-100)}
+    L ${getX(completedChallenges)} ${getY(currentScore)}
+    L ${getX(1)} ${getY(currentScore)}
+    Z
+  `;
 
   const generateHorizontalGridLines = () => {
     const lines = [];
@@ -81,6 +164,8 @@ export default function ProgressTrackerCard({
     return lines;
   };
   const horizontalGridLines = generateHorizontalGridLines();
+
+  const verticalGridLines = xAxisValues;
 
   return (
     <div className="w-full max-w-3xl">
@@ -93,7 +178,7 @@ export default function ProgressTrackerCard({
           viewBox={`0 0 ${graphWidth} ${graphHeight}`}
         >
           {/* Grid lines - vertical */}
-          {xAxisValues.map((value) => (
+          {verticalGridLines.map((value) => (
             <line
               key={`v-grid-${value}`}
               x1={getX(value)}
@@ -116,20 +201,6 @@ export default function ProgressTrackerCard({
               stroke="#2d2d4d"
               strokeWidth="1"
               opacity="0.5"
-            />
-          ))}
-
-          {/* Additional horizontal grid lines */}
-          {[50, 100, 150, 200, 250].map((value) => (
-            <line
-              key={`h-grid-extra-${value}`}
-              x1={paddingLeft}
-              y1={getY(value)}
-              x2={graphWidth - paddingRight}
-              y2={getY(value)}
-              stroke="#2d2d4d"
-              strokeWidth="0.5"
-              opacity="0.3"
             />
           ))}
 
@@ -156,9 +227,9 @@ export default function ProgressTrackerCard({
           {/* Gradient definitions */}
           <defs>
             <linearGradient id="cyanGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#59ecff" />
-              <stop offset="50%" stopColor="#26C6DA" />
-              <stop offset="100%" stopColor="#028394" />
+              <stop offset="0%" stopColor="#59ecff92" />
+              <stop offset="50%" stopColor="#26c5da81" />
+              <stop offset="100%" stopColor="#028394bc" />
             </linearGradient>
 
             <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -176,31 +247,16 @@ export default function ProgressTrackerCard({
             ))}
           </defs>
 
-          {/* Cyan filled rectangle */}
-          <rect
-            x={paddingLeft}
-            y={getY(currentScore)}
-            width={rectWidth}
-            height={rectHeight}
-            fill="url(#cyanGradient)"
-            opacity="0.7"
-          />
+          <path d={areaPath} fill="url(#cyanGradient)" opacity="0.7" />
 
-          {/* Progress line with gradient */}
           <path
-            d={`M ${getX(0)} ${getY(-100)} 
-                L ${getX(dataPoints[0].x)} ${getY(dataPoints[0].y)} 
-                L ${getX(dataPoints[1].x)} ${getY(dataPoints[1].y)} 
-                L ${getX(dataPoints[2].x)} ${getY(dataPoints[2].y)}
-              `}
+            d={`M ${getX(1)} ${getY(-100)} L ${getX(10)} ${getY(275)}`}
             stroke="url(#lineGradient)"
             strokeWidth="5"
             fill="none"
             strokeLinecap="round"
-            strokeLinejoin="round"
           />
 
-          {/* Tier images as data points */}
           {dataPoints.map((point, index) => (
             <g key={`point-${index}`}>
               {/* Outer glow */}
@@ -234,7 +290,7 @@ export default function ProgressTrackerCard({
               />
 
               {/* Tier name label */}
-              {/* <text
+              <text
                 x={getX(point.x)}
                 y={getY(point.y) + 40}
                 fill="#fff"
@@ -243,8 +299,8 @@ export default function ProgressTrackerCard({
                 textAnchor="middle"
                 className="uppercase"
               >
-                {point.tier}
-              </text> */}
+                {point.label}
+              </text>
             </g>
           ))}
 
@@ -277,7 +333,7 @@ export default function ProgressTrackerCard({
 
           {/* Current score Y-axis indicator */}
           <text
-            x={paddingLeft}
+            x={paddingLeft - 10}
             y={getY(currentScore) + 5}
             fill="#E91E63"
             fontSize="15"

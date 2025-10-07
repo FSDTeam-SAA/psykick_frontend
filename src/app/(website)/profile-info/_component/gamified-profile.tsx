@@ -137,11 +137,12 @@ export default function GamifiedProfile() {
         <div className="md:col-span-3">
           <Suspense>
             <ProgressTrackerCard
-              up={tierData?.tierThresholds.up ?? 0}
-              down={tierData?.tierThresholds.down}
-              currentScore={tierData?.currentScore ?? 0}
-              completedChallenges={tierData?.completedChallenges ?? 0}
+              up={81}
+              down={31}
+              currentScore={55}
+              completedChallenges={6}
               tierImages={tierData?.tierImages as object}
+              currentTierName={tierData.tierRank}
             />
           </Suspense>
         </div>
