@@ -58,60 +58,126 @@ export default function ProgressTrackerCard({
     label: string;
   }> = [];
 
-  // Bottom image (previous tier) - only if not lowest tier
-  if (previousTier && !isLowestTier) {
-    const yPos = -100;
-    dataPoints.push({
-      x: getXFromY(yPos),
-      y: yPos,
-      color: "#D84315",
-      tier: tierImages?.current?.image || "/placeholder.svg?height=40&width=40",
-      label: previousTier.name,
-    });
-  }
+  // --- Dynamic Tier Image Placement Logic ---
+  // Always show bottom image at -100 (previous tier or current if lowest)
+  // Current image at current tier start (retainsTierMin)
+  // Top image at current tier end (levelsUp)
 
-  // Current tier image (middle position)
-  if (isHighestTier) {
-    const yPos = currentTierConfig.retainsTierMin;
+  // Helper to get image safely
+  const getTierImage = (type: "previous" | "current" | "next") => {
+    if (type === "previous") {
+      // previous tier image: tierImages?.prev?.image or fallback
+      return tierImages?.next[0]?.image || "/placeholder.svg?height=40&width=40";
+    }
+    if (type === "current") {
+      return (
+        tierImages?.current?.image || "/placeholder.svg?height=40&width=40"
+      );
+    }
+    if (type === "next") {
+      // next tier image: tierImages?.next?.image or fallback
+      // Some APIs may return next as array or object
+      if (Array.isArray(tierImages?.next)) {
+        return (
+          tierImages?.next[1]?.image ||
+          tierImages?.next[0]?.image ||
+          "/placeholder.svg?height=40&width=40"
+        );
+      }
+      return tierImages?.next?.image || "/placeholder.svg?height=40&width=40";
+    }
+    return "/placeholder.svg?height=40&width=40";
+  };
+
+  // 1. Bottom image: always at -100
+  if (isLowestTier) {
+    // Lowest tier: bottom = current, top = next
     dataPoints.push({
-      x: getXFromY(yPos),
-      y: yPos,
-      color: "#9CCC65",
-      tier: tierImages?.current?.image || "/placeholder.svg?height=40&width=40",
-      label: currentTierConfig.name,
-    });
-  } else {
-    const yPos = currentTierConfig.retainsTierMin;
-    dataPoints.push({
-      x: getXFromY(yPos),
-      y: yPos,
+      x: getXFromY(-100),
+      y: -100,
       color: "#FF6F00",
-      tier: tierImages?.current?.image || "/placeholder.svg?height=40&width=40",
+      tier: getTierImage("current"),
       label: currentTierConfig.name,
     });
-  }
-
-  // Top image (next tier) - only if not highest tier
-  if (nextTier && !isHighestTier) {
-    const yPos = currentTierConfig.levelsUp;
+    // Current image at start of tier
     dataPoints.push({
-      x: getXFromY(yPos),
-      y: yPos,
+      x: getXFromY(currentTierConfig.retainsTierMin),
+      y: currentTierConfig.retainsTierMin,
+      color: "#FF6F00",
+      tier: getTierImage("current"),
+      label: currentTierConfig.name,
+    });
+    // Top image at end of tier (next tier)
+    if (nextTier) {
+      dataPoints.push({
+        x: getXFromY(currentTierConfig.levelsUp),
+        y: currentTierConfig.levelsUp,
+        color: "#9CCC65",
+        tier: getTierImage("next"),
+        label: nextTier.name,
+      });
+    }
+  } else if (isHighestTier) {
+    // Highest tier: top = current, bottom = next (previous)
+    // Top image (current tier) at end of tier
+    dataPoints.push({
+      x: getXFromY(currentTierConfig.levelsUp),
+      y: currentTierConfig.levelsUp,
       color: "#9CCC65",
-      tier: tierImages?.next[1]?.image || "/placeholder.svg?height=40&width=40",
-      label: nextTier.name,
+      tier: getTierImage("current"),
+      label: currentTierConfig.name,
     });
-  } else if (isHighestTier && previousTier) {
-    const yPos = -100;
+    // Current image at start of tier
     dataPoints.push({
-      x: getXFromY(yPos),
-      y: yPos,
-      color: "#D84315",
-      tier: tierImages?.next[0]?.image || "/placeholder.svg?height=40&width=40",
-      label: previousTier.name,
+      x: getXFromY(currentTierConfig.retainsTierMin),
+      y: currentTierConfig.retainsTierMin,
+      color: "#FF6F00",
+      tier: getTierImage("current"),
+      label: currentTierConfig.name,
     });
+    // Bottom image (previous tier) at -100
+    if (previousTier) {
+      dataPoints.push({
+        x: getXFromY(-100),
+        y: -100,
+        color: "#D84315",
+        tier: getTierImage("previous"),
+        label: previousTier.name,
+      });
+    }
+  } else {
+    // Middle tiers: bottom = previous, middle = current, top = next
+    // Bottom image (previous tier) at -100
+    if (previousTier) {
+      dataPoints.push({
+        x: getXFromY(-100),
+        y: -100,
+        color: "#D84315",
+        tier: getTierImage("previous"),
+        label: previousTier.name,
+      });
+    }
+    // Current image at start of tier
+    dataPoints.push({
+      x: getXFromY(currentTierConfig.retainsTierMin),
+      y: currentTierConfig.retainsTierMin,
+      color: "#FF6F00",
+      tier: getTierImage("current"),
+      label: currentTierConfig.name,
+    });
+    // Top image (next tier) at end of tier
+    if (nextTier) {
+      dataPoints.push({
+        x: getXFromY(currentTierConfig.levelsUp),
+        y: currentTierConfig.levelsUp,
+        color: "#9CCC65",
+        tier: getTierImage("next"),
+        label: nextTier.name,
+      });
+    }
   }
 
+  // Sort by y position (bottom to top)
   dataPoints.sort((a, b) => a.y - b.y);
 
   // Y-axis configuration
