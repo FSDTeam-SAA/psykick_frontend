@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+/* Lines 3-5 omitted */
 
 import { TIER_CONFIG, type TierConfig } from "@/lib/tier-config";
 
@@ -67,7 +68,9 @@ export default function ProgressTrackerCard({
   const getTierImage = (type: "previous" | "current" | "next") => {
     if (type === "previous") {
       // previous tier image: tierImages?.prev?.image or fallback
-      return tierImages?.next[0]?.image || "/placeholder.svg?height=40&width=40";
+      return (
+        tierImages?.next[0]?.image || "/placeholder.svg?height=40&width=40"
+      );
     }
     if (type === "current") {
       return (
@@ -91,18 +94,10 @@ export default function ProgressTrackerCard({
 
   // 1. Bottom image: always at -100
   if (isLowestTier) {
-    // Lowest tier: bottom = current, top = next
+    // For NOVICE SEEKER: only show current tier at bottom and next tier at top
     dataPoints.push({
       x: getXFromY(-100),
       y: -100,
-      color: "#FF6F00",
-      tier: getTierImage("current"),
-      label: currentTierConfig.name,
-    });
-    // Current image at start of tier
-    dataPoints.push({
-      x: getXFromY(currentTierConfig.retainsTierMin),
-      y: currentTierConfig.retainsTierMin,
       color: "#FF6F00",
       tier: getTierImage("current"),
       label: currentTierConfig.name,
@@ -118,45 +113,36 @@ export default function ProgressTrackerCard({
       });
     }
   } else if (isHighestTier) {
-    // Highest tier: top = current, bottom = next (previous)
-    // Top image (current tier) at end of tier
+    // For ASCENDING MASTER: show current tier at top and previous tier in middle
+    // Top image (current tier - ASCENDING MASTER)
     dataPoints.push({
-      x: getXFromY(currentTierConfig.levelsUp),
-      y: currentTierConfig.levelsUp,
+      x: getXFromY(275),
+      y: 275,
       color: "#9CCC65",
       tier: getTierImage("current"),
       label: currentTierConfig.name,
     });
-    // Current image at start of tier
-    dataPoints.push({
-      x: getXFromY(currentTierConfig.retainsTierMin),
-      y: currentTierConfig.retainsTierMin,
-      color: "#FF6F00",
-      tier: getTierImage("current"),
-      label: currentTierConfig.name,
-    });
-    // Bottom image (previous tier) at -100
+    // Middle image (previous tier - MASTER REMOTE VIEWER)
     if (previousTier) {
       dataPoints.push({
-        x: getXFromY(-100),
-        y: -100,
-        color: "#D84315",
+        x: getXFromY(previousTier.retainsTierMin),
+        y: previousTier.retainsTierMin,
+        color: "#FF6F00",
         tier: getTierImage("previous"),
         label: previousTier.name,
       });
     }
   } else {
-    // Middle tiers: bottom = previous, middle = current, top = next
-    // Bottom image (previous tier) at -100
-    if (previousTier) {
-      dataPoints.push({
-        x: getXFromY(-100),
-        y: -100,
-        color: "#D84315",
-        tier: getTierImage("previous"),
-        label: previousTier.name,
-      });
-    }
+    // Middle tiers: bottom = NOVICE SEEKER, middle = current, top = next
+    // Bottom image (always NOVICE SEEKER) at -100
+    const noviceSeekerTier = TIER_CONFIG[0]; // NOVICE SEEKER is always first tier
+    dataPoints.push({
+      x: getXFromY(-100),
+      y: -100,
+      color: "#D84315",
+      tier: noviceSeekerTier.image || getTierImage("previous"),
+      label: noviceSeekerTier.name,
+    });
     // Current image at start of tier
     dataPoints.push({
       x: getXFromY(currentTierConfig.retainsTierMin),
@@ -277,7 +263,7 @@ export default function ProgressTrackerCard({
             x2={paddingLeft}
             y2={graphHeight - paddingBottom}
             stroke="#fff"
-            strokeWidth="3"
+            strokeWidth="2"
           />
 
           {/* Bold X-axis line */}
@@ -287,7 +273,7 @@ export default function ProgressTrackerCard({
             x2={graphWidth - paddingRight}
             y2={graphHeight - paddingBottom}
             stroke="#fff"
-            strokeWidth="3"
+            strokeWidth="2"
           />
 
           {/* Gradient definitions */}

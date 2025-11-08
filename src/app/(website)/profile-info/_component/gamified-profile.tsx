@@ -140,9 +140,9 @@ export default function GamifiedProfile() {
               up={tierData?.tierThresholds.up}
               down={tierData?.tierThresholds.down}
               currentScore={tierData?.currentScore || 0}
-              completedChallenges={6}
+              completedChallenges={tierData?.completedChallenges || 0}
               tierImages={tierData?.tierImages as object}
-              currentTierName={tierData?.tierRank || "N/A"}
+              currentTierName={"ASCENDING MASTER" || "N/A"}
             />
           </Suspense>
         </div>
