@@ -17,15 +17,18 @@ const fetchGraphData = async (): Promise<
 > => {
   const token = localStorage.getItem("authToken");
   const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
- const userId = localStorage.getItem("userId"); 
-// console.log("userid",userId);
+  const userId = localStorage.getItem("userId");
+  // console.log("userid",userId);
   // const userId = "680b13fe952ccea102170b34";
 
-  const res = await fetch(`${baseURL}/userSubmission/user-graph-data/${userId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
+  const res = await fetch(
+    `${baseURL}/userSubmission/user-graph-data/${userId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     },
-  });
+  );
 
   if (!res.ok) throw new Error("Failed to fetch graph data");
 
@@ -55,7 +58,7 @@ export function AboutGraph() {
   return (
     <Card className="p-4 rounded-3xl overflow-hidden bg-[#FFFFFF1A]">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-medium text-white">About Graph</h2>
+        <h2 className="text-lg font-medium text-white">Performance History</h2>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-blue-500"></div>
@@ -70,7 +73,10 @@ export function AboutGraph() {
 
       <div className="h-[150px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 10 }}>
+          <LineChart
+            data={data}
+            margin={{ top: 10, right: 30, left: 0, bottom: 10 }}
+          >
             <defs>
               <linearGradient id="colorTMC" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
@@ -81,7 +87,11 @@ export function AboutGraph() {
                 <stop offset="95%" stopColor="#10b981" stopOpacity={0.1} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.2} />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              vertical={false}
+              opacity={0.2}
+            />
             <XAxis
               dataKey="month"
               axisLine={false}

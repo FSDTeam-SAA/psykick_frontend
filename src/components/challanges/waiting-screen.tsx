@@ -86,7 +86,7 @@ export default function WaitingScreen() {
           Submission Recorded!
         </div>
         <p className="text-xl text-white mb-4">
-          Your drawing and selections have been submitted successfully
+          Your selections have been submitted successfully
         </p>
       </div>
 

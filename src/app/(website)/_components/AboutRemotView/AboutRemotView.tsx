@@ -83,7 +83,7 @@ export default function AboutRemotView() {
                   {isLoading ? "..." : totalParticipants}
                 </div>
                 <div className="text-xs md:text-sm text-gray-300">
-                  Total Participant
+                  Total Participants
                 </div>
               </div>
               <div className="mt-[60px]">
@@ -91,7 +91,7 @@ export default function AboutRemotView() {
                   {isLoading ? "..." : activeUsers}
                 </div>
                 <div className="text-xs md:text-sm text-gray-300">
-                  Active User
+                  Active Users
                 </div>
               </div>
               <div className="mt-[60px]">
@@ -99,7 +99,7 @@ export default function AboutRemotView() {
                   {isLoading ? "..." : runningEvents}
                 </div>
                 <div className="text-xs md:text-sm text-gray-300">
-                  Running Event
+                  Running Events
                 </div>
               </div>
             </div>

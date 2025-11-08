@@ -139,10 +139,10 @@ export default function GamifiedProfile() {
             <ProgressTrackerCard
               up={tierData?.tierThresholds.up}
               down={tierData?.tierThresholds.down}
-              currentScore={40}
+              currentScore={tierData?.currentScore || 0}
               completedChallenges={6}
               tierImages={tierData?.tierImages as object}
-              currentTierName={"EXPLORER"}
+              currentTierName={tierData?.tierRank || "N/A"}
             />
           </Suspense>
         </div>

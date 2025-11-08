@@ -104,13 +104,16 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-4 overflow-hidden" style={{
-      backgroundImage: 'url("/assets/img/backloging.png")', // 👈 image path ekhane
-      backgroundSize: "cover", // pura div e image fill korbe
-      backgroundRepeat: "no-repeat", // repeat korbe na
-      backgroundPosition: "center",
-       // image ke center e rakhbe
-    }}>
+    <div
+      className="min-h-screen w-full flex items-center justify-center p-4 overflow-hidden"
+      style={{
+        backgroundImage: 'url("/assets/img/backloging.png")', // 👈 image path ekhane
+        backgroundSize: "cover", // pura div e image fill korbe
+        backgroundRepeat: "no-repeat", // repeat korbe na
+        backgroundPosition: "center",
+        // image ke center e rakhbe
+      }}
+    >
       <div
         className="w-full max-w-xl p-8 rounded-3xl backdrop-blur-sm bg-black/30 border border-[#FFFFFF33]/20"
         style={{
@@ -126,8 +129,7 @@ export default function LoginForm() {
             Log In
           </h1>
           <p className="text-gray-200 lg:text-md">
-            Continue to register as a customer or vendor, Please provide the
-            information.
+            Log in to your Psykick Club account to continue your journey.
           </p>
         </div>
 
