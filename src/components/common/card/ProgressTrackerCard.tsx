@@ -2,7 +2,7 @@
 "use client";
 /* Lines 3-5 omitted */
 
-import { TIER_CONFIG, type TierConfig } from "@/lib/tier-config";
+import { TIER_CONFIG, getColorState, type TierConfig } from "@/lib/tier-config";
 
 interface ProgressTrackerProps {
   up: number;
@@ -278,19 +278,47 @@ export default function ProgressTrackerCard({
 
           {/* Gradient definitions */}
           <defs>
+            {/* Rectangle box to reflect Points and Targets Completed */}
             <linearGradient id="cyanGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#59ecff92" />
-              <stop offset="50%" stopColor="#26c5da81" />
-              <stop offset="100%" stopColor="#028394bc" />
+              <stop
+                offset="0%"
+                stopColor={
+                  getColorState(currentScore, currentTierConfig) === "green"
+                    ? "#00ff5e83"
+                    : getColorState(currentScore, currentTierConfig) === "red"
+                      ? "#ef444466"
+                      : "#3df9ff99"
+                }
+              />
+              {/* <stop
+                offset="50%"
+                stopColor={
+                  getColorState(currentScore, currentTierConfig) === "green"
+                    ? "#22c55e88"
+                    : getColorState(currentScore, currentTierConfig) === "red"
+                      ? "#dc262688"
+                      : "#00e1ff87"
+                }
+              /> */}
+              <stop
+                offset="100%"
+                stopColor={
+                  getColorState(currentScore, currentTierConfig) === "green"
+                    ? "#21a5517b"
+                    : getColorState(currentScore, currentTierConfig) === "red"
+                      ? "#b91c1caa"
+                      : "#1d93d855"
+                }
+              />
             </linearGradient>
 
+            {/* Line gradient for diagonal line */}
             <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#D84315" />
               <stop offset="40%" stopColor="#FF6F00" />
               <stop offset="70%" stopColor="#FFA726" />
               <stop offset="100%" stopColor="#9CCC65" />
             </linearGradient>
-
             {/* Clip paths for circular tier images */}
             {dataPoints.map((point, index) => (
               <clipPath key={`clip-${index}`} id={`circleClip-${index}`}>
