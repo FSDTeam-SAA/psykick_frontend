@@ -116,3 +116,44 @@ export function getColorState(
   }
   return "blue"; // Default to retain
 }
+
+ // Helper function to get colors based on tier state
+ export const getTierStateColors = (score: number, tier: TierConfig) => {
+    const state = getColorState(score, tier);
+
+    switch (state) {
+      case "green":
+        return {
+          gradient: {
+            start: "#00ff5e83", // Light bright green with 51% opacity
+            middle: "#22c55e88", // Medium green with 53% opacity
+            end: "#21a5517b", // Dark green with 48% opacity
+          },
+          text: "#4ade80", // Bright green for text
+          border: "#22c55e", // Medium green for borders
+          glow: "#00ff5e33", // Very light green for glowing effects
+        };
+      case "red":
+        return {
+          gradient: {
+            start: "#ef444466", // Light red with 40% opacity
+            middle: "#dc262688", // Medium red with 53% opacity
+            end: "#b91c1caa", // Dark red with 67% opacity
+          },
+          text: "#ef4444", // Bright red for text
+          border: "#dc2626", // Medium red for borders
+          glow: "#ef444433", // Very light red for glowing effects
+        };
+      default: // "blue" state
+        return {
+          gradient: {
+            start: "#3df9ff99", // Light cyan with 60% opacity
+            middle: "#00e1ff87", // Medium cyan with 53% opacity
+            end: "#1d93d855", // Dark cyan with 33% opacity
+          },
+          text: "#3df9ff", // Bright cyan for text
+          border: "#00e1ff", // Medium cyan for borders
+          glow: "#3df9ff33", // Very light cyan for glowing effects
+        };
+    }
+  };

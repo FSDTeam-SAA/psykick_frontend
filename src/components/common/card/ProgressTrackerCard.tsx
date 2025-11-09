@@ -2,7 +2,7 @@
 "use client";
 /* Lines 3-5 omitted */
 
-import { TIER_CONFIG, getColorState, type TierConfig } from "@/lib/tier-config";
+import { TIER_CONFIG, getTierStateColors, type TierConfig } from "@/lib/tier-config";
 
 interface ProgressTrackerProps {
   up: number;
@@ -215,9 +215,16 @@ export default function ProgressTrackerCard({
     }
     return lines;
   };
+
   const horizontalGridLines = generateHorizontalGridLines();
 
   const verticalGridLines = xAxisValues;
+
+  // Get current tier state colors
+  const currentStateColors = getTierStateColors(
+    currentScore,
+    currentTierConfig,
+  );
 
   return (
     <div className="w-full max-w-3xl">
@@ -280,36 +287,12 @@ export default function ProgressTrackerCard({
           <defs>
             {/* Rectangle box to reflect Points and Targets Completed */}
             <linearGradient id="cyanGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor={currentStateColors.gradient.start} />
               <stop
-                offset="0%"
-                stopColor={
-                  getColorState(currentScore, currentTierConfig) === "green"
-                    ? "#00ff5e83"
-                    : getColorState(currentScore, currentTierConfig) === "red"
-                      ? "#ef444466"
-                      : "#3df9ff99"
-                }
-              />
-              {/* <stop
                 offset="50%"
-                stopColor={
-                  getColorState(currentScore, currentTierConfig) === "green"
-                    ? "#22c55e88"
-                    : getColorState(currentScore, currentTierConfig) === "red"
-                      ? "#dc262688"
-                      : "#00e1ff87"
-                }
-              /> */}
-              <stop
-                offset="100%"
-                stopColor={
-                  getColorState(currentScore, currentTierConfig) === "green"
-                    ? "#21a5517b"
-                    : getColorState(currentScore, currentTierConfig) === "red"
-                      ? "#b91c1caa"
-                      : "#1d93d855"
-                }
+                stopColor={currentStateColors.gradient.middle}
               />
+              <stop offset="100%" stopColor={currentStateColors.gradient.end} />
             </linearGradient>
 
             {/* Line gradient for diagonal line */}
