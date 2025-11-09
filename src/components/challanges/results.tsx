@@ -185,10 +185,10 @@ export default function Results() {
                 ) : points === 15 ? (
                   <span className="text-lime-500">
                     Good job! You matched the Target on your 2nd choice. You
-                    received 15 points!
+                    have earned 15 points!
                   </span>
                 ) : (
-                  "Unfortunately, you didn't match the Target. -10 points."
+                  "Unfortunately, you didn't match the Target. 10 points have been deducted from your score."
                 )}
               </h3>
             </div>

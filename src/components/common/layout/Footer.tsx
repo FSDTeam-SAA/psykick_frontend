@@ -91,7 +91,7 @@ export function SiteFooter() {
             <div className="mt-8 border-t-[1px] border-white pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
               {/* Copyright */}
               <p className="text-white text-sm">
-                © 2025 Psykick.com, All rights reserved.
+                © 2025 Psykick.club, All rights reserved.
               </p>
 
               <div className="flex flex-wrap gap-3 sm:gap-4 justify-center sm:justify-start">

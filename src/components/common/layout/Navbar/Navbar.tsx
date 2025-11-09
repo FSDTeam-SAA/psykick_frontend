@@ -68,7 +68,7 @@ export function Navbar() {
     router.push(path);
   };
 
-  console.log(data?.tierDetails?.image);
+  // console.log(data?.tierDetails?.image);
   return (
     <Hideon routes={HIDE_ROUTES}>
       <nav className="bg-[#300070]/5 backdrop-blur-lg py-4 px-6 fixed w-screen top-0 z-50">

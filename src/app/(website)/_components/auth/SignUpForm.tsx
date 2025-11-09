@@ -182,8 +182,8 @@ export default function SignUpForm() {
               Sign Up
             </CardTitle>
             <p className="text-sm text-gray-400 text-center ">
-              Continue to register as a customer or vendor. Please provide the
-              information.
+              Sign up for your Psykick Club account to continue your journey.
+              Please provide the information.
             </p>
             <h1 className="text-[22px] lg:text-[28px] font-normal smallShadow pt-5">
               Enter your Personal Information

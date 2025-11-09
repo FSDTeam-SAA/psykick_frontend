@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTierInfoData } from "@/hooks/useTierInfo";
+import { TIER_CONFIG, getColorState } from "@/lib/tier-config";
 
 const ProgressTrackerCard = dynamic(
   () => import("@/components/common/card/ProgressTrackerCard"),
@@ -137,11 +138,12 @@ export default function GamifiedProfile() {
         <div className="md:col-span-3">
           <Suspense>
             <ProgressTrackerCard
-              up={tierData?.tierThresholds.up ?? 0}
+              up={tierData?.tierThresholds.up}
               down={tierData?.tierThresholds.down}
-              currentScore={tierData?.currentScore ?? 0}
-              completedChallenges={tierData?.completedChallenges ?? 0}
+              currentScore={tierData?.currentScore || 0}
+              completedChallenges={tierData?.completedChallenges || 0}
               tierImages={tierData?.tierImages as object}
+              currentTierName={tierData.tierRank || "N/A"}
             />
           </Suspense>
         </div>
@@ -170,10 +172,77 @@ export default function GamifiedProfile() {
                 </div>
 
                 <div className="mb-4 mx-auto flex justify-around items-center">
-                  <div className="border-2 w-[200px] bg-[#372759] border-white/40 rounded-lg p-2 text-center mb-4 max-w-xs">
+                  <div
+                    className={`border-2 w-[200px] rounded-lg p-2 text-center mb-4 max-w-xs ${
+                      getColorState(
+                        tierData.currentScore,
+                        TIER_CONFIG.find((t) => t.name === tierData.tierRank)!,
+                      ) === "green"
+                        ? "bg-green-900/50 border-green-400"
+                        : getColorState(
+                              tierData.currentScore,
+                              TIER_CONFIG.find(
+                                (t) => t.name === tierData.tierRank,
+                              )!,
+                            ) === "red"
+                          ? "bg-red-900/50 border-red-400"
+                          : "bg-blue-900/50 border-blue-400"
+                    }`}
+                  >
                     <div className="text-lg font-bold">RV TIER</div>
-                    <div className="text-xl text-yellow-500 font-bold">
+                    <div
+                      className={`text-xl font-bold ${
+                        getColorState(
+                          tierData.currentScore,
+                          TIER_CONFIG.find(
+                            (t) => t.name === tierData.tierRank,
+                          )!,
+                        ) === "green"
+                          ? "text-green-400"
+                          : getColorState(
+                                tierData.currentScore,
+                                TIER_CONFIG.find(
+                                  (t) => t.name === tierData.tierRank,
+                                )!,
+                              ) === "red"
+                            ? "text-red-400"
+                            : "text-blue-400"
+                      }`}
+                    >
                       {tierData.tierRank || "N/A"}
+                    </div>
+                    <div
+                      className={`text-xs mt-2 ${
+                        getColorState(
+                          tierData.currentScore,
+                          TIER_CONFIG.find(
+                            (t) => t.name === tierData.tierRank,
+                          )!,
+                        ) === "green"
+                          ? "text-green-300"
+                          : getColorState(
+                                tierData.currentScore,
+                                TIER_CONFIG.find(
+                                  (t) => t.name === tierData.tierRank,
+                                )!,
+                              ) === "red"
+                            ? "text-red-300"
+                            : "text-blue-300"
+                      }`}
+                    >
+                      {getColorState(
+                        tierData.currentScore,
+                        TIER_CONFIG.find((t) => t.name === tierData.tierRank)!,
+                      ) === "green"
+                        ? "Ready to Level Up!"
+                        : getColorState(
+                              tierData.currentScore,
+                              TIER_CONFIG.find(
+                                (t) => t.name === tierData.tierRank,
+                              )!,
+                            ) === "red"
+                          ? "Risk of Level Down"
+                          : "Maintaining Tier"}
                     </div>
                   </div>
 
