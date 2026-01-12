@@ -161,7 +161,7 @@ export function ResultsStage() {
                     />
                   </div>
                   <p className="text-sm text-gray-400 text-center">
-                    Actual outcome image
+                    {currentEvent.resultImageDescription}
                   </p>
                 </div>
               </div>
