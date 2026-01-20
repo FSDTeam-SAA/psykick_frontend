@@ -303,7 +303,7 @@ export default function Leaderboard() {
                 </div>
                 <div className="text-white">{entry.tierRank}</div>
                 <div className="font-bold text-white">
-                  {entry?.totalPoints > 0 ? entry.totalPoints : 0}
+                  {(entry?.totalPoints ?? 0) > 0 ? (entry.totalPoints ?? 0) : 0}
                 </div>
               </div>
             ))}
