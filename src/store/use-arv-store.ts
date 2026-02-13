@@ -22,6 +22,7 @@ export interface ARVEvent {
   };
   controlImage?: string;
   resultImage?: string;
+  resultImageDescription?: string;
   isActive: boolean;
   isPartiallyActive: boolean;
   isQueued: boolean;

@@ -181,7 +181,7 @@ export default function Leaderboard() {
                   </div>
                   <div className="text-white">{entry.tierRank}</div>
                   <div className="font-bold text-white">
-                    {entry.totalTMCPoints}
+                    {entry.totalTMCPoints > 0 ? entry.totalTMCPoints : 0}
                   </div>
                 </div>
               ))}
@@ -240,7 +240,7 @@ export default function Leaderboard() {
                   </div>
                   <div className="text-white">{entry.tierRank}</div>
                   <div className="font-bold text-white">
-                    {entry.totalARVPoints}
+                    {(entry.totalARVPoints ?? 0) > 0 ? entry.totalARVPoints : 0}
                   </div>
                 </div>
               ))}
@@ -302,7 +302,9 @@ export default function Leaderboard() {
                   </div>
                 </div>
                 <div className="text-white">{entry.tierRank}</div>
-                <div className="font-bold text-white">{entry.totalPoints}</div>
+                <div className="font-bold text-white">
+                  {(entry?.totalPoints ?? 0) > 0 ? (entry.totalPoints ?? 0) : 0}
+                </div>
               </div>
             ))}
           </div>
