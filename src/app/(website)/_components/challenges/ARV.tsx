@@ -60,15 +60,15 @@ export default function ARVPredictionMode() {
   // If no active target is available
   if (!isBufferTime || !activeTarget) {
     return (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] max-w-2xl mx-auto px-4">
-          <div className="text-white text-xl text-center mb-4">
-            No active challenges available at the moment.
-          </div>
-          <div className="text-purple-300 text-center">
-            You have no active targets at the moment. Please check back later or
-            contact support if you believe this is an error.
-          </div>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] max-w-2xl mx-auto px-4">
+        <div className="text-white text-xl text-center mb-4">
+          No active challenges available at the moment.
         </div>
+        <div className="text-purple-300 text-center">
+          You have no active targets at the moment. Please check back later or
+          contact support if you believe this is an error.
+        </div>
+      </div>
     );
   }
 
