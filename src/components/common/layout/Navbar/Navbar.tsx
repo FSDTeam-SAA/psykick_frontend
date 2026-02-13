@@ -7,6 +7,7 @@ import Image from "next/image";
 import logo from "../../../../../public/assets/img/logo.svg";
 
 import { Menu, X, LogOut, User, Bell } from "lucide-react";
+import { FaFantasyFlightGames } from "react-icons/fa";
 
 import { Button } from "@/components/ui/button";
 import Hideon from "@/provider/Hideon";
@@ -158,6 +159,13 @@ export function Navbar() {
                       >
                         <User className="mr-2 h-4 w-4" />
                         Profile
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="hover:bg-purple-800 cursor-pointer"
+                        onClick={() => handleNavigate("/profile-info")}
+                      >
+                        <FaFantasyFlightGames className="mr-2 h-4 w-4" />
+                        Tier Challange
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         className="hover:bg-purple-800 cursor-pointer"
