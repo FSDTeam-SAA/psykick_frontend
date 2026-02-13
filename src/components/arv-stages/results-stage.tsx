@@ -161,7 +161,7 @@ export function ResultsStage() {
                     />
                   </div>
                   <p className="text-sm text-gray-400 text-center">
-                    Actual outcome image
+                    {currentEvent.resultImageDescription}
                   </p>
                 </div>
               </div>
@@ -208,10 +208,10 @@ export function ResultsStage() {
                 <div className="flex flex-col justify-end gap-8 ">
                   <div>
                     <h3 className="text-2xl font-semibold mb-4 text-red-400">
-                      {arvResult?.points === 25 ? (
+                      {arvResult?.points === 30 ? (
                         <span className="text-green-500">
                           Congratulations! 🎉🎊🎊 <br /> You matched the Target
-                          on your 1st choice. You received +25 points!
+                          on your 1st choice. You received +30 points!
                         </span>
                       ) : (
                         <span className="text-red-500">
