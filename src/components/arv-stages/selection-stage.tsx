@@ -5,6 +5,7 @@ import { CountdownTimer } from "./countdown-timer";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useSubmitARVTarget } from "@/hooks/use-arv-queries";
+import { toast } from "sonner";
 
 export function SelectionStage() {
   const {
@@ -20,11 +21,16 @@ export function SelectionStage() {
   const { mutate: submitARV, isPending } = useSubmitARVTarget();
 
   const handleImageSelect = (image: { url: string; description: string }) => {
-    if (!isGameTimeActive()) {
-      alert("Image selection is only allowed during game time!");
-      return;
-    }
+    // if (!isGameTimeActive()) {
+    //   alert("Image selection is only allowed during game time!");
+    //   return;
+    // }
     setSelectedImage(image);
+    if (selectedImage) {
+      toast.warning(
+        "You selected the Control image, this selection does not correspond to any outcome!",
+      );
+    }
   };
 
   const handleSubmit = async () => {
@@ -66,9 +72,16 @@ export function SelectionStage() {
         <h1 className="text-3xl font-bold text-white">
           Select Your Prediction Image
         </h1>
-        <p className="text-gray-300">
-          Choose the image that best represents your prediction
-        </p>
+        {!selectedImage ? (
+          <p className="text-gray-300">
+            Choose the image that best represents your prediction!
+          </p>
+        ) : (
+          <p className="text-yellow-500">
+            You selected the Control image, this selection does not correspond
+            to any outcome!
+          </p>
+        )}
 
         <div className="space-y-4">
           <p className="text-sm font-medium text-gray-400">
@@ -96,7 +109,7 @@ export function SelectionStage() {
               key={index}
               className={`cursor-pointer transition-all border rounded-lg p-4 bg-gray-900/50 hover:bg-gray-800/50 ${
                 selectedImage?.url === image.url
-                  ? "border-blue-500 shadow-lg shadow-blue-500/20"
+                  ? "border-purple-500 shadow-lg shadow-purple-500/20 border-2"
                   : "border-gray-700"
               } ${!canSelect ? "opacity-50 cursor-not-allowed" : ""}`}
               onClick={() => handleImageSelect(image)}
@@ -109,9 +122,9 @@ export function SelectionStage() {
                   className="object-cover max-h-[500px] w-[500px]"
                 />
               </div>
-              {/* <p className="text-sm text-gray-400 text-center">
+              <p className="text-sm text-gray-400 text-center">
                 {image.description}
-              </p> */}
+              </p>
             </div>
           ))}
         </div>

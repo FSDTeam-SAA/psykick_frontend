@@ -6,7 +6,7 @@ import Toastbynotification from "@/components/toastbynotification";
 export default function Home() {
   return (
     <div className="pt-[-61px]">
-      <Toastbynotification/>
+      <Toastbynotification />
       <HeroSection />
       <AboutRemotView />
       <Faq />
